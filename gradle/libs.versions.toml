@@ -8,7 +8,7 @@ kobweb = "0.25.0"
 http4k = "6.55.0.0"
 coroutines = "1.11.0"
 serialization = "1.11.0"
-datetime = "0.8.0"
+datetime = "0.8.0-0.6.x-compat"
 arrow = "2.2.3"
 
 [libraries]
