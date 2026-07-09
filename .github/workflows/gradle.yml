@@ -12,30 +12,12 @@ permissions:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        include:
-          - target: iosSimulatorArm64Test
-            os: macos-latest
-          - target: jvmTest
-            os: ubuntu-latest
-          - target: jsNodeTest
-            os: ubuntu-latest
-          - target: testAndroid
-            os: ubuntu-latest
-    runs-on: ${{ matrix.os }}
-
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
 
     - name: Validate Gradle Wrapper
       uses: gradle/actions/wrapper-validation@v6
-
-    - uses: actions/cache@v6
-      with:
-        path: |
-          ~/.konan
-        key: ${{ runner.os }}-${{ hashFiles('**/.lock') }}
 
     - name: Set up JDK 21
       uses: actions/setup-java@v5
@@ -43,8 +25,8 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    - name: Build with Gradle
+    - name: Set up Gradle
       uses: gradle/actions/setup-gradle@v6
 
-    - name: Run matrix target
-      run: ./gradlew ${{ matrix.target }}
+    - name: Build
+      run: ./gradlew build

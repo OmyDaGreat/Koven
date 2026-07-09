@@ -24,7 +24,7 @@ permissions:
 jobs:
   publish:
     name: Release Build and Publish
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v7
@@ -37,11 +37,8 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
-      - name: Setup Gradle
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
-
-      - name: Make gradlew Executable
-        run: chmod +x gradlew
 
       - name: Install xmllint
         run: brew install libxml2 && brew link --force libxml2
