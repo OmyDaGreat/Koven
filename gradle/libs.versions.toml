@@ -4,13 +4,35 @@ kotlinter = "5.6.0"
 kermit = "2.1.0"
 dokka = "2.2.0"
 vanniktech = "0.37.0"
+kobweb = "0.25.0"
+http4k = "6.55.0.0"
+coroutines = "1.11.0"
+serialization = "1.11.0"
+datetime = "0.8.0"
+arrow = "2.2.3"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
+arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
+
+http4k-bom = { group = "org.http4k", name = "http4k-bom", version.ref = "http4k" }
+http4k-api = { group = "org.http4k", name = "http4k-api-openapi" }
+http4k-core = { group = "org.http4k", name = "http4k-core" }
+http4k-config = { group = "org.http4k", name = "http4k-config" }
+http4k-format = { group = "org.http4k", name = "http4k-format-kotlinx-serialization" }
+
+[bundles]
+http4k = ["http4k-api", "http4k-core", "http4k-config", "http4k-format"]
+
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kobweb-library = { id = "com.varabyte.kobweb.library", version.ref = "kobweb" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

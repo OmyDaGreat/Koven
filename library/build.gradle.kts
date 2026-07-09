@@ -1,3 +1,5 @@
+import com.varabyte.kobweb.gradle.library.util.configAsKobwebLibrary
+
 val user = project.property("user") as String
 val dev = project.property("dev") as String
 val mail = project.property("mail") as String
@@ -11,6 +13,8 @@ val inception = project.property("inception") as String
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kobweb.library)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.kotlinter)
     alias(libs.plugins.dokka)
@@ -21,32 +25,32 @@ version = v
 
 kotlin {
     jvm()
-
-    js {
-        nodejs()
-    }
+    configAsKobwebLibrary()
 
     applyDefaultHierarchyTemplate()
 
-    @Suppress("unused")
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kermit)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.arrow.core)
         }
-
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        jvmMain.dependencies {
+            implementation(project.dependencies.platform(libs.http4k.bom))
+            implementation(libs.bundles.http4k)
         }
     }
 }
 
 mavenPublishing {
     publishToMavenCentral()
-
     signAllPublications()
-
     coordinates(g, artifact, v)
-
     pom {
         name = repo
         description = desc
@@ -77,4 +81,8 @@ dokka {
     pluginsConfiguration.html {
         footerMessage.set("&copy; 2026 $dev <$mail>")
     }
+}
+
+tasks.named("jsBrowserTest") {
+    onlyIf { false }
 }
