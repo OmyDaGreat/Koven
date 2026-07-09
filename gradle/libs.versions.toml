@@ -25,9 +25,12 @@ http4k-api = { group = "org.http4k", name = "http4k-api-openapi" }
 http4k-core = { group = "org.http4k", name = "http4k-core" }
 http4k-config = { group = "org.http4k", name = "http4k-config" }
 http4k-format = { group = "org.http4k", name = "http4k-format-kotlinx-serialization" }
+http4k-server = { group = "org.http4k", name = "http4k-server-undertow" }
+
+kobweb-core = { group = "com.varabyte.kobweb", name = "kobweb-core", version.ref = "kobweb" }
 
 [bundles]
-http4k = ["http4k-api", "http4k-core", "http4k-config", "http4k-format"]
+http4k = ["http4k-api", "http4k-core", "http4k-config", "http4k-format", "http4k-server"]
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

@@ -44,6 +44,9 @@ kotlin {
             implementation(project.dependencies.platform(libs.http4k.bom))
             implementation(libs.bundles.http4k)
         }
+        jsMain.dependencies {
+            implementation(libs.kobweb.core)
+        }
     }
 }
 
