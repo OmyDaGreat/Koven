@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SpyderFormat</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../../index.html" tabindex="1">
+                    library
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+1.0.0        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
+                        data-filter=":library/jvmMain">jvm</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":library/jvmMain"
+                                       data-filter=":library/jvmMain"/>
+                                <span class="checkbox--icon"></span>
+                                jvm
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    library
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="library::xyz.malefic.spyder.server/SpyderFormat///PointingToDeclaration//839895618">
+  <div class="breadcrumbs"><a href="../../../index.html">library</a><span class="delimiter">/</span><a href="../index.html">xyz.malefic.spyder.server</a><span class="delimiter">/</span><span class="current">SpyderFormat</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Spyder</span><wbr></wbr><span><span>Format</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">SpyderFormat</a> : <span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization///PointingToDeclaration/">ConfigurableKotlinxSerialization</span></div></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-1139904799%2FProperties%2F839895618" anchor-label="defaultContentType" id="-1139904799%2FProperties%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1139904799%2FProperties%2F839895618"><span>default</span><wbr></wbr><span>Content</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1139904799%2FProperties%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="index.html#-1139904799%2FProperties%2F839895618">defaultContentType</a><span class="token operator">: </span><span data-unresolved-link="org.http4k.core/ContentType///PointingToDeclaration/">ContentType</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="279154571%2FProperties%2F839895618" anchor-label="json" id="279154571%2FProperties%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#279154571%2FProperties%2F839895618"><span><span>json</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="279154571%2FProperties%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html#279154571%2FProperties%2F839895618">json</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/Json///PointingToDeclaration/">Json</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="11121578%2FFunctions%2F839895618" anchor-label="array" id="11121578%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1523674334%2FFunctions%2F839895618"><span><span>array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="11121578%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1523674334%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt; </span><a href="index.html#-1523674334%2FFunctions%2F839895618"><span class="token function">array</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/array/#TypeParam(bounds=[kotlinx.serialization.json.JsonElement])/PointingToGenericParameters(0)/">T</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-884797952%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt; </span><a href="index.html#-884797952%2FFunctions%2F839895618"><span class="token function">array</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-iterable/index.html">Iterable</a><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/array/#kotlin.collections.Iterable[TypeParam(bounds=[kotlinx.serialization.json.JsonElement])]/PointingToGenericParameters(0)/">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="569360508%2FFunctions%2F839895618" anchor-label="asA" id="569360508%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1101253175%2FFunctions%2F839895618"><span>as</span><wbr></wbr><span><span>A</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="569360508%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">&quot;streamAsA&quot;</span></span></span><wbr></wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1101253175%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#-1101253175%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/InputStream.html">InputStream</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#-1101253175%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">&quot;stringAsA&quot;</span></span></span><wbr></wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#501324505%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#501324505%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#501324505%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">&quot;stringAsA&quot;</span></span></span><wbr></wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#226841177%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="index.html#226841177%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">target<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><a href="index.html#226841177%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#226841177%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">&quot;nodeAsA&quot;</span></span></span><wbr></wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#2084205298%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token punctuation">.</span><a href="index.html#2084205298%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">target<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/asA/kotlinx.serialization.json.JsonElement#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToGenericParameters(0)/">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/asA/kotlinx.serialization.json.JsonElement#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToGenericParameters(0)/">T</span></div><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1409689189%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token punctuation">.</span><a href="index.html#-1409689189%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#-1409689189%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#1846770597%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#1846770597%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/InputStream.html">InputStream</a><span class="token punctuation">, </span></span><span class="parameter ">target<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><a href="index.html#1846770597%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#1846770597%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#1268484904%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#1268484904%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/InputStream.html">InputStream</a><span class="token punctuation">, </span></span><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="index.html#1268484904%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#1268484904%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#1910132469%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#1910132469%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">target<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><a href="index.html#1910132469%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#1910132469%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#1571808888%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#1571808888%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="index.html#1571808888%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#1571808888%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#680199422%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#680199422%2FFunctions%2F839895618"><span class="token function">asA</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">j<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token punctuation">, </span></span><span class="parameter ">target<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><a href="index.html#680199422%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#680199422%2FFunctions%2F839895618">T</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1654559935%2FFunctions%2F839895618" anchor-label="asBiDiMapping" id="1654559935%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-2009007529%2FFunctions%2F839895618"><span>as</span><wbr></wbr><span>Bi</span><wbr></wbr><span>Di</span><wbr></wbr><span><span>Mapping</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1654559935%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-2009007529%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#-2009007529%2FFunctions%2F839895618"><span class="token function">asBiDiMapping</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiMapping///PointingToDeclaration/">BiDiMapping</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="index.html#-2009007529%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></div><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1577957772%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#-1577957772%2FFunctions%2F839895618"><span class="token function">asBiDiMapping</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="index.html#-1577957772%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiMapping///PointingToDeclaration/">BiDiMapping</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="index.html#-1577957772%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="516330496%2FFunctions%2F839895618" anchor-label="asCompactJsonString" id="516330496%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#516330496%2FFunctions%2F839895618"><span>as</span><wbr></wbr><span>Compact</span><wbr></wbr><span>Json</span><wbr></wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="516330496%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token punctuation">.</span><a href="index.html#516330496%2FFunctions%2F839895618"><span class="token function">asCompactJsonString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1650123837%2FFunctions%2F839895618" anchor-label="asFormatString" id="1650123837%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-2040072593%2FFunctions%2F839895618"><span>as</span><wbr></wbr><span>Format</span><wbr></wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1650123837%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-2040072593%2FFunctions%2F839895618"><span class="token function">asFormatString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1591674406%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#-1591674406%2FFunctions%2F839895618"><span class="token function">asFormatString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="index.html#-1591674406%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">input<span class="token operator">: </span><a href="index.html#-1591674406%2FFunctions%2F839895618">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1285936871%2FFunctions%2F839895618" anchor-label="asInputStream" id="-1285936871%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1737439843%2FFunctions%2F839895618"><span>as</span><wbr></wbr><span>Input</span><wbr></wbr><span><span>Stream</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1285936871%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1737439843%2FFunctions%2F839895618"><span class="token function">asInputStream</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/InputStream.html">InputStream</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-2030995376%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#-2030995376%2FFunctions%2F839895618"><span class="token function">asInputStream</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="index.html#-2030995376%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">input<span class="token operator">: </span><a href="index.html#-2030995376%2FFunctions%2F839895618">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/InputStream.html">InputStream</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1681828465%2FFunctions%2F839895618" anchor-label="asJsonArray" id="-1681828465%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1681828465%2FFunctions%2F839895618"><span>as</span><wbr></wbr><span>Json</span><wbr></wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1681828465%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1681828465%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-iterable/index.html">Iterable</a><span class="token operator">&lt;</span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span><a href="index.html#-1681828465%2FFunctions%2F839895618">T</a><span class="token punctuation">.</span><a href="index.html#-1681828465%2FFunctions%2F839895618"><span class="token function">asJsonArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonArray///PointingToDeclaration/">JsonArray</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1796807739%2FFunctions%2F839895618" anchor-label="asJsonObject" id="-1796807739%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1098350130%2FFunctions%2F839895618"><span>as</span><wbr></wbr><span>Json</span><wbr></wbr><span><span>Object</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1796807739%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">&quot;anyAsJsonObject&quot;</span></span></span><wbr></wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">.</span><a href="index.html#-1098350130%2FFunctions%2F839895618"><span class="token function">asJsonObject</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1258404842%2FFunctions%2F839895618">LIST</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-iterable/index.html">Iterable</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span><a href="index.html#-1258404842%2FFunctions%2F839895618">LIST</a><span class="token punctuation">.</span><a href="index.html#-1258404842%2FFunctions%2F839895618"><span class="token function">asJsonObject</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonObject///PointingToDeclaration/">JsonObject</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="index.html#601685216%2FFunctions%2F839895618"><span class="token function">asJsonObject</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonObject///PointingToDeclaration/">JsonObject</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1889187333%2FFunctions%2F839895618"><span class="token function">asJsonObject</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1672775942%2FFunctions%2F839895618" anchor-label="asJsonValue" id="-1672775942%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-595418880%2FFunctions%2F839895618"><span>as</span><wbr></wbr><span>Json</span><wbr></wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1672775942%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html">BigDecimal</a><span class="token operator">?</span><span class="token punctuation">.</span><a href="index.html#-595418880%2FFunctions%2F839895618"><span class="token function">asJsonValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonPrimitive///PointingToDeclaration/">JsonPrimitive</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigInteger.html">BigInteger</a><span class="token operator">?</span><span class="token punctuation">.</span><a href="index.html#-212809805%2FFunctions%2F839895618"><span class="token function">asJsonValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonPrimitive///PointingToDeclaration/">JsonPrimitive</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token punctuation">.</span><a href="index.html#208198288%2FFunctions%2F839895618"><span class="token function">asJsonValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonPrimitive///PointingToDeclaration/">JsonPrimitive</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-double/index.html">Double</a><span class="token operator">?</span><span class="token punctuation">.</span><a href="index.html#-1174866479%2FFunctions%2F839895618"><span class="token function">asJsonValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonPrimitive///PointingToDeclaration/">JsonPrimitive</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token punctuation">.</span><a href="index.html#725506601%2FFunctions%2F839895618"><span class="token function">asJsonValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonPrimitive///PointingToDeclaration/">JsonPrimitive</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token punctuation">.</span><a href="index.html#-1107158330%2FFunctions%2F839895618"><span class="token function">asJsonValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonPrimitive///PointingToDeclaration/">JsonPrimitive</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">.</span><a href="index.html#-2028447343%2FFunctions%2F839895618"><span class="token function">asJsonValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonPrimitive///PointingToDeclaration/">JsonPrimitive</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-342682667%2FFunctions%2F839895618" anchor-label="asPrettyJsonString" id="-342682667%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-342682667%2FFunctions%2F839895618"><span>as</span><wbr></wbr><span>Pretty</span><wbr></wbr><span>Json</span><wbr></wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-342682667%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token punctuation">.</span><a href="index.html#-342682667%2FFunctions%2F839895618"><span class="token function">asPrettyJsonString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="385952734%2FFunctions%2F839895618" anchor-label="auto" id="385952734%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-250804692%2FFunctions%2F839895618"><span><span>auto</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="385952734%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-250804692%2FFunctions%2F839895618">OUT</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.core/HttpMessage///PointingToDeclaration/">HttpMessage</span><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="index.html#-250804692%2FFunctions%2F839895618"><span class="token function">auto</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.core/HttpMessage///PointingToDeclaration/">HttpMessage</span><span class="token punctuation">, </span><a href="index.html#-250804692%2FFunctions%2F839895618">OUT</a><span class="token operator">&gt;</span></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">&quot;autoRequest&quot;</span></span></span><wbr></wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#197270780%2FFunctions%2F839895618">OUT</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.core/Request///PointingToDeclaration/">Request</span><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="index.html#197270780%2FFunctions%2F839895618"><span class="token function">auto</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.core/Request///PointingToDeclaration/">Request</span><span class="token punctuation">, </span><a href="index.html#197270780%2FFunctions%2F839895618">OUT</a><span class="token operator">&gt;</span></div><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-2073124479%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.websocket/WsMessage.Companion///PointingToDeclaration/">WsMessage.Companion</span><span class="token punctuation">.</span><a href="index.html#-2073124479%2FFunctions%2F839895618"><span class="token function">auto</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiWsMessageLensSpec///PointingToDeclaration/">BiDiWsMessageLensSpec</span><span class="token operator">&lt;</span><a href="index.html#-2073124479%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></div><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#259329081%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.core/Body.Companion///PointingToDeclaration/">Body.Companion</span><span class="token punctuation">.</span><a href="index.html#259329081%2FFunctions%2F839895618"><span class="token function">auto</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">description<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">contentNegotiation<span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/ContentNegotiation///PointingToDeclaration/">ContentNegotiation</span><span class="token punctuation">, </span></span><span class="parameter ">contentType<span class="token operator">: </span><span data-unresolved-link="org.http4k.core/ContentType///PointingToDeclaration/">ContentType</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiBodyLensSpec///PointingToDeclaration/">BiDiBodyLensSpec</span><span class="token operator">&lt;</span><a href="index.html#259329081%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-651678664%2FFunctions%2F839895618" anchor-label="autoBody" id="-651678664%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1691538107%2FFunctions%2F839895618"><span>auto</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-651678664%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1691538107%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#-1691538107%2FFunctions%2F839895618"><span class="token function">autoBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">description<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">contentNegotiation<span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/ContentNegotiation///PointingToDeclaration/">ContentNegotiation</span><span class="token punctuation">, </span></span><span class="parameter ">contentType<span class="token operator">: </span><span data-unresolved-link="org.http4k.core/ContentType///PointingToDeclaration/">ContentType</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiBodyLensSpec///PointingToDeclaration/">BiDiBodyLensSpec</span><span class="token operator">&lt;</span><a href="index.html#-1691538107%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#167887953%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#167887953%2FFunctions%2F839895618"><span class="token function">autoBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="index.html#167887953%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">description<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">contentNegotiation<span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/ContentNegotiation///PointingToDeclaration/">ContentNegotiation</span><span class="token punctuation">, </span></span><span class="parameter ">contentType<span class="token operator">: </span><span data-unresolved-link="org.http4k.core/ContentType///PointingToDeclaration/">ContentType</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiBodyLensSpec///PointingToDeclaration/">BiDiBodyLensSpec</span><span class="token operator">&lt;</span><a href="index.html#167887953%2FFunctions%2F839895618">T</a><span class="token operator">&gt;</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1372797190%2FFunctions%2F839895618" anchor-label="autoLens" id="1372797190%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1372797190%2FFunctions%2F839895618"><span>auto</span><wbr></wbr><span><span>Lens</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1372797190%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#1372797190%2FFunctions%2F839895618">IN</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><a href="index.html#1372797190%2FFunctions%2F839895618">OUT</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#1372797190%2FFunctions%2F839895618"><span class="token function">autoLens</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">lens<span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><a href="index.html#1372797190%2FFunctions%2F839895618">IN</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><a href="index.html#1372797190%2FFunctions%2F839895618">IN</a><span class="token punctuation">, </span><a href="index.html#1372797190%2FFunctions%2F839895618">OUT</a><span class="token operator">&gt;</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-272958336%2FFunctions%2F839895618" anchor-label="body" id="-272958336%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-272958336%2FFunctions%2F839895618"><span><span>body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-272958336%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-272958336%2FFunctions%2F839895618"><span class="token function">body</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">description<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">contentNegotiation<span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/ContentNegotiation///PointingToDeclaration/">ContentNegotiation</span><span class="token punctuation">, </span></span><span class="parameter ">contentType<span class="token operator">: </span><span data-unresolved-link="org.http4k.core/ContentType///PointingToDeclaration/">ContentType</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiBodyLensSpec///PointingToDeclaration/">BiDiBodyLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="788645414%2FFunctions%2F839895618" anchor-label="bool" id="788645414%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#788645414%2FFunctions%2F839895618"><span><span>bool</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="788645414%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#788645414%2FFunctions%2F839895618"><span class="token function">bool</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-481517970%2FFunctions%2F839895618" anchor-label="boolean" id="-481517970%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-481517970%2FFunctions%2F839895618"><span><span>boolean</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-481517970%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-481517970%2FFunctions%2F839895618"><span class="token function">boolean</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2023677968%2FFunctions%2F839895618" anchor-label="compact" id="-2023677968%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-2023677968%2FFunctions%2F839895618"><span><span>compact</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2023677968%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-2023677968%2FFunctions%2F839895618"><span class="token function">compact</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">node<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="81506548%2FFunctions%2F839895618" anchor-label="compactify" id="81506548%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#81506548%2FFunctions%2F839895618"><span><span>compactify</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="81506548%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#81506548%2FFunctions%2F839895618"><span class="token function">compactify</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1448630700%2FFunctions%2F839895618" anchor-label="convert" id="-1448630700%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1448630700%2FFunctions%2F839895618"><span><span>convert</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1448630700%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1448630700%2FFunctions%2F839895618">IN</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><a href="index.html#-1448630700%2FFunctions%2F839895618">OUT</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#-1448630700%2FFunctions%2F839895618"><span class="token function">convert</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="index.html#-1448630700%2FFunctions%2F839895618">IN</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#-1448630700%2FFunctions%2F839895618">OUT</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="504539244%2FFunctions%2F839895618" anchor-label="datastarModel" id="504539244%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#557894236%2FFunctions%2F839895618"><span>datastar</span><wbr></wbr><span><span>Model</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="504539244%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#557894236%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.core/Request///PointingToDeclaration/">Request</span><span class="token punctuation">.</span><a href="index.html#557894236%2FFunctions%2F839895618"><span class="token function">datastarModel</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#557894236%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1461924964%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.sse/Sse///PointingToDeclaration/">Sse</span><span class="token punctuation">.</span><a href="index.html#-1461924964%2FFunctions%2F839895618"><span class="token function">datastarModel</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#-1461924964%2FFunctions%2F839895618">T</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1273228621%2FFunctions%2F839895618" anchor-label="decimal" id="-1273228621%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1273228621%2FFunctions%2F839895618"><span><span>decimal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1273228621%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1273228621%2FFunctions%2F839895618"><span class="token function">decimal</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html">BigDecimal</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1424021639%2FFunctions%2F839895618" anchor-label="elements" id="-1424021639%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1424021639%2FFunctions%2F839895618"><span><span>elements</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1424021639%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1424021639%2FFunctions%2F839895618"><span class="token function">elements</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1555411209%2FFunctions%2F839895618" anchor-label="fields" id="-1555411209%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1555411209%2FFunctions%2F839895618"><span><span>fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1555411209%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1555411209%2FFunctions%2F839895618"><span class="token function">fields</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">node<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-255157466%2FFunctions%2F839895618" anchor-label="integer" id="-255157466%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-255157466%2FFunctions%2F839895618"><span><span>integer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-255157466%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-255157466%2FFunctions%2F839895618"><span class="token function">integer</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1001106839%2FFunctions%2F839895618" anchor-label="invoke" id="1001106839%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1001106839%2FFunctions%2F839895618"><span><span>invoke</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1001106839%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#1001106839%2FFunctions%2F839895618">T</a><span class="token operator">&gt; </span><a href="index.html#1001106839%2FFunctions%2F839895618"><span class="token function">invoke</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">fn<span class="token operator">: </span><span data-unresolved-link="org.http4k.format/Json///PointingToDeclaration/">Json</span><span class="token operator">&lt;</span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/invoke/#kotlin.Function1[org.http4k.format.Json[kotlinx.serialization.json.JsonElement],TypeParam(bounds=[kotlin.Any?])]/PointingToGenericParameters(0)/">T</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/invoke/#kotlin.Function1[org.http4k.format.Json[kotlinx.serialization.json.JsonElement],TypeParam(bounds=[kotlin.Any?])]/PointingToGenericParameters(0)/">T</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-297383286%2FFunctions%2F839895618" anchor-label="json" id="-297383286%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1702148109%2FFunctions%2F839895618"><span><span>json</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-297383286%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#1702148109%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.sse/SseMessage.Event///PointingToDeclaration/">SseMessage.Event</span><span class="token punctuation">.</span><a href="index.html#1702148109%2FFunctions%2F839895618"><span class="token function">json</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">t<span class="token operator">: </span><a href="index.html#1702148109%2FFunctions%2F839895618">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.sse/SseMessage.Event///PointingToDeclaration/">SseMessage.Event</span></div><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-2056043772%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.websocket/WsMessage///PointingToDeclaration/">WsMessage</span><span class="token punctuation">.</span><a href="index.html#-2056043772%2FFunctions%2F839895618"><span class="token function">json</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">t<span class="token operator">: </span><a href="index.html#-2056043772%2FFunctions%2F839895618">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.websocket/WsMessage///PointingToDeclaration/">WsMessage</span></div><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1260915034%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.core/HttpMessage///PointingToDeclaration/">HttpMessage</span><span class="token punctuation">.</span><a href="index.html#-1260915034%2FFunctions%2F839895618"><span class="token function">json</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#-1260915034%2FFunctions%2F839895618">T</a></div><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-273708713%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><a href="index.html#-273708713%2FFunctions%2F839895618">R</a><span class="token operator"> : </span><span data-unresolved-link="org.http4k.core/HttpMessage///PointingToDeclaration/">HttpMessage</span><span class="token operator">&gt; </span><a href="index.html#-273708713%2FFunctions%2F839895618">R</a><span class="token punctuation">.</span><a href="index.html#-273708713%2FFunctions%2F839895618"><span class="token function">json</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">t<span class="token operator">: </span><a href="index.html#-273708713%2FFunctions%2F839895618">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#-273708713%2FFunctions%2F839895618">R</a></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1072883570%2FFunctions%2F839895618">IN</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/json/org.http4k.lens.BiDiLensSpec[TypeParam(bounds=[kotlin.Any]),kotlin.String]#/PointingToGenericParameters(0)/">IN</span><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="index.html#-1072883570%2FFunctions%2F839895618"><span class="token function">json</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/json/org.http4k.lens.BiDiLensSpec[TypeParam(bounds=[kotlin.Any]),kotlin.String]#/PointingToGenericParameters(0)/">IN</span><span class="token punctuation">, </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><span data-unresolved-link="org.http4k.websocket/WsMessage.Companion///PointingToDeclaration/">WsMessage.Companion</span><span class="token punctuation">.</span><a href="index.html#1707049438%2FFunctions%2F839895618"><span class="token function">json</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiWsMessageLensSpec///PointingToDeclaration/">BiDiWsMessageLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><span data-unresolved-link="org.http4k.core/Body.Companion///PointingToDeclaration/">Body.Companion</span><span class="token punctuation">.</span><a href="index.html#2095897276%2FFunctions%2F839895618"><span class="token function">json</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">description<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">contentNegotiation<span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/ContentNegotiation///PointingToDeclaration/">ContentNegotiation</span><span class="token punctuation">, </span></span><span class="parameter ">contentType<span class="token operator">: </span><span data-unresolved-link="org.http4k.core/ContentType///PointingToDeclaration/">ContentType</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiBodyLensSpec///PointingToDeclaration/">BiDiBodyLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="129909302%2FFunctions%2F839895618" anchor-label="jsonLens" id="129909302%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#129909302%2FFunctions%2F839895618"><span>json</span><wbr></wbr><span><span>Lens</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="129909302%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#129909302%2FFunctions%2F839895618">IN</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#129909302%2FFunctions%2F839895618"><span class="token function">jsonLens</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">spec<span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/jsonLens/#org.http4k.lens.BiDiLensSpec[TypeParam(bounds=[kotlin.Any]),kotlin.String]/PointingToGenericParameters(0)/">IN</span><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.lens/BiDiLensSpec///PointingToDeclaration/">BiDiLensSpec</span><span class="token operator">&lt;</span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/jsonLens/#org.http4k.lens.BiDiLensSpec[TypeParam(bounds=[kotlin.Any]),kotlin.String]/PointingToGenericParameters(0)/">IN</span><span class="token punctuation">, </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt;</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1047176160%2FFunctions%2F839895618" anchor-label="nullNode" id="1047176160%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1047176160%2FFunctions%2F839895618"><span>null</span><wbr></wbr><span><span>Node</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1047176160%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1047176160%2FFunctions%2F839895618"><span class="token function">nullNode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2025401204%2FFunctions%2F839895618" anchor-label="number" id="2025401204%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-39660363%2FFunctions%2F839895618"><span><span>number</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2025401204%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-39660363%2FFunctions%2F839895618"><span class="token function">number</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html">BigDecimal</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#2065763368%2FFunctions%2F839895618"><span class="token function">number</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigInteger.html">BigInteger</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#986702212%2FFunctions%2F839895618"><span class="token function">number</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1010384222%2FFunctions%2F839895618"><span class="token function">number</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#2103480185%2FFunctions%2F839895618"><span class="token function">number</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="586150170%2FFunctions%2F839895618" anchor-label="obj" id="586150170%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1795112198%2FFunctions%2F839895618"><span><span>obj</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="586150170%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1795112198%2FFunctions%2F839895618"><span class="token function">obj</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-153382843%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt; </span><a href="index.html#-153382843%2FFunctions%2F839895618"><span class="token function">obj</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-iterable/index.html">Iterable</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/obj/#kotlin.collections.Iterable[kotlin.Pair[kotlin.String,TypeParam(bounds=[kotlinx.serialization.json.JsonElement])]]/PointingToGenericParameters(0)/">T</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#1994928033%2FFunctions%2F839895618">T</a><span class="token operator"> : </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator">&gt; </span><a href="index.html#1994928033%2FFunctions%2F839895618"><span class="token function">obj</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>fields<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span data-unresolved-link="org.http4k.format/ConfigurableKotlinxSerialization/obj/#vararg(kotlin.Pair[kotlin.String,TypeParam(bounds=[kotlinx.serialization.json.JsonElement])])/PointingToGenericParameters(0)/">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="885807622%2FFunctions%2F839895618" anchor-label="parse" id="885807622%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#885807622%2FFunctions%2F839895618"><span><span>parse</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="885807622%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#885807622%2FFunctions%2F839895618"><span class="token function">parse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="379073716%2FFunctions%2F839895618" anchor-label="prettify" id="379073716%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#379073716%2FFunctions%2F839895618"><span><span>prettify</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="379073716%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#379073716%2FFunctions%2F839895618"><span class="token function">prettify</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1489480597%2FFunctions%2F839895618" anchor-label="pretty" id="-1489480597%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1489480597%2FFunctions%2F839895618"><span><span>pretty</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1489480597%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1489480597%2FFunctions%2F839895618"><span class="token function">pretty</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">node<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="263185420%2FFunctions%2F839895618" anchor-label="string" id="263185420%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#263185420%2FFunctions%2F839895618"><span><span>string</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="263185420%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#263185420%2FFunctions%2F839895618"><span class="token function">string</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="730103683%2FFunctions%2F839895618" anchor-label="text" id="730103683%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#730103683%2FFunctions%2F839895618"><span><span>text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="730103683%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#730103683%2FFunctions%2F839895618"><span class="token function">text</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="295608238%2FFunctions%2F839895618" anchor-label="textValueOf" id="295608238%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#295608238%2FFunctions%2F839895618"><span>text</span><wbr></wbr><span>Value</span><wbr></wbr><span><span>Of</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="295608238%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#295608238%2FFunctions%2F839895618"><span class="token function">textValueOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">node<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token punctuation">, </span></span><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1526823935%2FFunctions%2F839895618" anchor-label="typeOf" id="1526823935%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1526823935%2FFunctions%2F839895618"><span>type</span><wbr></wbr><span><span>Of</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1526823935%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#1526823935%2FFunctions%2F839895618"><span class="token function">typeOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.format/JsonType///PointingToDeclaration/">JsonType</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>&copy; 2026 Om Gupta <ogupta4242@gmail.com></div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
