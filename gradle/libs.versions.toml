@@ -1,0 +1,20 @@
+[versions]
+agp = "9.2.1"
+kotlin = "2.4.0"
+android-minSdk = "24"
+android-compileSdk = "37"
+kotlinter = "5.6.0"
+kermit = "2.1.0"
+dokka = "2.2.0"
+vanniktech = "0.37.0"
+
+[libraries]
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
+
+[plugins]
+android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
