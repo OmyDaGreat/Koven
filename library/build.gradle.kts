@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
-
 val user = project.property("user") as String
 val dev = project.property("dev") as String
 val mail = project.property("mail") as String
@@ -13,10 +11,9 @@ val inception = project.property("inception") as String
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.kmp.library)
     alias(libs.plugins.maven.publish)
-    alias(libs.plugins.dokka)
     alias(libs.plugins.kotlinter)
+    alias(libs.plugins.dokka)
 }
 
 group = g
@@ -24,30 +21,6 @@ version = v
 
 kotlin {
     jvm()
-
-    android {
-        namespace = "$g.$artifact"
-        compileSdk =
-            libs.versions.android.compileSdk
-                .get()
-                .toInt()
-        minSdk =
-            libs.versions.android.minSdk
-                .get()
-                .toInt()
-
-        withJava()
-        withHostTest {}
-        withDeviceTest {}
-
-        compilerOptions {
-            jvmTarget.set(JVM_21)
-        }
-    }
-
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
 
     js {
         nodejs()

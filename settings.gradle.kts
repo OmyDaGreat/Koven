@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "fibonacci"
+rootProject.name = "spyder"
 include(":library")
