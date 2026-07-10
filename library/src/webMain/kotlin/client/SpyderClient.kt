@@ -4,32 +4,57 @@ import com.varabyte.kobweb.browser.api
 import com.varabyte.kobweb.browser.http.bodyOf
 import kotlinx.browser.window
 import kotlinx.coroutines.await
-import kotlinx.serialization.serializer
 import xyz.malefic.spyder.ApiContract
+import xyz.malefic.spyder.HeaderProvider
+import xyz.malefic.spyder.Headers
+import xyz.malefic.spyder.NoHeaders
 import xyz.malefic.spyder.SpyderJson
 
 /**
- * A client for the `SpyderServer`.
+ * Extension to make calling contracts more ergonomic.
+ *
+ * Usage example:
+ * ```
+ * MyContract.call(myRequest) { set("Authorization", "...") }
+ * ```
  */
-object SpyderClient {
-    suspend inline fun <reified Req, reified Res> call(
-        contract: ApiContract<Req, Res>,
-        request: Req,
-    ): Res {
-        val json =
-            if (Req::class == Unit::class) {
-                ""
-            } else {
-                SpyderJson.default.encodeToString(SpyderJson.default.serializersModule.serializer<Req>(), request)
-            }
-
-        val response = window.api.post(contract.path, bodyOf(json, "application/json"))
-        val text = response.text().await()
-
-        return if (Res::class == Unit::class) {
-            Unit as Res
+suspend inline fun <reified Req, reified Res, H : HeaderProvider> ApiContract<Req, Res, H>.call(
+    request: Req,
+    headers: H,
+    crossinline headerBlock: Headers.Builder.() -> Unit = {},
+): Res {
+    val json =
+        if (Req::class == Unit::class) {
+            null
         } else {
-            SpyderJson.default.decodeFromString(SpyderJson.default.serializersModule.serializer<Res>(), text)
+            SpyderJson.default.encodeToString(request)
         }
+
+    val text =
+        window.api
+            .call(
+                method,
+                path,
+                if (json != null) bodyOf(json, "application/json") else null,
+                Headers.build {
+                    add(this@call.headers)
+                    add(headers)
+                    headerBlock()
+                },
+            ).text()
+            .await()
+
+    return if (Res::class == Unit::class) {
+        Unit as Res
+    } else {
+        SpyderJson.default.decodeFromString<Res>(text)
     }
 }
+
+/**
+ * Extension to make calling contracts more ergonomic. Specifically for [NoHeaders] contracts.
+ */
+suspend inline fun <reified Req, reified Res> ApiContract<Req, Res, NoHeaders>.call(
+    request: Req,
+    crossinline headerBlock: Headers.Builder.() -> Unit = {},
+): Res = call(request, NoHeaders, headerBlock)

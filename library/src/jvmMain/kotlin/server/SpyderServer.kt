@@ -9,6 +9,8 @@ import org.http4k.server.Http4kServer
 import org.http4k.server.Undertow
 import org.http4k.server.asServer
 import xyz.malefic.spyder.ApiContract
+import xyz.malefic.spyder.HeaderProvider
+import xyz.malefic.spyder.Headers
 
 /**
  * A builder context for configuring routes and server settings.
@@ -28,9 +30,9 @@ class SpyderServerBuilder(
      * @param contract The [ApiContract] to register.
      * @param handler The function to handle the request.
      */
-    inline fun <reified Req, reified Res> handle(
-        contract: ApiContract<Req, Res>,
-        crossinline handler: (Req) -> Res,
+    inline fun <reified Req, reified Res, H : HeaderProvider> handle(
+        contract: ApiContract<Req, Res, H>,
+        crossinline handler: context(Headers) (Req) -> Res,
     ) {
         add(contract.register(handler))
     }
