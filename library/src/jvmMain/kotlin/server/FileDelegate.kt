@@ -12,11 +12,12 @@ import kotlin.reflect.KProperty
  * A delegate for loading and saving a value, in JSON, from a file.
  */
 class FileDelegate<T>(
+    private val baseDir: String,
     private val fileName: String,
     private val defaultValue: T,
     private val serializer: KSerializer<T>,
 ) {
-    private val file by lazy { File(SpyderServer.ASSETS_PATH, fileName) }
+    private val file by lazy { File(baseDir, fileName) }
 
     private var _value: T? = null
     val value: T get() {
@@ -62,4 +63,22 @@ class FileDelegate<T>(
 inline fun <reified T> file(
     fileName: String,
     defaultValue: T,
-) = FileDelegate(fileName, defaultValue, SpyderJson.default.serializersModule.serializer<T>())
+    baseDir: String = "assets",
+) = FileDelegate(baseDir, fileName, defaultValue, SpyderJson.default.serializersModule.serializer<T>())
+
+/**
+ * A delegate for loading and saving a value, in JSON, from a file.
+ */
+inline fun <reified T> SpyderConfig.file(
+    fileName: String,
+    defaultValue: T,
+) = file(fileName, defaultValue, assetsPath)
+
+/**
+ * A delegate for loading and saving a value, in JSON, from a file.
+ */
+context(config: SpyderConfig)
+inline fun <reified T> file(
+    fileName: String,
+    defaultValue: T,
+) = file(fileName, defaultValue, config.assetsPath)
