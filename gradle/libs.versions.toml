@@ -10,6 +10,7 @@ coroutines = "1.11.0"
 serialization = "1.11.0"
 datetime = "0.8.0"
 arrow = "2.2.3"
+compose = "1.11.1"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
@@ -29,8 +30,12 @@ http4k-server = { group = "org.http4k", name = "http4k-server-undertow" }
 
 kobweb-core = { group = "com.varabyte.kobweb", name = "kobweb-core", version.ref = "kobweb" }
 
+compose-html-core = { group = "org.jetbrains.compose.html", name = "html-core", version.ref = "compose" }
+compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "compose" }
+
 [bundles]
 http4k = ["http4k-api", "http4k-core", "http4k-config", "http4k-format", "http4k-server"]
+kobweb = ["kobweb-core", "compose-html-core", "compose-runtime"]
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

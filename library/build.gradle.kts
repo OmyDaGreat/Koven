@@ -24,6 +24,8 @@ group = g
 version = v
 
 kotlin {
+    compilerOptions.freeCompilerArgs.add("-Xcontext-parameters")
+
     jvm()
     configAsKobwebLibrary()
 
@@ -45,7 +47,7 @@ kotlin {
             implementation(libs.bundles.http4k)
         }
         jsMain.dependencies {
-            implementation(libs.kobweb.core)
+            implementation(libs.bundles.kobweb)
         }
     }
 }

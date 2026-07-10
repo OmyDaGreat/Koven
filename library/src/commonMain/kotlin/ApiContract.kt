@@ -15,3 +15,13 @@ abstract class ApiContract<Req, Res>(
     val path: String,
     val method: Method = Method.POST,
 )
+
+/**
+ * A contract for the common "health" endpoint.
+ */
+class HealthContract : ApiContract<Unit, String>("health", Method.GET)
+
+/**
+ * A contract for the common "ping" endpoint.
+ */
+class PingContract : ApiContract<Unit, String>("ping", Method.GET)
