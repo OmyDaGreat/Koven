@@ -9,7 +9,7 @@ class Headers private constructor(
 ) : Map<String, List<String>> by data,
     HeaderProvider {
     constructor(map: Map<String, List<String>> = emptyMap()) :
-        this(data = map.mapKeys { it.key.lowercase() })
+        this(data = map.entries.groupBy({ it.key.lowercase() }, { it.value }).mapValues { (_, values) -> values.flatten() })
 
     override fun containsKey(key: String): Boolean = data.containsKey(key.lowercase())
 
@@ -22,14 +22,14 @@ class Headers private constructor(
     /**
      * Gets all values for a given [HeaderField].
      */
-    operator fun get(field: HeaderField): List<String>? = get(field.field)
+    operator fun <T> get(field: HeaderField<T>): List<String>? = get(field.field)
 
     /**
      * Gets the first value for a given [HeaderField].
      *
      * @param field The [HeaderField].
      */
-    fun getFirst(field: HeaderField): String? = get(field)?.firstOrNull()
+    fun <T> getFirst(field: HeaderField<T>): String? = get(field)?.firstOrNull()
 
     /**
      * Gets the first value for a given header field.
@@ -57,14 +57,14 @@ class Headers private constructor(
             name: String,
             value: String,
         ) = apply {
-            map.getOrPut(name) { mutableListOf() }.add(value)
+            map.getOrPut(name.lowercase()) { mutableListOf() }.add(value)
         }
 
         operator fun set(
             name: String,
             value: String,
         ) {
-            map[name] = mutableListOf(value)
+            map[name.lowercase()] = mutableListOf(value)
         }
 
         fun add(provider: HeaderProvider) =
@@ -72,7 +72,7 @@ class Headers private constructor(
                 with(provider) { provide() }
             }
 
-        internal fun build(): Headers = Headers(map = map.mapValues { it.value.toList() })
+        fun build(): Headers = Headers(map = map.mapValues { it.value.toList() })
     }
 }
 
@@ -86,13 +86,20 @@ interface HeaderProvider {
 /**
  * Interface for header fields.
  */
-interface HeaderField {
+interface HeaderField<out T> {
     val field: String
 
+    /**
+     * Decodes the header from [Headers].
+     */
+    fun decode(headers: Headers): T?
+
     companion object {
-        operator fun invoke(name: String): HeaderField =
-            object : HeaderField {
+        operator fun invoke(name: String): HeaderField<String> =
+            object : HeaderField<String> {
                 override val field: String = name
+
+                override fun decode(headers: Headers): String? = headers.getFirst(name)
             }
     }
 }
@@ -105,11 +112,10 @@ object NoHeaders : HeaderProvider {
 }
 
 /**
- * Interface for header implementations.
+ * Interface for header implementations. The companion object of this interface is used to create a [HeaderField]. You can check out an example with [BearerAuth].
  */
-interface Header :
-    HeaderField,
-    HeaderProvider {
+interface Header : HeaderProvider {
+    val field: String
     val values: List<String>
 
     override fun Headers.Builder.provide() {
@@ -126,7 +132,21 @@ class BearerAuth(
     override val field: String = Companion.field
     override val values: List<String> = listOf("Bearer $token")
 
-    companion object : HeaderField {
+    companion object : HeaderField<BearerAuth> {
         override val field: String = "Authorization"
+
+        /**
+         * Decodes the Authorization header from [Headers] into a [BearerAuth].
+         *
+         * @param headers The [Headers] to decode.
+         *
+         * @return The decoded [BearerAuth] or null if the header is missing or invalid.
+         */
+        override fun decode(headers: Headers): BearerAuth? =
+            headers
+                .getFirst(field)
+                ?.takeIf { it.startsWith("Bearer ", ignoreCase = true) }
+                ?.removePrefix("Bearer ")
+                ?.let { BearerAuth(it) }
     }
 }

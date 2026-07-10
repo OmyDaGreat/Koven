@@ -10,7 +10,6 @@ import org.http4k.server.Undertow
 import org.http4k.server.asServer
 import xyz.malefic.spyder.ApiContract
 import xyz.malefic.spyder.HeaderProvider
-import xyz.malefic.spyder.Headers
 
 /**
  * A builder context for configuring routes and server settings.
@@ -30,9 +29,9 @@ class SpyderServerBuilder(
      * @param contract The [ApiContract] to register.
      * @param handler The function to handle the request.
      */
-    inline fun <reified Req, reified Res, H : HeaderProvider> handle(
-        contract: ApiContract<Req, Res, H>,
-        crossinline handler: context(Headers) (Req) -> Res,
+    inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> handle(
+        contract: ApiContract<Req, Res, ReqH, ResH>,
+        crossinline handler: context(ReqH) (Req) -> Pair<Res, ResH>,
     ) {
         add(contract.register(handler))
     }
@@ -63,7 +62,7 @@ object SpyderServer {
     /**
      * Configures and starts the server.
      *
-     * @param httpConfig A function that configures the routes through [RoutingHttpHandler].
+     * @param httpConfig A function that configures the routes through [RoutingHttpHandler], akin to a [org.http4k.core.Filter].
      * @param serverConfig A function that configures the server through [SpyderServerBuilder].
      *
      * @throws IllegalStateException If the server is already running.
