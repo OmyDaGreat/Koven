@@ -1,7 +1,6 @@
 package xyz.malefic.spyder.server
 
 import org.http4k.core.then
-import org.http4k.filter.CorsPolicy
 import org.http4k.filter.ServerFilters
 import org.http4k.filter.debug
 import org.http4k.routing.RoutingHttpHandler
@@ -12,19 +11,10 @@ import org.http4k.server.asServer
 import xyz.malefic.spyder.ApiContract
 
 /**
- * Configuration for the [SpyderServer].
- */
-data class SpyderConfig(
-    var port: Int = 8080,
-    var assetsPath: String = "assets",
-    var corsPolicy: CorsPolicy = CorsPolicy.UnsafeGlobalPermissive,
-)
-
-/**
- * A builder context for configuring routes.
+ * A builder context for configuring routes and server settings.
  */
 class SpyderServerBuilder(
-    val config: SpyderConfig = SpyderConfig(),
+    val config: SpyderServerConfig,
 ) {
     private val routes = mutableListOf<RoutingHttpHandler>()
 
@@ -52,54 +42,58 @@ class SpyderServerBuilder(
 }
 
 /**
- * A Spyder server instance.
+ * Singleton Spyder server instance.
  *
  * Usage example:
  * ```
- * val server = SpyderServer.create {
+ * SpyderServer.start {
  *     config.port = 8081
  *     handle(PingContract) { "Pong" }
- * }.start()
+ * }.block()
  * ```
  */
-class SpyderServer internal constructor(
-    private val underlying: Http4kServer,
-) {
+object SpyderServer {
+    val config = SpyderServerConfig()
+    private var underlying: Http4kServer? = null
+
+    val port get() = underlying?.port() ?: config.port
+
     /**
-     * Starts the server.
+     * Configures and starts the server.
+     *
+     * @param httpConfig A function that configures the routes through [RoutingHttpHandler].
+     * @param serverConfig A function that configures the server through [SpyderServerBuilder].
+     *
+     * @throws IllegalStateException If the server is already running.
      */
-    fun start(): SpyderServer = apply { underlying.start() }
+    fun start(
+        httpConfig: RoutingHttpHandler.() -> RoutingHttpHandler = { debug() },
+        serverConfig: SpyderServerBuilder.() -> Unit = {},
+    ): SpyderServer =
+        apply {
+            if (underlying == null) {
+                val builder = SpyderServerBuilder(config).apply(serverConfig)
+                val handler = builder.buildHandler().httpConfig()
+                underlying = handler.asServer(Undertow(config.port)).start()
+            } else {
+                error("Server is already running")
+            }
+        }
 
     /**
      * Stops the server.
      */
-    fun stop(): SpyderServer = apply { underlying.stop() }
+    fun stop(): SpyderServer =
+        apply {
+            underlying?.stop()
+            underlying = null
+        }
 
     /**
      * Blocks the current thread until the server is stopped.
      */
-    fun block(): SpyderServer = apply { underlying.block() }
-
-    /**
-     * Returns the port the server is listening on.
-     */
-    fun port(): Int = underlying.port()
-
-    companion object {
-        /**
-         * DSL for creating and configuring a [SpyderServer] instance.
-         *
-         * @param httpConfig A function that configures the routes through [RoutingHttpHandler].
-         * @param serverConfig A function that configures the server through [SpyderServerBuilder].
-         */
-        fun create(
-            httpConfig: RoutingHttpHandler.() -> RoutingHttpHandler = { debug() },
-            serverConfig: SpyderServerBuilder.() -> Unit,
-        ): SpyderServer {
-            val builder = SpyderServerBuilder().apply(serverConfig)
-            val handler = builder.buildHandler().httpConfig()
-            val server = handler.asServer(Undertow(builder.config.port))
-            return SpyderServer(server)
+    fun block(): SpyderServer =
+        apply {
+            underlying?.block()
         }
-    }
 }
