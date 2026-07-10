@@ -8,6 +8,9 @@ import org.http4k.routing.bind
 import xyz.malefic.spyder.ApiContract
 import xyz.malefic.spyder.SpyderJson
 
+/**
+ * Creates a route for the given [ApiContract].
+ */
 inline fun <reified Req, reified Res> ApiContract<Req, Res>.register(crossinline handler: (Req) -> Res): RoutingHttpHandler =
     path bind method.toHttp4k to { req ->
         val body =

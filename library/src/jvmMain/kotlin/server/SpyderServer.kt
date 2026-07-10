@@ -38,10 +38,10 @@ class SpyderServerBuilder(
     /**
      * Builds the [SpyderServer].
      */
-    fun build(): SpyderServer =
+    fun build(corsPolicy: CorsPolicy = CorsPolicy.UnsafeGlobalPermissive): SpyderServer =
         SpyderServer(
             ServerFilters
-                .Cors(CorsPolicy.UnsafeGlobalPermissive)
+                .Cors(corsPolicy)
                 .then(routes(handlers))
                 .asServer(Undertow(port)),
         )
@@ -64,5 +64,6 @@ class SpyderServerBuilder(
  */
 fun spyderServer(
     port: Int = 8080,
+    corsPolicy: CorsPolicy = CorsPolicy.UnsafeGlobalPermissive,
     block: SpyderServerBuilder.() -> Unit,
-): SpyderServer = SpyderServerBuilder(port).apply(block).build()
+): SpyderServer = SpyderServerBuilder(port).apply(block).build(corsPolicy)
