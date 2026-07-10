@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>ApiContract</title>
+    <title>PingContract</title>
     <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
         <script>var pathToRoot = "../../../";</script>
     <script>document.documentElement.classList.replace("no-js", "js");</script>
@@ -113,28 +113,28 @@
         </nav>
         <div id="resizer" class="resizer" data-item-type="BAR"></div>
         <div id="main" data-item-type="SECTION" role="main">
-<div class="main-content" data-page-type="classlike" id="content" pageIds="library::xyz.malefic.spyder/ApiContract///PointingToDeclaration//-654899660">
-  <div class="breadcrumbs"><a href="../../../index.html">library</a><span class="delimiter">/</span><a href="../index.html">xyz.malefic.spyder</a><span class="delimiter">/</span><span class="current">ApiContract</span></div>
+<div class="main-content" data-page-type="classlike" id="content" pageIds="library::xyz.malefic.spyder/PingContract///PointingToDeclaration//-654899660">
+  <div class="breadcrumbs"><a href="../../../index.html">library</a><span class="delimiter">/</span><a href="../index.html">xyz.malefic.spyder</a><span class="delimiter">/</span><span class="current">PingContract</span></div>
   <div class="cover ">
-    <h1 class="cover"><span>Api</span><wbr></wbr><span><span>Contract</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">ApiContract</a><span class="token operator">&lt;</span><a href="index.html">Req</a><span class="token punctuation">, </span><a href="index.html">Res</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>path<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>method<span class="token operator">: </span><a href="../-method/index.html">Method</a><span class="token operator"> = </span>Method.POST</span></span><span class="token punctuation">)</span></div><p class="paragraph">A contract for an API endpoint shared between the client and server.</p><h4 class="tableheader">Parameters</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>path</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The path of the API endpoint. Automatically prefixed with &quot;api/&quot;.</p></div></div></div></div><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>method</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The HTTP method to use for the API endpoint.</p></div></div></div></div></div><h4 class="tableheader">Type Parameters</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>Req</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/">Serializable</span> type of the request body. If the request body is empty, this should be <code class="lang-kotlin">Unit</code>.</p></div></div></div></div><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>Res</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/">Serializable</span> type of the request body. If the response body is empty, this should be <code class="lang-kotlin">Unit</code>.</p></div></div></div></div></div><h4 class="tableheader">Inheritors</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-health-contract/index.html">HealthContract</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ping-contract/index.html">PingContract</a></div></span></div><div></div></div></div></div></div></div>
+    <h1 class="cover"><span>Ping</span><wbr></wbr><span><span>Contract</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">PingContract</a> : <a href="../-api-contract/index.html">ApiContract</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt; </span></div><p class="paragraph">A contract for the common &quot;ping&quot; endpoint.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="tableheader">Constructors</h2>
-        <div class="table"><a data-name="1466070015%2FConstructors%2F-654899660" anchor-label="ApiContract" id="1466070015%2FConstructors%2F-654899660" data-filterable-set=":library/commonMain"></a>
+        <div class="table"><a data-name="402634616%2FConstructors%2F-654899660" anchor-label="PingContract" id="402634616%2FConstructors%2F-654899660" data-filterable-set=":library/commonMain"></a>
           <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-api-contract.html"><span>Api</span><wbr></wbr><span><span>Contract</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1466070015%2FConstructors%2F-654899660"></span>
+                  <div><a href="-ping-contract.html"><span>Ping</span><wbr></wbr><span><span>Contract</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="402634616%2FConstructors%2F-654899660"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">path<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">method<span class="token operator">: </span><a href="../-method/index.html">Method</a><span class="token operator"> = </span>Method.POST</span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -147,13 +147,13 @@
           <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="method.html"><span><span>method</span></span></a></div>
+                  <div><a href="../-api-contract/method.html"><span><span>method</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="3743567%2FProperties%2F-654899660"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="method.html">method</a><span class="token operator">: </span><a href="../-method/index.html">Method</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../-api-contract/method.html">method</a><span class="token operator">: </span><a href="../-method/index.html">Method</a></div></div></div>
                 </div>
               </div>
             </div>
@@ -162,13 +162,13 @@
           <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="path.html"><span><span>path</span></span></a></div>
+                  <div><a href="../-api-contract/path.html"><span><span>path</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="239417675%2FProperties%2F-654899660"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="path.html">path</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../-api-contract/path.html">path</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
@@ -189,7 +189,7 @@
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
                     <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../xyz.malefic.spyder.server/register.html">Req</a><span class="token punctuation">, </span><a href="../../xyz.malefic.spyder.server/register.html">Res</a><span class="token operator">&gt; </span><a href="index.html">ApiContract</a><span class="token operator">&lt;</span><a href="../../xyz.malefic.spyder.server/register.html">Req</a><span class="token punctuation">, </span><a href="../../xyz.malefic.spyder.server/register.html">Res</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../xyz.malefic.spyder.server/register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">crossinline </span>handler<span class="token operator">: </span><span class="token punctuation">(</span><a href="../../xyz.malefic.spyder.server/register.html">Req</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="../../xyz.malefic.spyder.server/register.html">Res</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.routing/RoutingHttpHandler///PointingToDeclaration/">RoutingHttpHandler</span></div><div class="brief "><p class="paragraph">Creates a route for the given <a href="index.html">ApiContract</a>.</p></div></div>                  </div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../xyz.malefic.spyder.server/register.html">Req</a><span class="token punctuation">, </span><a href="../../xyz.malefic.spyder.server/register.html">Res</a><span class="token operator">&gt; </span><a href="../-api-contract/index.html">ApiContract</a><span class="token operator">&lt;</span><a href="../../xyz.malefic.spyder.server/register.html">Req</a><span class="token punctuation">, </span><a href="../../xyz.malefic.spyder.server/register.html">Res</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../xyz.malefic.spyder.server/register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">crossinline </span>handler<span class="token operator">: </span><span class="token punctuation">(</span><a href="../../xyz.malefic.spyder.server/register.html">Req</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="../../xyz.malefic.spyder.server/register.html">Res</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.http4k.routing/RoutingHttpHandler///PointingToDeclaration/">RoutingHttpHandler</span></div><div class="brief "><p class="paragraph">Creates a route for the given <a href="../-api-contract/index.html">ApiContract</a>.</p></div></div>                  </div>
                 </div>
               </div>
             </div>
