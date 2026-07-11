@@ -15,13 +15,16 @@ import xyz.malefic.spyder.HeaderProvider
 import xyz.malefic.spyder.Headers
 import xyz.malefic.spyder.InternalIssue
 import xyz.malefic.spyder.Issue
+import xyz.malefic.spyder.NoHeaders
 import xyz.malefic.spyder.SpyderJson
 
 /**
  * Creates a route for the given [ApiContract].
+ *
+ * @param handler The handler function for the route. Should return a [Pair] in the format of `(response body, response headers)`.
  */
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, Res, ReqH, ResH>.register(
-    crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>, // TODO: Add a non-pair NoHeaders version
+    crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>,
 ): RoutingHttpHandler =
     path bind method.toHttp4k to { req ->
         val headers = Headers.fromPairs(req.headers)
@@ -80,3 +83,12 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
             }
         }
     }
+
+/**
+ * Creates a route for the given [ApiContract].
+ *
+ * @param handler The handler function for the route. Should return the response body directly.
+ */
+inline fun <reified Req, reified Res, ReqH : HeaderProvider> ApiContract<Req, Res, ReqH, NoHeaders>.register(
+    crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Res,
+): RoutingHttpHandler = this.register<Req, Res, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders }

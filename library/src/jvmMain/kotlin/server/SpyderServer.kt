@@ -12,6 +12,7 @@ import org.http4k.server.asServer
 import xyz.malefic.spyder.ApiContract
 import xyz.malefic.spyder.HeaderProvider
 import xyz.malefic.spyder.Issue
+import xyz.malefic.spyder.NoHeaders
 
 /**
  * A builder context for configuring routes and server settings.
@@ -29,11 +30,24 @@ class SpyderServerBuilder(
      * Adds an [ApiContract] to the server by registering a route with the given [handler].
      *
      * @param contract The [ApiContract] to register.
-     * @param handler The function to handle the request.
+     * @param handler The function to handle the request. Should return a [Pair] in the format of `(response body, response headers)`.
      */
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> handle(
         contract: ApiContract<Req, Res, ReqH, ResH>,
         crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>, // TODO: See if this can be suspending
+    ) {
+        add(contract.register(handler))
+    }
+
+    /**
+     * Adds an [ApiContract] to the server by registering a route with the given [handler].
+     *
+     * @param contract The [ApiContract] to register.
+     * @param handler The function to handle the request. Should return the response body directly.
+     */
+    inline fun <reified Req, reified Res, ReqH : HeaderProvider> handle(
+        contract: ApiContract<Req, Res, ReqH, NoHeaders>,
+        crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Res,
     ) {
         add(contract.register(handler))
     }
