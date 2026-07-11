@@ -1,7 +1,6 @@
 package xyz.malefic.spyder
 
 import arrow.core.raise.Raise
-import kotlinx.serialization.Serializable
 
 /**
  * A contract for an API endpoint shared between the client and server.
@@ -11,8 +10,8 @@ import kotlinx.serialization.Serializable
  * @param requiredRequestHeaders The set of required request header fields for the API endpoint.
  * @param requiredResponseHeaders The set of required response header fields for the API endpoint.
  *
- * @param Req The [Serializable] type of the request body. If the request body is empty, this should be `Unit`.
- * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
+ * @param Req The [kotlinx.serialization.Serializable] type of the request body. If the request body is empty, this should be `Unit`.
+ * @param Res The [kotlinx.serialization.Serializable] type of the request body. If the response body is empty, this should be `Unit`.
  * @param ReqH The [HeaderProvider] type of the request headers. Use [NoHeaders] for no headers.
  * @param ResH The [HeaderProvider] type of the response headers. Use [NoHeaders] for no headers.
  */
@@ -43,8 +42,8 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
      * @param path The path of the API endpoint. Automatically prefixed with "api/".
      * @param method The HTTP method to use for the API endpoint. Default is [Method.POST].
      *
-     * @param Req The [Serializable] type of the request body. If the request body is empty, this should be `Unit`.
-     * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
+     * @param Req The [kotlinx.serialization.Serializable] type of the request body. If the request body is empty, this should be `Unit`.
+     * @param Res The [kotlinx.serialization.Serializable] type of the request body. If the response body is empty, this should be `Unit`.
      * @param ResH The [HeaderProvider] type of the response headers. Use [NoHeaders] for no headers.
      */
     abstract class Response<Req, Res, ResH : HeaderProvider>(
@@ -62,8 +61,8 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
      * @param path The path of the API endpoint. Automatically prefixed with "api/".
      * @param method The HTTP method to use for the API endpoint. Default is [Method.POST].
      *
-     * @param Req The [Serializable] type of the request body. If the request body is empty, this should be `Unit`.
-     * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
+     * @param Req The [kotlinx.serialization.Serializable] type of the request body. If the request body is empty, this should be `Unit`.
+     * @param Res The [kotlinx.serialization.Serializable] type of the request body. If the response body is empty, this should be `Unit`.
      * @param ReqH The [HeaderProvider] type of the request headers. Use [NoHeaders] for no headers.
      */
     abstract class Request<Req, Res, ReqH : HeaderProvider>(
@@ -81,8 +80,8 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
      * @param path The path of the API endpoint. Automatically prefixed with "api/".
      * @param method The HTTP method to use for the API endpoint. Default is [Method.POST].
      *
-     * @param Req The [Serializable] type of the request body. If the request body is empty, this should be `Unit`.
-     * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
+     * @param Req The [kotlinx.serialization.Serializable] type of the request body. If the request body is empty, this should be `Unit`.
+     * @param Res The [kotlinx.serialization.Serializable] type of the request body. If the response body is empty, this should be `Unit`.
      */
     abstract class Plain<Req, Res>(
         path: String,
@@ -101,7 +100,7 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
      * @param path The path of the API endpoint. Automatically prefixed with "api/".
      * @param method The HTTP method to use for the API endpoint. Default is [Method.GET].
      *
-     * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
+     * @param Res The [kotlinx.serialization.Serializable] type of the request body. If the response body is empty, this should be `Unit`.
      */
     abstract class Basic<Res>(
         path: String,

@@ -42,3 +42,22 @@ data class BadRequestIssue(
     override val message: String = "Bad Request",
     override val status: Short = 400,
 ) : Issue()
+
+/**
+ * Common issue for authentication errors.
+ */
+@Serializable
+data class UnauthorizedIssue(
+    override val message: String = "Unauthorized",
+    override val status: Short = 401,
+) : Issue()
+
+/**
+ * Common issue for rate limiting.
+ */
+@Serializable
+data class RateLimitedIssue(
+    override val message: String = "Too many requests",
+    override val status: Short = 429,
+    val retryAfterMs: Long? = null,
+) : Issue()
