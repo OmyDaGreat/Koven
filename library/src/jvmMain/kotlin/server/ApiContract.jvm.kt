@@ -23,6 +23,7 @@ import xyz.malefic.spyder.SpyderJson
  *
  * @param handler The handler function for the route. Should return a [Pair] in the format of `(response body, response headers)`.
  */
+@JvmName("registerPair")
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, Res, ReqH, ResH>.register(
     crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>,
 ): RoutingHttpHandler =
