@@ -1,5 +1,8 @@
 package xyz.malefic.spyder
 
+import arrow.core.raise.Raise
+import arrow.core.raise.context.ensureNotNull
+
 /**
  * A wrapper for HTTP headers that maintains insertion order and supports multiple values.
  * Header fields are treated case-insensitively.
@@ -67,6 +70,7 @@ class Headers private constructor(
     class Builder {
         private val map = LinkedHashMap<String, MutableList<String>>()
 
+        @IgnorableReturnValue
         fun append(
             name: String,
             value: String,
@@ -81,6 +85,7 @@ class Headers private constructor(
             map[name.lowercase()] = mutableListOf(value)
         }
 
+        @IgnorableReturnValue
         fun add(provider: HeaderProvider) =
             apply {
                 with(provider) { provide() }
@@ -106,14 +111,17 @@ interface HeaderField<out T> {
     /**
      * Decodes the header from [Headers].
      */
-    fun decode(headers: Headers): T?
+    context(_: Raise<Issue>)
+    fun decode(headers: Headers): T
 
     companion object {
         operator fun invoke(name: String): HeaderField<String> =
             object : HeaderField<String> {
                 override val field: String = name
 
-                override fun decode(headers: Headers): String? = headers.getFirst(name)
+                context(_: Raise<Issue>)
+                override fun decode(headers: Headers): String =
+                    ensureNotNull(headers.getFirst(name)) { BadRequestIssue("Missing required header: $name") }
             }
     }
 }
@@ -126,6 +134,7 @@ object NoHeaders : HeaderProvider, HeaderField<NoHeaders> {
 
     override fun Headers.Builder.provide() {}
 
+    context(_: Raise<Issue>)
     override fun decode(headers: Headers): NoHeaders = this
 }
 
@@ -160,11 +169,14 @@ class BearerAuth(
          *
          * @return The decoded [BearerAuth] or null if the header is missing or invalid.
          */
-        override fun decode(headers: Headers): BearerAuth? =
-            headers
-                .getFirst(field)
-                ?.takeIf { it.startsWith("Bearer ", ignoreCase = true) }
-                ?.removePrefix("Bearer ")
-                ?.let { BearerAuth(it) }
+        context(_: Raise<Issue>)
+        override fun decode(headers: Headers): BearerAuth =
+            ensureNotNull(
+                headers
+                    .getFirst(field)
+                    ?.takeIf { it.startsWith("Bearer ", ignoreCase = true) }
+                    ?.removePrefix("Bearer ")
+                    ?.let { BearerAuth(it) },
+            ) { BadRequestIssue("Invalid Authorization header") }
     }
 }

@@ -1,46 +1,82 @@
 package xyz.malefic.spyder.server
 
+import arrow.core.Either
+import arrow.core.raise.Raise
+import arrow.core.raise.catch
+import arrow.core.raise.either
+import arrow.core.raise.ensure
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import xyz.malefic.spyder.ApiContract
+import xyz.malefic.spyder.BadRequestIssue
 import xyz.malefic.spyder.HeaderProvider
 import xyz.malefic.spyder.Headers
+import xyz.malefic.spyder.InternalIssue
+import xyz.malefic.spyder.Issue
 import xyz.malefic.spyder.SpyderJson
 
 /**
  * Creates a route for the given [ApiContract].
  */
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, Res, ReqH, ResH>.register(
-    crossinline handler: context(ReqH) (Req) -> Pair<Res, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>, // TODO: Add a non-pair NoHeaders version
 ): RoutingHttpHandler =
     path bind method.toHttp4k to { req ->
         val headers = Headers.fromPairs(req.headers)
 
-        val missing = requiredRequestHeaders.filter { headers[it] == null || headers[it]!!.all { value -> value.isBlank() } }
-        if (missing.isNotEmpty()) { // TODO: Better error system
-            return@to Response(BAD_REQUEST).body("Missing required headers: ${missing.joinToString { it.field }}")
-        }
+        val result =
+            either {
+                val missing =
+                    requiredRequestHeaders.filter {
+                        headers[it].let { values -> values == null || values.all { value -> value.isBlank() } }
+                    }
+                ensure(missing.isEmpty()) { BadRequestIssue("Missing required header(s): ${missing.joinToString { it.field }}") }
 
-        val typedReqH = decodeRequestHeaders(headers)
+                val body =
+                    if (Req::class == Unit::class) {
+                        Unit as Req
+                    } else {
+                        catch({
+                            SpyderJson.default.decodeFromString<Req>(req.bodyString())
+                        }) {
+                            raise(BadRequestIssue("Invalid JSON for request body: ${it.message}"))
+                        }
+                    }
 
-        val body =
-            if (Req::class == Unit::class) {
-                Unit as Req
-            } else {
-                SpyderJson.default.decodeFromString<Req>(req.bodyString())
+                catch({
+                    handler(this, decodeRequestHeaders(headers), body)
+                }) {
+                    raise(InternalIssue from it)
+                }
             }
 
-        val (res, resH) = handler(typedReqH, body)
-        val responseBody = if (Res::class == Unit::class) "" else SpyderJson.default.encodeToString(res)
-        var http4kResponse = Response(Status.OK).body(responseBody)
+        when (result) {
+            is Either.Left -> {
+                val issue = result.value
+                val body = SpyderJson.default.encodeToString(Issue.serializer(), issue)
+                Response(Status.fromCode(issue.status.toInt()) ?: Status.INTERNAL_SERVER_ERROR)
+                    .body(body)
+                    .header("Content-Type", "application/json")
+            }
 
-        val builder = Headers.Builder().apply { add(resH) }
-        builder.build().forEach { (k, v) ->
-            v.forEach { http4kResponse = http4kResponse.header(k, it) }
+            is Either.Right -> {
+                val (res, resH) = result.value
+                var response =
+                    if (Res::class == Unit::class) {
+                        Response(Status.OK)
+                    } else {
+                        Response(Status.OK)
+                            .body(SpyderJson.default.encodeToString(res))
+                            .header("Content-Type", "application/json")
+                    }
+
+                Headers.Builder().apply { add(resH) }.build().forEach { (k, v) ->
+                    v.forEach { response = response.header(k, it) }
+                }
+
+                response
+            }
         }
-
-        http4kResponse
     }

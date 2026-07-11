@@ -1,5 +1,6 @@
 package xyz.malefic.spyder.server
 
+import arrow.core.raise.Raise
 import org.http4k.core.then
 import org.http4k.filter.ServerFilters
 import org.http4k.filter.debug
@@ -10,6 +11,7 @@ import org.http4k.server.Undertow
 import org.http4k.server.asServer
 import xyz.malefic.spyder.ApiContract
 import xyz.malefic.spyder.HeaderProvider
+import xyz.malefic.spyder.Issue
 
 /**
  * A builder context for configuring routes and server settings.
@@ -31,7 +33,7 @@ class SpyderServerBuilder(
      */
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> handle(
         contract: ApiContract<Req, Res, ReqH, ResH>,
-        crossinline handler: context(ReqH) (Req) -> Pair<Res, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>, // TODO: See if this can be suspending
     ) {
         add(contract.register(handler))
     }

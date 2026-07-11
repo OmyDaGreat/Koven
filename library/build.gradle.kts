@@ -24,7 +24,7 @@ group = g
 version = v
 
 kotlin {
-    compilerOptions.freeCompilerArgs.add("-Xcontext-parameters")
+    compilerOptions.freeCompilerArgs.addAll(listOf("-Xcontext-parameters", "-Xreturn-value-checker=full"))
 
     jvm()
     configAsKobwebLibrary()
