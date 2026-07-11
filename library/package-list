@@ -78,6 +78,7 @@ $dokka.location:xyz.malefic.spyder/Headers/get/#kotlin.String/PointingToDeclarat
 $dokka.location:xyz.malefic.spyder/Headers/get/#xyz.malefic.spyder.HeaderField[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder/-headers/get.html
 $dokka.location:xyz.malefic.spyder/Headers/getFirst/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder/-headers/get-first.html
 $dokka.location:xyz.malefic.spyder/Headers/getFirst/#xyz.malefic.spyder.HeaderField[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder/-headers/get-first.html
+$dokka.location:xyz.malefic.spyder/Headers/plus/#xyz.malefic.spyder.HeaderProvider/PointingToDeclaration/library/xyz.malefic.spyder/-headers/plus.html
 $dokka.location:xyz.malefic.spyder/Headers/provide/xyz.malefic.spyder.Headers.Builder#/PointingToDeclaration/library/xyz.malefic.spyder/-headers/provide.html
 $dokka.location:xyz.malefic.spyder/HealthContract///PointingToDeclaration/library/xyz.malefic.spyder/-health-contract/index.html
 $dokka.location:xyz.malefic.spyder/HealthContract/HealthContract/#/PointingToDeclaration/library/xyz.malefic.spyder/-health-contract/-health-contract.html
@@ -95,6 +96,8 @@ $dokka.location:xyz.malefic.spyder/Method/entries/#/PointingToDeclaration/libra
 $dokka.location:xyz.malefic.spyder/Method/valueOf/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder/-method/value-of.html
 $dokka.location:xyz.malefic.spyder/Method/values/#/PointingToDeclaration/library/xyz.malefic.spyder/-method/values.html
 $dokka.location:xyz.malefic.spyder/NoHeaders///PointingToDeclaration/library/xyz.malefic.spyder/-no-headers/index.html
+$dokka.location:xyz.malefic.spyder/NoHeaders/decode/#xyz.malefic.spyder.Headers/PointingToDeclaration/library/xyz.malefic.spyder/-no-headers/decode.html
+$dokka.location:xyz.malefic.spyder/NoHeaders/field/#/PointingToDeclaration/library/xyz.malefic.spyder/-no-headers/field.html
 $dokka.location:xyz.malefic.spyder/NoHeaders/provide/xyz.malefic.spyder.Headers.Builder#/PointingToDeclaration/library/xyz.malefic.spyder/-no-headers/provide.html
 $dokka.location:xyz.malefic.spyder/PingContract///PointingToDeclaration/library/xyz.malefic.spyder/-ping-contract/index.html
 $dokka.location:xyz.malefic.spyder/PingContract/PingContract/#/PointingToDeclaration/library/xyz.malefic.spyder/-ping-contract/-ping-contract.html
