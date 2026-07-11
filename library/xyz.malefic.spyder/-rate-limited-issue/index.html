@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>Issue</title>
+    <title>RateLimitedIssue</title>
     <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
         <script>var pathToRoot = "../../../";</script>
     <script>document.documentElement.classList.replace("no-js", "js");</script>
@@ -103,28 +103,28 @@
         </nav>
         <div id="resizer" class="resizer" data-item-type="BAR"></div>
         <div id="main" data-item-type="SECTION" role="main">
-<div class="main-content" data-page-type="classlike" id="content" pageIds="library::xyz.malefic.spyder/Issue///PointingToDeclaration//-654899660">
-  <div class="breadcrumbs"><a href="../../../index.html">library</a><span class="delimiter">/</span><a href="../index.html">xyz.malefic.spyder</a><span class="delimiter">/</span><span class="current">Issue</span></div>
+<div class="main-content" data-page-type="classlike" id="content" pageIds="library::xyz.malefic.spyder/RateLimitedIssue///PointingToDeclaration//-654899660">
+  <div class="breadcrumbs"><a href="../../../index.html">library</a><span class="delimiter">/</span><a href="../index.html">xyz.malefic.spyder</a><span class="delimiter">/</span><span class="current">RateLimitedIssue</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Issue</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">Issue</a></div><p class="paragraph">A base class for all API issues. Shared between client and server for type-safe error handling.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div></div></span></div><div><div class="title"><p class="paragraph"><a href=https://github.com/http4k/http4k/blob/master/core/core/src/main/kotlin/org/http4k/core/Status.kt#L5>http4k Status</a></p></div></div></div></div></div><h4 class="tableheader">Inheritors</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-internal-issue/index.html">InternalIssue</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-bad-request-issue/index.html">BadRequestIssue</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-unauthorized-issue/index.html">UnauthorizedIssue</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-rate-limited-issue/index.html">RateLimitedIssue</a></div></span></div><div></div></div></div></div></div></div>
+    <h1 class="cover"><span>Rate</span><wbr></wbr><span>Limited</span><wbr></wbr><span><span>Issue</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">RateLimitedIssue</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;Too many requests&quot;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>status<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-short/index.html">Short</a><span class="token operator"> = </span><span class="token constant">429</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>retryAfterMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="../-issue/index.html">Issue</a></div><p class="paragraph">Common issue for rate limiting.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="tableheader">Constructors</h2>
-        <div class="table"><a data-name="-66597948%2FConstructors%2F-654899660" anchor-label="Issue" id="-66597948%2FConstructors%2F-654899660" data-filterable-set=":library/commonMain"></a>
+        <div class="table"><a data-name="-186625851%2FConstructors%2F-654899660" anchor-label="RateLimitedIssue" id="-186625851%2FConstructors%2F-654899660" data-filterable-set=":library/commonMain"></a>
           <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-issue.html"><span><span>Issue</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-66597948%2FConstructors%2F-654899660"></span>
+                  <div><a href="-rate-limited-issue.html"><span>Rate</span><wbr></wbr><span>Limited</span><wbr></wbr><span><span>Issue</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-186625851%2FConstructors%2F-654899660"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;Too many requests&quot;</span><span class="token punctuation">, </span></span><span class="parameter ">status<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-short/index.html">Short</a><span class="token operator"> = </span><span class="token constant">429</span><span class="token punctuation">, </span></span><span class="parameter ">retryAfterMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -133,32 +133,47 @@
       </div>
       <div data-togglable="PROPERTY">
         <h2 class="tableheader">Properties</h2>
-        <div class="table"><a data-name="-417099722%2FProperties%2F-654899660" anchor-label="message" id="-417099722%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
+        <div class="table"><a data-name="-241129764%2FProperties%2F-654899660" anchor-label="message" id="-241129764%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="message.html"><span><span>message</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-417099722%2FProperties%2F-654899660"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-241129764%2FProperties%2F-654899660"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="message.html">message</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">The error message.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="message.html">message</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">The error message.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="231492971%2FProperties%2F-654899660" anchor-label="status" id="231492971%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
+<a data-name="-1158522211%2FProperties%2F-654899660" anchor-label="retryAfterMs" id="-1158522211%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="status.html"><span><span>status</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="231492971%2FProperties%2F-654899660"></span>
+                  <div><a href="retry-after-ms.html"><span>retry</span><wbr></wbr><span>After</span><wbr></wbr><span><span>Ms</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1158522211%2FProperties%2F-654899660"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="status.html">status</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-short/index.html">Short</a></div><div class="brief "><p class="paragraph">The HTTP status code. Should be something supported by http4k.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="retry-after-ms.html">retryAfterMs</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-39925243%2FProperties%2F-654899660" anchor-label="status" id="-39925243%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="status.html"><span><span>status</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-39925243%2FProperties%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="status.html">status</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-short/index.html">Short</a></div><div class="brief "><p class="paragraph">The HTTP status code. Should be something supported by http4k.</p></div></div></div>
                 </div>
               </div>
             </div>
