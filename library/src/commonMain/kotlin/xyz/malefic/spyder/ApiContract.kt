@@ -20,21 +20,25 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
     val method: Method = Method.POST,
     val requiredRequestHeaders: List<HeaderField<*>> = emptyList(),
     val requiredResponseHeaders: List<HeaderField<*>> = emptyList(),
+    val requestHeaderDecoder: HeaderField<ReqH>? = null,
+    val responseHeaderDecoder: HeaderField<ResH>? = null,
 ) {
     open val requestHeaders: Headers = Headers()
     open val responseHeaders: Headers = Headers()
 
     /**
-     * Decodes the request headers into the type [ReqH].
+     * Decodes the request headers into the type [ReqH]. Can be overridden to provide custom header decoding.
      */
+    @Suppress("UNCHECKED_CAST")
     context(_: Raise<Issue>)
-    abstract fun decodeRequestHeaders(headers: Headers): ReqH
+    open fun decodeRequestHeaders(headers: Headers): ReqH = requestHeaderDecoder?.decode(headers) ?: (NoHeaders as ReqH)
 
     /**
-     * Decodes the response headers into the type [ResH].
+     * Decodes the response headers into the type [ResH]. Can be overridden to provide custom header decoding.
      */
+    @Suppress("UNCHECKED_CAST")
     context(_: Raise<Issue>)
-    abstract fun decodeResponseHeaders(headers: Headers): ResH
+    open fun decodeResponseHeaders(headers: Headers): ResH = responseHeaderDecoder?.decode(headers) ?: (NoHeaders as ResH)
 
     /**
      * A contract for an API endpoint that uses a custom header, only for the response.
@@ -50,10 +54,13 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
         path: String,
         method: Method = Method.POST,
         requiredResponseHeaders: List<HeaderField<*>> = emptyList(),
-    ) : ApiContract<Req, Res, NoHeaders, ResH>(path, method, requiredResponseHeaders = requiredResponseHeaders) {
-        context(_: Raise<Issue>)
-        override fun decodeRequestHeaders(headers: Headers) = NoHeaders
-    }
+        responseHeaderDecoder: HeaderField<ResH>? = null,
+    ) : ApiContract<Req, Res, NoHeaders, ResH>(
+            path,
+            method,
+            requiredResponseHeaders = requiredResponseHeaders,
+            responseHeaderDecoder = responseHeaderDecoder,
+        )
 
     /**
      * A contract for an API endpoint that uses a custom header, only for the request.
@@ -69,10 +76,13 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
         path: String,
         method: Method = Method.POST,
         requiredRequestHeaders: List<HeaderField<*>> = emptyList(),
-    ) : ApiContract<Req, Res, ReqH, NoHeaders>(path, method, requiredRequestHeaders = requiredRequestHeaders) {
-        context(_: Raise<Issue>)
-        override fun decodeResponseHeaders(headers: Headers) = NoHeaders
-    }
+        requestHeaderDecoder: HeaderField<ReqH>? = null,
+    ) : ApiContract<Req, Res, ReqH, NoHeaders>(
+            path,
+            method,
+            requiredRequestHeaders = requiredRequestHeaders,
+            requestHeaderDecoder = requestHeaderDecoder,
+        )
 
     /**
      * A contract for an API endpoint that uses no custom headers.
@@ -86,13 +96,7 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
     abstract class Plain<Req, Res>(
         path: String,
         method: Method = Method.POST,
-    ) : ApiContract<Req, Res, NoHeaders, NoHeaders>(path, method) {
-        context(_: Raise<Issue>)
-        override fun decodeResponseHeaders(headers: Headers) = NoHeaders
-
-        context(_: Raise<Issue>)
-        override fun decodeRequestHeaders(headers: Headers) = NoHeaders
-    }
+    ) : ApiContract<Req, Res, NoHeaders, NoHeaders>(path, method)
 
     /**
      * A contract for a simple GET-style API endpoint (no request body, no custom headers).
@@ -105,13 +109,7 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
     abstract class Basic<Res>(
         path: String,
         method: Method = Method.GET,
-    ) : ApiContract<Unit, Res, NoHeaders, NoHeaders>(path, method) {
-        context(_: Raise<Issue>)
-        override fun decodeResponseHeaders(headers: Headers) = NoHeaders
-
-        context(_: Raise<Issue>)
-        override fun decodeRequestHeaders(headers: Headers) = NoHeaders
-    }
+    ) : ApiContract<Unit, Res, NoHeaders, NoHeaders>(path, method)
 }
 
 /**
@@ -135,7 +133,4 @@ class PingContract : ApiContract.Basic<String>("ping", Method.GET)
 /**
  * A contract for an example "auth/ping" endpoint.
  */
-class SecurePingContract : ApiContract.Request<Unit, String, BearerAuth>("auth/ping", Method.GET, listOf(BearerAuth)) {
-    context(_: Raise<Issue>)
-    override fun decodeRequestHeaders(headers: Headers) = BearerAuth.decode(headers)
-}
+class SecurePingContract : ApiContract.Request<Unit, String, BearerAuth>("auth/ping", Method.GET, listOf(BearerAuth), BearerAuth)

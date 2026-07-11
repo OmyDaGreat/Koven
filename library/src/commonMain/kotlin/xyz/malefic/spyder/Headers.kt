@@ -151,6 +151,37 @@ interface Header : HeaderProvider {
 }
 
 /**
+ * A pair of [HeaderProvider]s. Used as a convenience wrapper to combine multiple headers into a single header for [ApiContract]. These can also be composed with each other to create more complex headers.
+ */
+data class HeaderPair<out A : HeaderProvider, out B : HeaderProvider>(
+    val first: A,
+    val second: B,
+) : HeaderProvider {
+    override fun Headers.Builder.provide() {
+        with(first) { provide() }
+        with(second) { provide() }
+    }
+}
+
+/**
+ * Creates a pair of header implementations as [HeaderPair].
+ */
+infix fun <A : HeaderProvider, B : HeaderProvider> A.and(other: B) = HeaderPair(this, other)
+
+/**
+ * A header field that combines two other header fields. Used to decode [HeaderPair].
+ */
+class PairField<A : HeaderProvider, B : HeaderProvider>(
+    val fieldA: HeaderField<A>,
+    val fieldB: HeaderField<B>,
+) : HeaderField<HeaderPair<A, B>> {
+    override val field: String = "${fieldA.field}, ${fieldB.field}"
+
+    context(_: Raise<Issue>)
+    override fun decode(headers: Headers): HeaderPair<A, B> = HeaderPair(fieldA.decode(headers), fieldB.decode(headers))
+}
+
+/**
  * An example header for bearer authentication.
  */
 class BearerAuth(
