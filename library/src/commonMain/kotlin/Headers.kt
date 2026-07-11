@@ -38,6 +38,19 @@ class Headers private constructor(
      */
     fun getFirst(field: String): String? = get(field)?.firstOrNull()
 
+    /**
+     * Combines two [Headers] instances into a single one.
+     *
+     * @param other The [Headers] to combine with.
+     *
+     * @return A new [Headers] with the combined data.
+     */
+    operator fun plus(other: HeaderProvider): Headers =
+        build {
+            add(this@Headers)
+            add(other)
+        }
+
     companion object {
         fun build(block: Builder.() -> Unit): Headers = Builder().apply(block).build()
 
@@ -72,7 +85,7 @@ class Headers private constructor(
                 with(provider) { provide() }
             }
 
-        fun build(): Headers = Headers(map = map.mapValues { it.value.toList() })
+        fun build(): Headers = Headers(data = map.mapValues { it.value.toList() })
     }
 }
 
@@ -107,8 +120,12 @@ interface HeaderField<out T> {
 /**
  * Represents "No Headers" for contracts like [HealthContract] and [PingContract].
  */
-object NoHeaders : HeaderProvider {
+object NoHeaders : HeaderProvider, HeaderField<NoHeaders> {
+    override val field: String = ""
+
     override fun Headers.Builder.provide() {}
+
+    override fun decode(headers: Headers): NoHeaders = this
 }
 
 /**
