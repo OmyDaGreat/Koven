@@ -17,6 +17,7 @@ import xyz.malefic.spyder.Headers
 import xyz.malefic.spyder.InternalIssue
 import xyz.malefic.spyder.Issue
 import xyz.malefic.spyder.NoHeaders
+import xyz.malefic.spyder.PaginatedResponse
 import xyz.malefic.spyder.SpyderJson
 
 /**
@@ -95,4 +96,88 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
  */
 inline fun <reified Req, reified Res, ReqH : HeaderProvider> ApiContract<Req, Res, ReqH, NoHeaders>.register(
     crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Res,
-): RoutingHttpHandler = this.register<Req, Res, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders }
+): RoutingHttpHandler =
+    this.register<Req, Res, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders } // TODO: Remove overloads by handling headers separately
+
+/**
+ * Creates a route for the given [ApiContract] that returns a paginated response.
+ *
+ * @param handler The handler function for the route. Should return a [Pair] of the full list and response headers.
+ * The route will automatically handle `page` and `limit` query parameters to slice the list.
+ */
+@JvmName("registerPaginated")
+inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>.register(
+    crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Pair<List<T>, ResH>,
+): RoutingHttpHandler =
+    path bind method.toHttp4k to { req ->
+        runBlocking {
+            val page = req.query("page")?.toIntOrNull() ?: 1
+            val limit = req.query("limit")?.toIntOrNull() ?: 20
+
+            val headers = Headers.fromPairs(req.headers)
+
+            val result =
+                either {
+                    val missing =
+                        requiredRequestHeaders.filter {
+                            headers[it].let { values -> values == null || values.all { value -> value.isBlank() } }
+                        }
+                    ensure(missing.isEmpty()) { BadRequestIssue("Missing required header(s): ${missing.joinToString { it.field }}") }
+
+                    val body =
+                        if (Req::class == Unit::class) {
+                            Unit as Req
+                        } else {
+                            catch({
+                                SpyderJson.default.decodeFromString<Req>(req.bodyString())
+                            }) {
+                                raise(BadRequestIssue("Invalid JSON for request body: ${it.message}"))
+                            }
+                        }
+
+                    catch({
+                        val (items, resH) = handler(this, decodeRequestHeaders(headers), body)
+                        val totalItems = items.size.toLong()
+                        val start = ((page - 1) * limit).coerceIn(0, items.size)
+                        val end = (start + limit).coerceAtMost(items.size)
+                        val pagedItems = items.subList(start, end)
+
+                        PaginatedResponse.create(pagedItems, page, limit, totalItems) to resH
+                    }) {
+                        raise(InternalIssue from it)
+                    }
+                }
+
+            when (result) {
+                is Either.Left -> {
+                    val issue = result.value
+                    val body = SpyderJson.default.encodeToString(Issue.serializer(), issue)
+                    Response(Status.fromCode(issue.status.toInt()) ?: Status.INTERNAL_SERVER_ERROR)
+                        .body(body)
+                        .header("Content-Type", "application/json")
+                }
+
+                is Either.Right -> {
+                    val (res, resH) = result.value
+                    var response =
+                        Response(Status.OK)
+                            .body(SpyderJson.default.encodeToString(res))
+                            .header("Content-Type", "application/json")
+
+                    Headers.Builder().apply { add(resH) }.build().forEach { (k, v) ->
+                        v.forEach { response = response.header(k, it) }
+                    }
+
+                    response
+                }
+            }
+        }
+    }
+
+/**
+ * Creates a route for the given [ApiContract] that returns a paginated response (no response headers).
+ */
+@JvmName("registerPaginatedNoHeaders")
+inline fun <reified Req, reified T, ReqH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders>.register(
+    crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> List<T>,
+): RoutingHttpHandler = this.register<Req, T, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders }

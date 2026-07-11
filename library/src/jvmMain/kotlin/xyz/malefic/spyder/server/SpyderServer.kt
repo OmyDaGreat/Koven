@@ -14,6 +14,7 @@ import xyz.malefic.spyder.ApiContract
 import xyz.malefic.spyder.HeaderProvider
 import xyz.malefic.spyder.Issue
 import xyz.malefic.spyder.NoHeaders
+import xyz.malefic.spyder.PaginatedResponse
 
 /**
  * A builder context for configuring routes and server settings.
@@ -37,9 +38,7 @@ class SpyderServerBuilder(
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> handle(
         contract: ApiContract<Req, Res, ReqH, ResH>,
         crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>,
-    ) {
-        add(contract.register(handler))
-    }
+    ) = add(contract.register(handler))
 
     /**
      * Adds an [ApiContract] to the server by registering a route with the given [handler].
@@ -50,9 +49,31 @@ class SpyderServerBuilder(
     inline fun <reified Req, reified Res, ReqH : HeaderProvider> handle(
         contract: ApiContract<Req, Res, ReqH, NoHeaders>,
         crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Res,
-    ) {
-        add(contract.register(handler))
-    }
+    ) = add(contract.register(handler))
+
+    /**
+     * Adds a paginated [ApiContract] to the server.
+     *
+     * @param contract The [ApiContract] to register.
+     * @param handler The function to handle the request. Returns a [Pair] of the full list and response headers.
+     */
+    @JvmName("handlePaginated")
+    inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> handle(
+        contract: ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>,
+        crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Pair<List<T>, ResH>,
+    ) = add(contract.register(handler))
+
+    /**
+     * Adds a paginated [ApiContract] to the server (no custom headers).
+     *
+     * @param contract The [ApiContract] to register.
+     * @param handler The function to handle the request. Returns the full list of items.
+     */
+    @JvmName("handlePaginatedNoHeaders")
+    inline fun <reified Req, reified T, ReqH : HeaderProvider> handle(
+        contract: ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders>,
+        crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> List<T>,
+    ) = add(contract.register(handler))
 
     internal fun buildHandler(): RoutingHttpHandler =
         ServerFilters
