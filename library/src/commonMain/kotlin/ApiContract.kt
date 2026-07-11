@@ -20,7 +20,7 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
     val path: String,
     val method: Method = Method.POST,
     val requiredRequestHeaders: List<HeaderField<*>> = emptyList(),
-    val requiredResponseHeaders: List<HeaderField<*>> = emptyList(), // TODO: Add a standard way to validate responses(?)
+    val requiredResponseHeaders: List<HeaderField<*>> = emptyList(),
 ) {
     open val requestHeaders: Headers = Headers()
     open val responseHeaders: Headers = Headers()

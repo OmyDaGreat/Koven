@@ -7,7 +7,8 @@ import org.http4k.filter.debug
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.routes
 import org.http4k.server.Http4kServer
-import org.http4k.server.Undertow
+import org.http4k.server.JettyLoom
+import org.http4k.server.ServerConfig
 import org.http4k.server.asServer
 import xyz.malefic.spyder.ApiContract
 import xyz.malefic.spyder.HeaderProvider
@@ -35,7 +36,7 @@ class SpyderServerBuilder(
     @JvmName("handlePair")
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> handle(
         contract: ApiContract<Req, Res, ReqH, ResH>,
-        crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>, // TODO: See if this can be suspending
+        crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>,
     ) {
         add(contract.register(handler))
     }
@@ -48,7 +49,7 @@ class SpyderServerBuilder(
      */
     inline fun <reified Req, reified Res, ReqH : HeaderProvider> handle(
         contract: ApiContract<Req, Res, ReqH, NoHeaders>,
-        crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Res,
+        crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Res,
     ) {
         add(contract.register(handler))
     }
@@ -85,6 +86,7 @@ object SpyderServer {
      * @throws IllegalStateException If the server is already running.
      */
     fun start(
+        server: (Int) -> ServerConfig = { JettyLoom(it) },
         httpConfig: RoutingHttpHandler.() -> RoutingHttpHandler = { debug() },
         serverConfig: SpyderServerBuilder.() -> Unit = {},
     ): SpyderServer =
@@ -92,7 +94,7 @@ object SpyderServer {
             if (underlying == null) {
                 val builder = SpyderServerBuilder(config).apply(serverConfig)
                 val handler = builder.buildHandler().httpConfig()
-                underlying = handler.asServer(Undertow(config.port)).start()
+                underlying = handler.asServer(server(config.port)).start()
             } else {
                 error("Server is already running")
             }
