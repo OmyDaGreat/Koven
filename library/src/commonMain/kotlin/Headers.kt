@@ -6,10 +6,11 @@ package xyz.malefic.spyder
  */
 class Headers private constructor(
     private val data: Map<String, List<String>>,
+    marker: Unit,
 ) : Map<String, List<String>> by data,
     HeaderProvider {
     constructor(map: Map<String, List<String>> = emptyMap()) :
-        this(data = map.entries.groupBy({ it.key.lowercase() }, { it.value }).mapValues { (_, values) -> values.flatten() })
+        this(data = map.entries.groupBy({ it.key.lowercase() }, { it.value }).mapValues { (_, values) -> values.flatten() }, Unit)
 
     override fun containsKey(key: String): Boolean = data.containsKey(key.lowercase())
 
@@ -85,7 +86,7 @@ class Headers private constructor(
                 with(provider) { provide() }
             }
 
-        fun build(): Headers = Headers(data = map.mapValues { it.value.toList() })
+        fun build(): Headers = Headers(data = map.mapValues { it.value.toList() }, Unit)
     }
 }
 
