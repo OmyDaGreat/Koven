@@ -181,6 +181,7 @@ $dokka.location:xyz.malefic.spyder/SpyderJson/build/#kotlin.Function1[kotlinx.se
 $dokka.location:xyz.malefic.spyder/SpyderJson/configuration/#/PointingToDeclaration/library/xyz.malefic.spyder/-spyder-json/configuration.html
 $dokka.location:xyz.malefic.spyder/SpyderJson/configure/#kotlin.Function1[kotlinx.serialization.json.JsonBuilder,kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder/-spyder-json/configure.html
 $dokka.location:xyz.malefic.spyder/SpyderJson/default/#/PointingToDeclaration/library/xyz.malefic.spyder/-spyder-json/default.html
+$dokka.location:xyz.malefic.spyder/SpyderJson/module/#/PointingToDeclaration/library/xyz.malefic.spyder/-spyder-json/module.html
 $dokka.location:xyz.malefic.spyder/SpyderJson/registerIssue/#/PointingToDeclaration/library/xyz.malefic.spyder/-spyder-json/register-issue.html
 $dokka.location:xyz.malefic.spyder/SpyderJson/registerIssue/#kotlin.reflect.KClass[TypeParam(bounds=[xyz.malefic.spyder.Issue])]#kotlinx.serialization.KSerializer[TypeParam(bounds=[xyz.malefic.spyder.Issue])]/PointingToDeclaration/library/xyz.malefic.spyder/-spyder-json/register-issue.html
 $dokka.location:xyz.malefic.spyder/UnauthorizedIssue///PointingToDeclaration/library/xyz.malefic.spyder/-unauthorized-issue/index.html
