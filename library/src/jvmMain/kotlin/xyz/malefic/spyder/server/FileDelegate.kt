@@ -8,6 +8,8 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import kotlin.getValue
 import kotlin.reflect.KProperty
 
@@ -21,13 +23,13 @@ class FileDelegate<T>(
 ) {
     private val file by lazy { File(SpyderServer.config.assetsPath, fileName) }
     private val _value = AtomicReference<T?>(null)
-    private val lock = Any()
+    private val lock = ReentrantLock()
 
     val value: T get() {
         val current = _value.get()
         if (current != null) return current
 
-        return synchronized(lock) {
+        return lock.withLock {
             val doubleCheck = _value.get()
             if (doubleCheck != null) {
                 doubleCheck
@@ -44,7 +46,7 @@ class FileDelegate<T>(
         property: KProperty<*>,
         newValue: T,
     ) {
-        synchronized(lock) {
+        lock.withLock {
             _value.set(newValue)
             save(newValue)
         }

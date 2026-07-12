@@ -1,6 +1,7 @@
 package xyz.malefic.spyder.client.components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import xyz.malefic.spyder.ApiState
 import xyz.malefic.spyder.Issue
 import xyz.malefic.spyder.UnauthorizedIssue
@@ -31,7 +32,7 @@ fun <T> Request(
 
         is ApiState.Error -> {
             when (state.issue) {
-                is UnauthorizedIssue -> onUnauthorized()
+                is UnauthorizedIssue -> LaunchedEffect(state) { onUnauthorized() }
                 else -> errorContent(state.issue)
             }
         }
