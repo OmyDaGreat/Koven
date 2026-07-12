@@ -15,6 +15,7 @@ import xyz.malefic.spyder.HeaderProvider
 import xyz.malefic.spyder.Issue
 import xyz.malefic.spyder.NoHeaders
 import xyz.malefic.spyder.PaginatedResponse
+import xyz.malefic.spyder.Pagination
 
 /**
  * A builder context for configuring routes and server settings.
@@ -53,9 +54,8 @@ class SpyderServerBuilder(
      * @param handler The function to handle the request. Returns a [Pair] of the full list and response headers.
      */
     @JvmName("handlePaginated")
-    @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>.handle(
-        crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Pair<List<T>, ResH>,
+        crossinline handler: suspend context(Raise<Issue>, ReqH, Pagination) (Req) -> Pair<List<T>, ResH>,
     ) = add(register(handler))
 
     /**
@@ -65,7 +65,7 @@ class SpyderServerBuilder(
      */
     @JvmName("handlePaginatedNoHeaders")
     inline fun <reified Req, reified T, ReqH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders>.handle(
-        crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> List<T>,
+        crossinline handler: suspend context(Raise<Issue>, ReqH, Pagination) (Req) -> List<T>,
     ) = add(register(handler))
 
     internal fun buildHandler(): RoutingHttpHandler =

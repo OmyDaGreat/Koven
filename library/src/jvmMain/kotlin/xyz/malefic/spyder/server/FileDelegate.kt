@@ -1,10 +1,13 @@
 package xyz.malefic.spyder.server
 
 import co.touchlab.kermit.Logger
+import java.util.concurrent.atomic.AtomicReference
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import xyz.malefic.spyder.SpyderJson
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import kotlin.getValue
 import kotlin.reflect.KProperty
 
@@ -17,43 +20,66 @@ class FileDelegate<T>(
     private val serializer: KSerializer<T>,
 ) {
     private val file by lazy { File(SpyderServer.config.assetsPath, fileName) }
+    private val _value = AtomicReference<T?>(null)
+    private val lock = Any()
 
-    private var _value: T? = null // TODO: Make thread-safe with atomicfu
     val value: T get() {
-        if (_value == null) _value = load()
-        return _value!!
-    }
+        val current = _value.get()
+        if (current != null) return current
 
-    operator fun getValue(
-        thisRef: Any?,
-        property: KProperty<*>,
-    ): T = value
+        return synchronized(lock) {
+            val doubleCheck = _value.get()
+            if (doubleCheck != null) {
+                doubleCheck
+            } else {
+                val loaded = load()
+                _value.set(loaded)
+                loaded
+            }
+        }
+    }
 
     operator fun setValue(
         thisRef: Any?,
         property: KProperty<*>,
         newValue: T,
     ) {
-        _value = newValue
-        save()
+        synchronized(lock) {
+            _value.set(newValue)
+            save(newValue)
+        }
     }
 
     private fun load(): T =
-        if (file.exists()) {
-            try {
+        try {
+            if (file.exists()) {
                 SpyderJson.default.decodeFromString(serializer, file.readText())
-            } catch (e: Exception) {
-                Logger.e(e, "FileDelegate") { "Error loading $fileName" }
+            } else {
                 defaultValue
             }
-        } else {
+        } catch (e: Exception) {
+            Logger.e(e, "FileDelegate") { "Error loading $fileName" }
             defaultValue
         }
 
-    private fun save() {
-        file.parentFile?.mkdirs()
-        file.writeText(SpyderJson.default.encodeToString(serializer, value))
-    }
+    private fun save(toSave: T) =
+        try {
+            val json = SpyderJson.default.encodeToString(serializer, toSave)
+            val tempFile = File(file.parent, "$fileName.tmp")
+            file.parentFile?.mkdirs()
+            tempFile.writeText(json)
+
+            val path = file.toPath()
+            val tempPath = tempFile.toPath()
+            Files.move(
+                tempPath,
+                path,
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.ATOMIC_MOVE,
+            )
+        } catch (e: Exception) {
+            Logger.e(e, "FileDelegate") { "Error saving $fileName" }
+        }
 }
 
 /**
@@ -62,5 +88,5 @@ class FileDelegate<T>(
 inline fun <reified T> file(
     fileName: String,
     defaultValue: T,
-    baseDir: String = SpyderServer.config.assetsPath,
-) = FileDelegate(fileName, defaultValue, SpyderJson.default.serializersModule.serializer<T>())
+    serializer: KSerializer<T> = SpyderJson.default.serializersModule.serializer(),
+) = FileDelegate(fileName, defaultValue, serializer)

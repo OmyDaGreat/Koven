@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlin.math.ceil
 
 /**
- * An interface for a pagination contract.
+ * An interface for a pagination contract, providing information necessary for manual pagination.
  */
 interface Pagination {
     val page: Int

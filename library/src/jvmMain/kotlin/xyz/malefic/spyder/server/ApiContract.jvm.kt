@@ -195,5 +195,5 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
  */
 @JvmName("registerPaginatedNoHeaders")
 inline fun <reified Req, reified T, ReqH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders>.register(
-    crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> List<T>,
+    crossinline handler: suspend context(Raise<Issue>, ReqH, Pagination) (Req) -> List<T>,
 ): RoutingHttpHandler = this.register<Req, T, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders }
