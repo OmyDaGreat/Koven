@@ -18,7 +18,7 @@ class FileDelegate<T>(
 ) {
     private val file by lazy { File(SpyderServer.config.assetsPath, fileName) }
 
-    private var _value: T? = null
+    private var _value: T? = null // TODO: Make thread-safe with atomicfu
     val value: T get() {
         if (_value == null) _value = load()
         return _value!!

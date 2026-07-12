@@ -4,6 +4,20 @@ import kotlinx.serialization.Serializable
 import kotlin.math.ceil
 
 /**
+ * An interface for a pagination contract.
+ */
+interface Pagination {
+    val page: Int
+    val limit: Int
+    val offset: Int
+
+    /**
+     * If this is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
+     */
+    var totalItems: Long?
+}
+
+/**
  * A response containing a paginated list of items.
  */
 @Serializable

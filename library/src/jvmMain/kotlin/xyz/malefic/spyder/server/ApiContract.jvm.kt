@@ -18,6 +18,7 @@ import xyz.malefic.spyder.InternalIssue
 import xyz.malefic.spyder.Issue
 import xyz.malefic.spyder.NoHeaders
 import xyz.malefic.spyder.PaginatedResponse
+import xyz.malefic.spyder.Pagination
 import xyz.malefic.spyder.SpyderJson
 
 /**
@@ -29,7 +30,7 @@ import xyz.malefic.spyder.SpyderJson
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, Res, ReqH, ResH>.register(
     crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>,
 ): RoutingHttpHandler =
-    path bind method.toHttp4k to { req ->
+    "/api/$path" bind method.toHttp4k to { req ->
         runBlocking {
             val headers = Headers.fromPairs(req.headers)
 
@@ -100,21 +101,30 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider> ApiContract<Req, Re
     this.register<Req, Res, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders } // TODO: Remove overloads by handling headers separately
 
 /**
- * Creates a route for the given [ApiContract] that returns a paginated response.
+ * Creates a route for the given [ApiContract] that returns a paginated response with a [Pagination] context.
+ *
+ * The route will automatically handle `page` and `limit` query parameters to slice the list. If the [Pagination.totalItems] value provided in context is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
  *
  * @param handler The handler function for the route. Should return a [Pair] of the full list and response headers.
- * The route will automatically handle `page` and `limit` query parameters to slice the list.
  */
 @JvmName("registerPaginated")
 inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>.register(
-    crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Pair<List<T>, ResH>,
+    crossinline handler: suspend context(Raise<Issue>, ReqH, Pagination) (Req) -> Pair<List<T>, ResH>,
 ): RoutingHttpHandler =
-    path bind method.toHttp4k to { req ->
+    "/api/$path" bind method.toHttp4k to { req ->
         runBlocking {
             val page = req.query("page")?.toIntOrNull() ?: 1
             val limit = req.query("limit")?.toIntOrNull() ?: 20
 
             val headers = Headers.fromPairs(req.headers)
+
+            val pagination =
+                object : Pagination {
+                    override val page = page
+                    override val limit = limit
+                    override val offset = (page - 1) * limit
+                    override var totalItems: Long? = null
+                }
 
             val result =
                 either {
@@ -136,13 +146,15 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
                         }
 
                     catch({
-                        val (items, resH) = handler(this, decodeRequestHeaders(headers), body)
-                        val totalItems = items.size.toLong()
-                        val start = ((page - 1) * limit).coerceIn(0, items.size)
-                        val end = (start + limit).coerceAtMost(items.size)
-                        val pagedItems = items.subList(start, end)
-
-                        PaginatedResponse.create(pagedItems, page, limit, totalItems) to resH
+                        val (items, resH) = handler(this, decodeRequestHeaders(headers), pagination, body)
+                        if (pagination.totalItems != null) {
+                            PaginatedResponse.create(items, page, limit, pagination.totalItems!!) to resH
+                        } else {
+                            val total = items.size.toLong()
+                            val start = pagination.offset.coerceIn(0, items.size)
+                            val end = (start + limit).coerceAtMost(items.size)
+                            PaginatedResponse.create(items.subList(start, end), page, limit, total) to resH
+                        }
                     }) {
                         raise(InternalIssue from it)
                     }
@@ -175,7 +187,11 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
     }
 
 /**
- * Creates a route for the given [ApiContract] that returns a paginated response (no response headers).
+ * Creates a route for the given [ApiContract] that returns a paginated response with a [Pagination] context.
+ *
+ * The route will automatically handle `page` and `limit` query parameters to slice the list. If the [Pagination.totalItems] value provided in context is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
+ *
+ * @param handler The handler function for the route. Should return a [Pair] of the full list and response headers.
  */
 @JvmName("registerPaginatedNoHeaders")
 inline fun <reified Req, reified T, ReqH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders>.register(
