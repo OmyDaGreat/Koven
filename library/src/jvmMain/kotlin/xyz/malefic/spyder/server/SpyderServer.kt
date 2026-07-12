@@ -31,49 +31,42 @@ class SpyderServerBuilder(
     /**
      * Adds an [ApiContract] to the server by registering a route with the given [handler].
      *
-     * @param contract The [ApiContract] to register.
      * @param handler The function to handle the request. Should return a [Pair] in the format of `(response body, response headers)`.
      */
-    @JvmName("handlePair")
-    inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> handle(
-        contract: ApiContract<Req, Res, ReqH, ResH>,
+    inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, Res, ReqH, ResH>.handle(
         crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>,
-    ) = add(contract.register(handler))
+    ) = add(register(handler))
 
     /**
      * Adds an [ApiContract] to the server by registering a route with the given [handler].
      *
-     * @param contract The [ApiContract] to register.
      * @param handler The function to handle the request. Should return the response body directly.
      */
-    inline fun <reified Req, reified Res, ReqH : HeaderProvider> handle(
-        contract: ApiContract<Req, Res, ReqH, NoHeaders>,
+    @JvmName("handleNoHeaders")
+    inline fun <reified Req, reified Res, ReqH : HeaderProvider> ApiContract<Req, Res, ReqH, NoHeaders>.handle(
         crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Res,
-    ) = add(contract.register(handler))
+    ) = add(register(handler))
 
     /**
      * Adds a paginated [ApiContract] to the server.
      *
-     * @param contract The [ApiContract] to register.
      * @param handler The function to handle the request. Returns a [Pair] of the full list and response headers.
      */
     @JvmName("handlePaginated")
-    inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> handle(
-        contract: ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>,
+    @Suppress("ktlint:standard:max-line-length")
+    inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>.handle(
         crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Pair<List<T>, ResH>,
-    ) = add(contract.register(handler))
+    ) = add(register(handler))
 
     /**
-     * Adds a paginated [ApiContract] to the server (no custom headers).
+     * Adds a paginated [ApiContract] to the server.
      *
-     * @param contract The [ApiContract] to register.
      * @param handler The function to handle the request. Returns the full list of items.
      */
     @JvmName("handlePaginatedNoHeaders")
-    inline fun <reified Req, reified T, ReqH : HeaderProvider> handle(
-        contract: ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders>,
+    inline fun <reified Req, reified T, ReqH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders>.handle(
         crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> List<T>,
-    ) = add(contract.register(handler))
+    ) = add(register(handler))
 
     internal fun buildHandler(): RoutingHttpHandler =
         ServerFilters
