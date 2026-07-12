@@ -97,8 +97,7 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
  */
 inline fun <reified Req, reified Res, ReqH : HeaderProvider> ApiContract<Req, Res, ReqH, NoHeaders>.register(
     crossinline handler: suspend context(Raise<Issue>, ReqH) (Req) -> Res,
-): RoutingHttpHandler =
-    this.register<Req, Res, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders } // TODO: Remove overloads by handling headers separately
+): RoutingHttpHandler = this.register<Req, Res, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders }
 
 /**
  * Creates a route for the given [ApiContract] that returns a paginated response with a [Pagination] context.
@@ -108,6 +107,7 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider> ApiContract<Req, Re
  * @param handler The handler function for the route. Should return a [Pair] of the full list and response headers.
  */
 @JvmName("registerPaginated")
+@Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>.register(
     crossinline handler: suspend context(Raise<Issue>, ReqH, Pagination) (Req) -> Pair<List<T>, ResH>,
 ): RoutingHttpHandler =

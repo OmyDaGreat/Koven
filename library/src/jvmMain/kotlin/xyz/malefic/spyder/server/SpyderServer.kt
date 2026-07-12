@@ -54,6 +54,7 @@ class SpyderServerBuilder(
      * @param handler The function to handle the request. Returns a [Pair] of the full list and response headers.
      */
     @JvmName("handlePaginated")
+    @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>.handle(
         crossinline handler: suspend context(Raise<Issue>, ReqH, Pagination) (Req) -> Pair<List<T>, ResH>,
     ) = add(register(handler))

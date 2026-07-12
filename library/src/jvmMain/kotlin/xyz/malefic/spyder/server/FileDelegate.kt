@@ -1,13 +1,13 @@
 package xyz.malefic.spyder.server
 
 import co.touchlab.kermit.Logger
-import java.util.concurrent.atomic.AtomicReference
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import xyz.malefic.spyder.SpyderJson
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.getValue
 import kotlin.reflect.KProperty
 
