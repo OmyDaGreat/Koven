@@ -16,6 +16,8 @@ import xyz.malefic.spyder.Issue
 import xyz.malefic.spyder.NoHeaders
 import xyz.malefic.spyder.PaginatedResponse
 import xyz.malefic.spyder.Pagination
+import xyz.malefic.spyder.PathProvider
+import xyz.malefic.spyder.QueryProvider
 
 /**
  * A builder context for configuring routes and server settings.
@@ -34,8 +36,9 @@ class SpyderServerBuilder(
      *
      * @param handler The function to handle the request. Should return a [Pair] in the format of `(response body, response headers)`.
      */
-    inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, Res, ReqH, ResH>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>,
+    @Suppress("ktlint:standard:max-line-length")
+    inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.handle(
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Pair<Res, ResH>,
     ) = add(register(handler))
 
     /**
@@ -43,9 +46,10 @@ class SpyderServerBuilder(
      *
      * @param handler The function to handle the request. Should return the response body directly.
      */
-    @JvmName("handleNoHeaders")
-    inline fun <reified Req, reified Res, ReqH : HeaderProvider> ApiContract<Req, Res, ReqH, NoHeaders>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Res,
+    @JvmName("handleNoResponseHeader")
+    @Suppress("ktlint:standard:max-line-length")
+    inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, NoHeaders, PathP, QueryP>.handle(
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Res,
     ) = add(register(handler))
 
     /**
@@ -55,8 +59,8 @@ class SpyderServerBuilder(
      */
     @JvmName("handlePaginated")
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, Pagination) (Req) -> Pair<List<T>, ResH>,
+    inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.handle(
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> Pair<List<T>, ResH>,
     ) = add(register(handler))
 
     /**
@@ -64,9 +68,10 @@ class SpyderServerBuilder(
      *
      * @param handler The function to handle the request. Returns the full list of items.
      */
-    @JvmName("handlePaginatedNoHeaders")
-    inline fun <reified Req, reified T, ReqH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, Pagination) (Req) -> List<T>,
+    @JvmName("handlePaginatedNoResponseHeader")
+    @Suppress("ktlint:standard:max-line-length")
+    inline fun <reified Req, reified T, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders, PathP, QueryP>.handle(
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> List<T>,
     ) = add(register(handler))
 
     internal fun buildHandler(): RoutingHttpHandler =

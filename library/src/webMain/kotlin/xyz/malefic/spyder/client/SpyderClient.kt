@@ -13,6 +13,8 @@ import xyz.malefic.spyder.HeaderProvider
 import xyz.malefic.spyder.Headers
 import xyz.malefic.spyder.InternalIssue
 import xyz.malefic.spyder.Issue
+import xyz.malefic.spyder.PathProvider
+import xyz.malefic.spyder.QueryProvider
 import xyz.malefic.spyder.SpyderJson
 
 /**
@@ -20,12 +22,15 @@ import xyz.malefic.spyder.SpyderJson
  *
  * Usage example:
  * ```
- * MyContract.call(myRequest, myHeaders) { set("Authorization", "...") }
+ * MyContract.call(myRequest, myHeaders, myPath, myQuery) { set("Authorization", "...") }
  * ```
  */
-suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, Res, ReqH, ResH>.call(
+@Suppress("ktlint:standard:max-line-length")
+suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.call(
     request: Req,
     headers: ReqH,
+    pathParams: PathP,
+    queryParams: QueryP,
     crossinline headerBlock: Headers.Builder.() -> Unit = {},
 ): Either<Issue, ApiResponse<Res, ResH>> =
     either {
@@ -36,15 +41,25 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
                 SpyderJson.default.encodeToString(request)
             }
 
+        var finalPath = path
+        pathParams.providePath().forEach { (k, v) ->
+            finalPath = finalPath.replace("{$k}", v)
+        }
+
+        val queryMap = queryParams.provideQuery()
+        if (queryMap.isNotEmpty()) {
+            val queryStr = queryMap.flatMap { (k, vs) -> vs.map { "$k=$it" } }.joinToString("&")
+            finalPath = "$finalPath?$queryStr"
+        }
+
         val response =
             catch({
                 window.api
                     .call(
                         method,
-                        path,
+                        finalPath,
                         json?.let { bodyOf(json, "application/json") },
                         Headers.build {
-                            add(this@call.requestHeaders)
                             add(headers)
                             headerBlock()
                         },

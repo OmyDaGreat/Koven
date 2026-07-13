@@ -9,6 +9,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
+import org.http4k.routing.path
 import xyz.malefic.spyder.ApiContract
 import xyz.malefic.spyder.BadRequestIssue
 import xyz.malefic.spyder.HeaderProvider
@@ -18,6 +19,8 @@ import xyz.malefic.spyder.Issue
 import xyz.malefic.spyder.NoHeaders
 import xyz.malefic.spyder.PaginatedResponse
 import xyz.malefic.spyder.Pagination
+import xyz.malefic.spyder.PathProvider
+import xyz.malefic.spyder.QueryProvider
 import xyz.malefic.spyder.SpyderJson
 
 /**
@@ -25,12 +28,14 @@ import xyz.malefic.spyder.SpyderJson
  *
  * @param handler The handler function for the route. Should return a [Pair] in the format of `(response body, response headers)`.
  */
-@JvmName("registerPair")
-inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, Res, ReqH, ResH>.register(
-    crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Pair<Res, ResH>,
+@Suppress("ktlint:standard:max-line-length")
+inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.register(
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Pair<Res, ResH>,
 ): RoutingHttpHandler =
     "/api/$path" bind method.toHttp4k to { req ->
         val headers = Headers.fromPairs(req.headers)
+        val pathParams = "\\{([^}]+)\\}".toRegex().findAll(path).map { it.groupValues[1] }.associateWith { req.path(it) ?: "" }
+        val queryMap = queryParams.associateWith { req.queries(it).map { v -> v ?: "" } }
 
         val result =
             either {
@@ -52,7 +57,7 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
                     }
 
                 catch({
-                    handler(this, decodeRequestHeaders(headers), body)
+                    handler(this, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(queryMap), body)
                 }) {
                     raise(InternalIssue from it)
                 }
@@ -92,9 +97,11 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
  *
  * @param handler The handler function for the route. Should return the response body directly.
  */
-inline fun <reified Req, reified Res, ReqH : HeaderProvider> ApiContract<Req, Res, ReqH, NoHeaders>.register(
-    crossinline handler: context(Raise<Issue>, ReqH) (Req) -> Res,
-): RoutingHttpHandler = this.register<Req, Res, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders }
+@JvmName("registerNoResponseHeader")
+@Suppress("ktlint:standard:max-line-length")
+inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, NoHeaders, PathP, QueryP>.register(
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Res,
+): RoutingHttpHandler = this.register<Req, Res, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) to NoHeaders }
 
 /**
  * Creates a route for the given [ApiContract] that returns a paginated response with a [Pagination] context.
@@ -105,14 +112,16 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider> ApiContract<Req, Re
  */
 @JvmName("registerPaginated")
 @Suppress("ktlint:standard:max-line-length")
-inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, Pagination) (Req) -> Pair<List<T>, ResH>,
+inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.register(
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> Pair<List<T>, ResH>,
 ): RoutingHttpHandler =
     "/api/$path" bind method.toHttp4k to { req ->
+        val headers = Headers.fromPairs(req.headers)
+        val pathParams = "\\{([^}]+)\\}".toRegex().findAll(path).map { it.groupValues[1] }.associateWith { req.path(it) ?: "" }
+        val queryMap = queryParams.associateWith { req.queries(it).map { v -> v ?: "" } }
+
         val page = req.query("page")?.toIntOrNull() ?: 1
         val limit = req.query("limit")?.toIntOrNull() ?: 20
-
-        val headers = Headers.fromPairs(req.headers)
 
         val pagination =
             object : Pagination {
@@ -142,7 +151,15 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
                     }
 
                 catch({
-                    val (items, resH) = handler(this, decodeRequestHeaders(headers), pagination, body)
+                    val (items, resH) =
+                        handler(
+                            this,
+                            decodeRequestHeaders(headers),
+                            decodePath(pathParams),
+                            decodeQuery(queryMap),
+                            pagination,
+                            body,
+                        )
                     if (pagination.totalItems != null) {
                         PaginatedResponse.create(items, page, limit, pagination.totalItems!!) to resH
                     } else {
@@ -188,7 +205,8 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
  *
  * @param handler The handler function for the route. Should return a [Pair] of the full list and response headers.
  */
-@JvmName("registerPaginatedNoHeaders")
-inline fun <reified Req, reified T, ReqH : HeaderProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, Pagination) (Req) -> List<T>,
-): RoutingHttpHandler = this.register<Req, T, ReqH, NoHeaders> { req: Req -> handler(req) to NoHeaders }
+@JvmName("registerPaginatedNoResponseHeader")
+@Suppress("ktlint:standard:max-line-length")
+inline fun <reified Req, reified T, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders, PathP, QueryP>.register(
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> List<T>,
+): RoutingHttpHandler = this.register<Req, T, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) to NoHeaders }

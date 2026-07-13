@@ -6,7 +6,7 @@ import kotlin.math.ceil
 /**
  * An interface for a pagination contract, providing information necessary for manual pagination.
  */
-interface Pagination {
+interface Pagination : QueryProvider {
     val page: Int
     val limit: Int
     val offset: Int
@@ -15,6 +15,12 @@ interface Pagination {
      * If this is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
      */
     var totalItems: Long?
+
+    override fun provideQuery(): Map<String, List<String>> =
+        mapOf(
+            "page" to listOf(page.toString()),
+            "limit" to listOf(limit.toString()),
+        )
 }
 
 /**

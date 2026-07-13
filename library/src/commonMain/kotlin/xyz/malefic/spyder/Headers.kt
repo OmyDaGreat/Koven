@@ -108,9 +108,6 @@ interface HeaderProvider {
 interface HeaderField<out T> {
     val field: String
 
-    /**
-     * Decodes the header from [Headers].
-     */
     context(_: Raise<Issue>)
     fun decode(headers: Headers): T
 
