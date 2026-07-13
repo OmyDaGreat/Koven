@@ -16,12 +16,12 @@ import kotlin.reflect.KProperty
 /**
  * A delegate for loading and saving a value, in JSON, from a file.
  */
-class FileDelegate<T>(
+class JsonFile<T>(
     private val fileName: String,
     private val defaultValue: T,
     private val serializer: KSerializer<T>,
 ) {
-    private val file by lazy { File(SpyderServer.config.assetsPath, fileName) }
+    private val file by lazy { File(SpyderServer.config.filesPath, fileName) }
     private val _value = AtomicReference<T?>(null)
     private val lock = ReentrantLock()
 
@@ -40,6 +40,11 @@ class FileDelegate<T>(
             }
         }
     }
+
+    operator fun getValue(
+        thisRef: Any?,
+        property: KProperty<*>,
+    ): T = value
 
     operator fun setValue(
         thisRef: Any?,
@@ -87,8 +92,8 @@ class FileDelegate<T>(
 /**
  * A delegate for loading and saving a value, in JSON, from a file.
  */
-inline fun <reified T> file(
+inline fun <reified T> jsonFile(
     fileName: String,
     defaultValue: T,
     serializer: KSerializer<T> = SpyderJson.default.serializersModule.serializer(),
-) = FileDelegate(fileName, defaultValue, serializer)
+) = JsonFile(fileName, defaultValue, serializer)

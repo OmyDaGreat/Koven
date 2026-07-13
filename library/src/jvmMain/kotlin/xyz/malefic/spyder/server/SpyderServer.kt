@@ -4,8 +4,11 @@ import arrow.core.raise.Raise
 import org.http4k.core.then
 import org.http4k.filter.ServerFilters
 import org.http4k.filter.debug
+import org.http4k.routing.ResourceLoader
 import org.http4k.routing.RoutingHttpHandler
+import org.http4k.routing.bind
 import org.http4k.routing.routes
+import org.http4k.routing.static
 import org.http4k.server.Http4kServer
 import org.http4k.server.JettyLoom
 import org.http4k.server.ServerConfig
@@ -18,6 +21,7 @@ import xyz.malefic.spyder.PaginatedResponse
 import xyz.malefic.spyder.Pagination
 import xyz.malefic.spyder.PathProvider
 import xyz.malefic.spyder.QueryProvider
+import java.io.File
 
 /**
  * A builder context for configuring routes and server settings.
@@ -77,7 +81,21 @@ class SpyderServerBuilder(
     internal fun buildHandler(): RoutingHttpHandler =
         ServerFilters
             .Cors(config.corsPolicy)
-            .then(routes(routes))
+            .then(
+                routes(
+                    routes +
+                        if (config.assetsHosting) {
+                            arrayOf("/${config.assetsPrefix}" bind static(ResourceLoader.Directory(config.assetsPath)))
+                        } else {
+                            arrayOf()
+                        } +
+                        if (config.filesHosting) {
+                            arrayOf("/${config.filesPrefix}" bind static(ResourceLoader.Directory(config.filesPath)))
+                        } else {
+                            arrayOf()
+                        },
+                ),
+            )
 }
 
 /**
@@ -87,7 +105,7 @@ class SpyderServerBuilder(
  * ```
  * SpyderServer.start {
  *     config.port = 8081
- *     handle(PingContract) { "Pong" }
+ *     PingContract.handle { "Pong" }
  * }.block()
  * ```
  */
@@ -136,4 +154,28 @@ object SpyderServer {
         apply {
             underlying?.block()
         }
+
+    /**
+     * Saves an asset to the [SpyderServerConfig.assetsPath] directory.
+     */
+    fun saveAsset(
+        name: String,
+        bytes: ByteArray,
+    ) {
+        val dir = File(config.assetsPath)
+        if (!dir.exists()) dir.mkdirs()
+        File(dir, name).writeBytes(bytes)
+    }
+
+    /**
+     * Saves a file to the [SpyderServerConfig.filesPath] directory.
+     */
+    fun saveFile(
+        name: String,
+        bytes: ByteArray,
+    ) {
+        val dir = File(config.filesPath)
+        if (!dir.exists()) dir.mkdirs()
+        File(dir, name).writeBytes(bytes)
+    }
 }
