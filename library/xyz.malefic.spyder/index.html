@@ -123,7 +123,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-api-contract/index.html">ApiContract</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">Req</a><span class="token punctuation">, </span><a href="-api-contract/index.html">Res</a><span class="token punctuation">, </span><a href="-api-contract/index.html">ReqH</a><span class="token operator"> : </span><a href="-header-provider/index.html">HeaderProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">ResH</a><span class="token operator"> : </span><a href="-header-provider/index.html">HeaderProvider</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>path<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>method<span class="token operator">: </span><a href="-method/index.html">Method</a><span class="token operator"> = </span>Method.POST<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredRequestHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredResponseHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requestHeaderDecoder<span class="token operator">: </span><a href="-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">ReqH</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>responseHeaderDecoder<span class="token operator">: </span><a href="-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">ResH</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A contract for an API endpoint shared between the client and server.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-api-contract/index.html">ApiContract</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">Req</a><span class="token punctuation">, </span><a href="-api-contract/index.html">Res</a><span class="token punctuation">, </span><a href="-api-contract/index.html">ReqH</a><span class="token operator"> : </span><a href="-header-provider/index.html">HeaderProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">ResH</a><span class="token operator"> : </span><a href="-header-provider/index.html">HeaderProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">PathP</a><span class="token operator"> : </span><a href="-path-provider/index.html">PathProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">QueryP</a><span class="token operator"> : </span><a href="-query-provider/index.html">QueryProvider</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>path<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>method<span class="token operator">: </span><a href="-method/index.html">Method</a><span class="token operator"> = </span>Method.POST<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredRequestHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredResponseHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requestHeaderDecoder<span class="token operator">: </span><a href="-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">ReqH</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoHeaders as HeaderField&lt;ReqH&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>responseHeaderDecoder<span class="token operator">: </span><a href="-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">ResH</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoHeaders as HeaderField&lt;ResH&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pathDecoder<span class="token operator">: </span><a href="-path-field/index.html">PathField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">PathP</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoParams as PathField&lt;PathP&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>queryDecoder<span class="token operator">: </span><a href="-query-field/index.html">QueryField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">QueryP</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoParams as QueryField&lt;QueryP&gt;</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A contract for an API endpoint shared between the client and server.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -338,6 +338,21 @@
               </div>
             </div>
           </div>
+<a data-name="-1783991552%2FClasslikes%2F-654899660" anchor-label="NoParams" id="-1783991552%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-no-params/index.html"><span>No</span><wbr></wbr><span><span>Params</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1783991552%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-no-params/index.html">NoParams</a> : <a href="-path-provider/index.html">PathProvider</a>, <a href="-query-provider/index.html">QueryProvider</a>, <a href="-path-field/index.html">PathField</a><span class="token operator">&lt;</span><a href="-no-params/index.html">NoParams</a><span class="token operator">&gt; </span>, <a href="-query-field/index.html">QueryField</a><span class="token operator">&lt;</span><a href="-no-params/index.html">NoParams</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Default implementation for contracts without custom parameters. Can be applied to either <a href="-query-field/index.html">QueryField</a> or <a href="-path-field/index.html">PathField</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-1870078227%2FClasslikes%2F-654899660" anchor-label="PaginatedResponse" id="-1870078227%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
@@ -363,7 +378,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-pagination/index.html">Pagination</a></div><div class="brief "><p class="paragraph">An interface for a pagination contract, providing information necessary for manual pagination.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-pagination/index.html">Pagination</a> : <a href="-query-provider/index.html">QueryProvider</a></div><div class="brief "><p class="paragraph">An interface for a pagination contract, providing information necessary for manual pagination.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -383,6 +398,36 @@
               </div>
             </div>
           </div>
+<a data-name="1706947878%2FClasslikes%2F-654899660" anchor-label="PathField" id="1706947878%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-path-field/index.html"><span>Path</span><wbr></wbr><span><span>Field</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1706947878%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-path-field/index.html">PathField</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="-path-field/index.html">T</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Interface for decoding path parameters on the server.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="761818193%2FClasslikes%2F-654899660" anchor-label="PathProvider" id="761818193%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-path-provider/index.html"><span>Path</span><wbr></wbr><span><span>Provider</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="761818193%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-path-provider/index.html">PathProvider</a></div><div class="brief "><p class="paragraph">Interface for providing path parameters on the client.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="1221785763%2FClasslikes%2F-654899660" anchor-label="PingContract" id="1221785763%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
@@ -394,6 +439,36 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-ping-contract/index.html">PingContract</a> : <a href="-api-contract/-basic/index.html">ApiContract.Basic</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A contract for the common &quot;ping&quot; endpoint.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1037495669%2FClasslikes%2F-654899660" anchor-label="QueryField" id="1037495669%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-query-field/index.html"><span>Query</span><wbr></wbr><span><span>Field</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1037495669%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-query-field/index.html">QueryField</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="-query-field/index.html">T</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Interface for decoding query parameters on the server.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1355784798%2FClasslikes%2F-654899660" anchor-label="QueryProvider" id="-1355784798%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-query-provider/index.html"><span>Query</span><wbr></wbr><span><span>Provider</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1355784798%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-query-provider/index.html">QueryProvider</a></div><div class="brief "><p class="paragraph">Interface for providing query parameters on the client.</p></div></div></div>
                 </div>
               </div>
             </div>
