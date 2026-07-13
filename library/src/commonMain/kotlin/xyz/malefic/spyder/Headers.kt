@@ -111,6 +111,11 @@ interface HeaderField<out T> {
     context(_: Raise<Issue>)
     fun decode(headers: Headers): T
 
+    /**
+     * Flattens the [HeaderField] into its constituent fields.
+     */
+    fun flatten(): List<HeaderField<*>> = listOf(this)
+
     companion object {
         operator fun invoke(name: String): HeaderField<String> =
             object : HeaderField<String> {
@@ -133,6 +138,8 @@ object NoHeaders : HeaderProvider, HeaderField<NoHeaders> {
 
     context(_: Raise<Issue>)
     override fun decode(headers: Headers): NoHeaders = this
+
+    override fun flatten(): List<HeaderField<*>> = emptyList()
 }
 
 /**
@@ -176,6 +183,8 @@ class PairField<A : HeaderProvider, B : HeaderProvider>(
 
     context(_: Raise<Issue>)
     override fun decode(headers: Headers): HeaderPair<A, B> = HeaderPair(fieldA.decode(headers), fieldB.decode(headers))
+
+    override fun flatten(): List<HeaderField<*>> = fieldA.flatten() + fieldB.flatten()
 }
 
 /**

@@ -68,104 +68,6 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
     @Suppress("UNCHECKED_CAST")
     context(_: Raise<Issue>)
     open fun decodeQuery(params: Map<String, List<String>>): QueryP = queryDecoder.decodeQuery(params)
-
-    /**
-     * A contract for an API endpoint that uses a custom header, only for the response.
-     *
-     * @param path The path of the API endpoint. Automatically prefixed with "api/".
-     * @param method The HTTP method to use for the API endpoint. Default is [Method.POST].
-     *
-     * @param Req The [Serializable] type of the request body. If the request body is empty, this should be `Unit`.
-     * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
-     * @param ResH The [HeaderProvider] type of the response headers. Use [NoHeaders] for no headers.
-     */
-    abstract class Response<Req, Res, ResH : HeaderProvider>( // TODO: Make a builder of some sort to replace abstract class wrappers
-        path: String,
-        method: Method = Method.POST,
-        requiredResponseHeaders: List<HeaderField<*>> = emptyList(),
-        @Suppress("UNCHECKED_CAST")
-        responseHeaderDecoder: HeaderField<ResH> = NoHeaders as HeaderField<ResH>,
-    ) : ApiContract<Req, Res, NoHeaders, ResH, NoParams, NoParams>(
-            path,
-            method,
-            requiredResponseHeaders = requiredResponseHeaders,
-            responseHeaderDecoder = responseHeaderDecoder,
-        )
-
-    /**
-     * A contract for an API endpoint that uses a custom header, only for the request.
-     *
-     * @param path The path of the API endpoint. Automatically prefixed with "api/".
-     * @param method The HTTP method to use for the API endpoint. Default is [Method.POST].
-     *
-     * @param Req The [Serializable] type of the request body. If the request body is empty, this should be `Unit`.
-     * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
-     * @param ReqH The [HeaderProvider] type of the request headers. Use [NoHeaders] for no headers.
-     */
-    abstract class Request<Req, Res, ReqH : HeaderProvider>(
-        path: String,
-        method: Method = Method.POST,
-        requiredRequestHeaders: List<HeaderField<*>> = emptyList(),
-        @Suppress("UNCHECKED_CAST")
-        requestHeaderDecoder: HeaderField<ReqH> = NoHeaders as HeaderField<ReqH>,
-    ) : ApiContract<Req, Res, ReqH, NoHeaders, NoParams, NoParams>(
-            path,
-            method,
-            requiredRequestHeaders = requiredRequestHeaders,
-            requestHeaderDecoder = requestHeaderDecoder,
-        )
-
-    /**
-     * A contract for an API endpoint that uses no custom headers.
-     *
-     * @param path The path of the API endpoint. Automatically prefixed with "api/".
-     * @param method The HTTP method to use for the API endpoint. Default is [Method.POST].
-     *
-     * @param Req The [Serializable] type of the request body. If the request body is empty, this should be `Unit`.
-     * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
-     */
-    abstract class Plain<Req, Res>(
-        path: String,
-        method: Method = Method.POST,
-    ) : ApiContract<Req, Res, NoHeaders, NoHeaders, NoParams, NoParams>(path, method)
-
-    /**
-     * A contract for a simple GET-style API endpoint (no request body, no custom headers).
-     *
-     * @param path The path of the API endpoint. Automatically prefixed with "api/".
-     * @param method The HTTP method to use for the API endpoint. Default is [Method.GET].
-     *
-     * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
-     */
-    abstract class Basic<Res>(
-        path: String,
-        method: Method = Method.GET,
-    ) : ApiContract<Unit, Res, NoHeaders, NoHeaders, NoParams, NoParams>(path, method)
-
-    /**
-     * A contract for an API endpoint that uses path parameters.
-     *
-     * @param path The path of the API endpoint. Automatically prefixed with "api/".
-     * @param method The HTTP method to use for the API endpoint. Default is [Method.POST].
-     * @param pathDecoder The [PathField] to decode the path parameters.
-     * @param queryDecoder The [QueryField] to decode the query parameters.
-     *
-     * @param Req The [Serializable] type of the request body. If the request body is empty, this should be `Unit`.
-     * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
-     * @param PathP The [PathProvider] type of the path parameters.
-     * @param QueryP The [QueryProvider] type of the query parameters.
-     */
-    abstract class Parameters<Req, Res, PathP : PathProvider, QueryP : QueryProvider>(
-        path: String,
-        method: Method = Method.POST,
-        pathDecoder: PathField<PathP>,
-        queryDecoder: QueryField<QueryP>,
-    ) : ApiContract<Req, Res, NoHeaders, NoHeaders, PathP, QueryP>(
-            path,
-            method,
-            pathDecoder = pathDecoder,
-            queryDecoder = queryDecoder,
-        )
 }
 
 /**
@@ -179,14 +81,24 @@ data class ApiResponse<Res, ResH>(
 /**
  * A contract for the common "health" endpoint.
  */
-class HealthContract : ApiContract.Basic<String>("health", Method.GET)
+val HealthContract =
+    apiContract<Unit, String>("health")
+        .method(Method.GET)
+        .build()
 
 /**
  * A contract for the common "ping" endpoint.
  */
-class PingContract : ApiContract.Basic<String>("ping", Method.GET)
+val PingContract =
+    apiContract<Unit, String>("ping")
+        .method(Method.GET)
+        .build()
 
 /**
  * A contract for an example "auth/ping" endpoint.
  */
-class SecurePingContract : ApiContract.Request<Unit, String, BearerAuth>("auth/ping", Method.GET, listOf(BearerAuth), BearerAuth)
+val SecurePingContract =
+    apiContract<Unit, String>("auth/ping")
+        .method(Method.GET)
+        .requestHeaders(BearerAuth)
+        .build()
