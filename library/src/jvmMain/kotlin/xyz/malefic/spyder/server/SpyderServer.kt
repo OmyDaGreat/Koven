@@ -16,6 +16,7 @@ import org.http4k.server.asServer
 import xyz.malefic.spyder.ApiContract
 import xyz.malefic.spyder.HeaderProvider
 import xyz.malefic.spyder.Issue
+import xyz.malefic.spyder.Multipart
 import xyz.malefic.spyder.NoHeaders
 import xyz.malefic.spyder.PaginatedResponse
 import xyz.malefic.spyder.Pagination
@@ -54,6 +55,28 @@ class SpyderServerBuilder(
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, NoHeaders, PathP, QueryP>.handle(
         crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Res,
+    ) = add(register(handler))
+
+    /**
+     * Adds an [ApiContract] with a multipart request body to the server.
+     *
+     * @param handler The function to handle the request. Should return a [Pair] in the format of `(response body, response headers)`.
+     */
+    @JvmName("handleMultipart")
+    @Suppress("ktlint:standard:max-line-length")
+    inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.handleMultipart(
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> Pair<Res, ResH>,
+    ) = add(register(handler))
+
+    /**
+     * Adds an [ApiContract] with a multipart request body to the server.
+     *
+     * @param handler The function to handle the request. Should return the response body directly.
+     */
+    @JvmName("handleMultipartNoResponseHeader")
+    @Suppress("ktlint:standard:max-line-length")
+    inline fun <reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, NoHeaders, PathP, QueryP>.handleMultipartNoHeader(
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> Res,
     ) = add(register(handler))
 
     /**

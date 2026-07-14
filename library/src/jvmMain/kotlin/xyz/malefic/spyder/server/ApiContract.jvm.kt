@@ -5,8 +5,10 @@ import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import arrow.core.raise.either
 import arrow.core.raise.ensure
+import org.http4k.core.MultipartEntity
 import org.http4k.core.Response
 import org.http4k.core.Status
+import org.http4k.core.multipartIterator
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.path
@@ -16,6 +18,7 @@ import xyz.malefic.spyder.HeaderProvider
 import xyz.malefic.spyder.Headers
 import xyz.malefic.spyder.InternalIssue
 import xyz.malefic.spyder.Issue
+import xyz.malefic.spyder.Multipart
 import xyz.malefic.spyder.NoHeaders
 import xyz.malefic.spyder.PaginatedResponse
 import xyz.malefic.spyder.Pagination
@@ -108,7 +111,7 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvide
  *
  * The route will automatically handle `page` and `limit` query parameters to slice the list. If the [Pagination.totalItems] value provided in context is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
  *
- * @param handler The handler function for the route. Should return a [Pair] of the full list and response headers.
+ * @param handler The handler function for the route. Should return a [Pair] in the format of `(response list, response headers)`.
  */
 @JvmName("registerPaginated")
 @Suppress("ktlint:standard:max-line-length")
@@ -210,3 +213,95 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
 inline fun <reified Req, reified T, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders, PathP, QueryP>.register(
     crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> List<T>,
 ): RoutingHttpHandler = this.register<Req, T, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) to NoHeaders }
+
+/**
+ * Creates a route for the given [ApiContract] with a multipart request body.
+ *
+ * @param handler The handler function for the route. Should return a [Pair] in the format of `(response body, response headers)`.
+ */
+@JvmName("registerMultipart")
+@Suppress("ktlint:standard:max-line-length")
+inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.register(
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> Pair<Res, ResH>,
+): RoutingHttpHandler =
+    "/api/$path" bind method.toHttp4k to { req ->
+        val headers = Headers.fromPairs(req.headers)
+        val pathParams = "\\{([^}]+)\\}".toRegex().findAll(path).map { it.groupValues[1] }.associateWith { req.path(it) ?: "" }
+        val queryMap = queryParams.associateWith { req.queries(it).map { v -> v ?: "" } }
+
+        val result =
+            either {
+                val missing =
+                    requiredRequestHeaders.filter {
+                        headers[it].let { values -> values == null || (values.all { value -> value.isBlank() }) }
+                    }
+                ensure(missing.isEmpty()) { BadRequestIssue("Missing required header(s): ${missing.joinToString { it.field }}") }
+
+                val body =
+                    catch({
+                        val fields = mutableMapOf<String, String>()
+                        val files = mutableMapOf<String, Multipart.File>()
+
+                        req.multipartIterator().forEach { part ->
+                            when (part) {
+                                is MultipartEntity.Field -> {
+                                    fields[part.name] = part.value
+                                }
+
+                                is MultipartEntity.File -> {
+                                    files[part.name] =
+                                        Multipart.File(
+                                            part.file.filename,
+                                            part.file.contentType.value,
+                                            part.file.content.readAllBytes(),
+                                        )
+                                }
+                            }
+                        }
+
+                        Multipart(fields, files)
+                    }) { raise(BadRequestIssue("Invalid multipart request: ${it.message}")) }
+
+                catch({ handler(this, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(queryMap), body) })
+                { raise(InternalIssue from it) }
+            }
+
+        when (result) {
+            is Either.Left -> {
+                val issue = result.value
+                val body = SpyderJson.default.encodeToString(Issue.serializer(), issue)
+                Response(Status.fromCode(issue.status.toInt()) ?: Status.INTERNAL_SERVER_ERROR)
+                    .body(body)
+                    .header("Content-Type", "application/json")
+            }
+
+            is Either.Right -> {
+                val (res, resH) = result.value
+                var response =
+                    if (Res::class == Unit::class) {
+                        Response(Status.OK)
+                    } else {
+                        Response(Status.OK)
+                            .body(SpyderJson.default.encodeToString(res))
+                            .header("Content-Type", "application/json")
+                    }
+
+                Headers.Builder().apply { add(resH) }.build().forEach { (k, v) ->
+                    v.forEach { response = response.header(k, it) }
+                }
+
+                response
+            }
+        }
+    }
+
+/**
+ * Creates a route for the given [ApiContract] with a multipart request body.
+ *
+ * @param handler The handler function for the route. Should return the response body directly.
+ */
+@JvmName("registerMultipartNoResponseHeader")
+@Suppress("ktlint:standard:max-line-length")
+inline fun <reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, NoHeaders, PathP, QueryP>.register(
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> Res,
+): RoutingHttpHandler = this.register<Res, ReqH, NoHeaders, PathP, QueryP> { req: Multipart -> handler(req) to NoHeaders }

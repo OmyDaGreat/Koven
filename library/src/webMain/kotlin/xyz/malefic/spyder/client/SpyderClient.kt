@@ -7,12 +7,16 @@ import com.varabyte.kobweb.browser.api
 import com.varabyte.kobweb.browser.http.bodyOf
 import kotlinx.browser.window
 import kotlinx.coroutines.await
+import org.w3c.files.Blob
+import org.w3c.files.BlobPropertyBag
+import org.w3c.xhr.FormData
 import xyz.malefic.spyder.ApiContract
 import xyz.malefic.spyder.ApiResponse
 import xyz.malefic.spyder.HeaderProvider
 import xyz.malefic.spyder.Headers
 import xyz.malefic.spyder.InternalIssue
 import xyz.malefic.spyder.Issue
+import xyz.malefic.spyder.Multipart
 import xyz.malefic.spyder.PathProvider
 import xyz.malefic.spyder.QueryProvider
 import xyz.malefic.spyder.SpyderJson
@@ -34,9 +38,17 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
     crossinline headerBlock: Headers.Builder.() -> Unit = {},
 ): Either<Issue, ApiResponse<Res, ResH>> =
     either {
-        val json =
+        val bodyData =
             if (Req::class == Unit::class) {
                 null
+            } else if (request is Multipart) {
+                val formData = FormData()
+                request.fields.forEach { (k, v) -> formData.append(k, v) }
+                request.files.forEach { (k, v) ->
+                    val blob = Blob(arrayOf(v.bytes), BlobPropertyBag(type = v.contentType ?: "application/octet-stream"))
+                    formData.append(k, blob, v.name)
+                }
+                formData
             } else {
                 SpyderJson.default.encodeToString(request)
             }
@@ -54,11 +66,17 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
 
         val response =
             catch({
+                val body =
+                    when (bodyData) {
+                        is FormData -> bodyOf(bodyData)
+                        is String -> bodyOf(bodyData, "application/json")
+                        else -> null
+                    }
                 window.api
                     .call(
                         method,
                         finalPath,
-                        json?.let { bodyOf(json, "application/json") },
+                        body,
                         Headers.build {
                             add(headers)
                             headerBlock()

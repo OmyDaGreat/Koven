@@ -22,11 +22,12 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
 
 http4k-bom = { group = "org.http4k", name = "http4k-bom", version.ref = "http4k" }
-http4k-api = { group = "org.http4k", name = "http4k-api-openapi" }
 http4k-core = { group = "org.http4k", name = "http4k-core" }
+http4k-multipart = { group = "org.http4k", name = "http4k-multipart" }
 http4k-config = { group = "org.http4k", name = "http4k-config" }
 http4k-format = { group = "org.http4k", name = "http4k-format-kotlinx-serialization" }
 http4k-server = { group = "org.http4k", name = "http4k-server-jetty" }
+http4k-api = { group = "org.http4k", name = "http4k-api-openapi" }
 
 kobweb-core = { group = "com.varabyte.kobweb", name = "kobweb-core", version.ref = "kobweb" }
 
@@ -34,7 +35,7 @@ compose-html-core = { group = "org.jetbrains.compose.html", name = "html-core", 
 compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "compose" }
 
 [bundles]
-http4k = ["http4k-api", "http4k-core", "http4k-config", "http4k-format", "http4k-server"]
+http4k = ["http4k-core", "http4k-config", "http4k-format", "http4k-server", "http4k-multipart"]
 kobweb = ["kobweb-core", "compose-html-core", "compose-runtime"]
 
 [plugins]

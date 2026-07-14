@@ -13,3 +13,4 @@ xcuserdata
 kotlin-js-store
 *.properties
 BUILD_GOALS.md
+.artifacts
