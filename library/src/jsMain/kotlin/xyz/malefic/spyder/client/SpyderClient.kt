@@ -20,12 +20,7 @@ import xyz.malefic.spyder.core.QueryProvider
 import xyz.malefic.spyder.core.SpyderJson
 import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
-import xyz.malefic.spyder.feature.body.CustomBody
-import xyz.malefic.spyder.feature.body.SpyderRawBody
-import xyz.malefic.spyder.feature.body.binary.BinaryBody
-import xyz.malefic.spyder.feature.body.multipart.Multipart
-import xyz.malefic.spyder.feature.body.text.PlainTextBody
-import xyz.malefic.spyder.feature.body.xml.XmlBody
+import xyz.malefic.spyder.feature.multipart.Multipart
 
 /**
  * Extension to make calling contracts more ergonomic.
@@ -67,12 +62,8 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
                     formData
                 }
 
-                request is SpyderRawBody -> {
-                    request
-                }
-
                 else -> {
-                    SpyderJson.default.encodeToString(request)
+                    requestFormat.encode(request)
                 }
             }
 
@@ -92,8 +83,7 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
                 val body =
                     when (bodyData) {
                         is FormData -> bodyOf(bodyData)
-                        is String -> bodyOf(bodyData, "application/json")
-                        is SpyderRawBody -> bodyOf(bodyData.encode(), bodyData.contentType)
+                        is ByteArray -> bodyOf(bodyData, requestFormat.contentType)
                         else -> null
                     }
                 window.api
@@ -110,12 +100,12 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
                 raise(InternalIssue from it)
             }
 
-        val text = response.text().await()
+        val responseBytes = Uint8Array(response.arrayBuffer().await()).unsafeCast<ByteArray>()
 
         if (!response.ok) {
             val issue =
-                catch({ SpyderJson.default.decodeFromString<Issue>(text) })
-                { InternalIssue("Server error (${response.status}): $text", response.status) }
+                catch({ SpyderJson.default.decodeFromString<Issue>(responseBytes.decodeToString()) })
+                { InternalIssue("Server error (${response.status}): ${responseBytes.decodeToString()}", response.status) }
             raise(issue)
         }
 
@@ -127,34 +117,12 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
         val headersObj = Headers(rawHeaders)
 
         val body =
-            when (Res::class) {
-                Unit::class -> {
-                    Unit as Res
-                }
-
-                BinaryBody::class -> {
-                    val bytes = Uint8Array(response.arrayBuffer().await()).unsafeCast<ByteArray>()
-                    BinaryBody(bytes, headersObj.getFirst("Content-Type") ?: "application/octet-stream") as Res
-                }
-
-                PlainTextBody::class -> {
-                    PlainTextBody(response.text().await()) as Res
-                }
-
-                XmlBody::class -> {
-                    XmlBody(response.text().await()) as Res
-                }
-
-                CustomBody::class, SpyderRawBody::class -> {
-                    CustomBody(
-                        response.text().await(),
-                        headersObj.getFirst("Content-Type") ?: "text/plain",
-                    ) as Res
-                }
-
-                else -> {
-                    catch({ SpyderJson.default.decodeFromString<Res>(response.text().await()) }) { raise(InternalIssue from it) }
-                }
+            if (Res::class == Unit::class) {
+                Unit as Res
+            } else {
+                catch({
+                    responseFormat.decode(responseBytes, headersObj.getFirst("Content-Type") ?: responseFormat.contentType)
+                }) { raise(InternalIssue from it) }
             }
 
         ApiResponse(body, decodeResponseHeaders(headersObj))

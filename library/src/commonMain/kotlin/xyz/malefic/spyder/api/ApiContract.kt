@@ -24,9 +24,11 @@ import xyz.malefic.spyder.feature.auth.BearerAuth
  * @param responseHeaderDecoder The [HeaderField] to decode the response headers.
  * @param pathDecoder The [PathField] to decode the path parameters.
  * @param queryDecoder The [QueryField] to decode the query parameters.
+ * @param requestFormat The [BodyFormat] to use for the request body. Defaults to [UnitFormat] or [JsonFormat].
+ * @param responseFormat The [BodyFormat] to use for the response body. Defaults to [UnitFormat] or [JsonFormat].
  *
- * @param Req The [Serializable] type of the request body. If the request body is empty, this should be `Unit`.
- * @param Res The [Serializable] type of the request body. If the response body is empty, this should be `Unit`.
+ * @param Req The type of the request body. If the request body is empty, this should be `Unit`.
+ * @param Res The type of the response body. If the response body is empty, this should be `Unit`.
  * @param ReqH The [HeaderProvider] type of the request headers. Use [NoHeaders] for no headers.
  * @param ResH The [HeaderProvider] type of the response headers. Use [NoHeaders] for no headers.
  * @param PathP The [PathProvider] type of the path parameters. Use [NoParams] for no path parameters.
@@ -45,6 +47,8 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
     val pathDecoder: PathField<PathP> = NoParams as PathField<PathP>,
     @Suppress("UNCHECKED_CAST")
     val queryDecoder: QueryField<QueryP> = NoParams as QueryField<QueryP>,
+    val requestFormat: BodyFormat<Req>,
+    val responseFormat: BodyFormat<Res>,
 ) {
     /**
      * The set of query parameters allowed for the API endpoint.
@@ -84,14 +88,30 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
  * Entry point for creating an [ApiContract] via builder.
  */
 @Suppress("UNCHECKED_CAST")
-fun <Req, Res> apiContract(path: String) =
-    ApiContractBuilder<Req, Res, NoHeaders, NoHeaders, NoParams, NoParams>(
+inline fun <reified Req, reified Res> apiContract(path: String): ApiContractBuilder<Req, Res, NoHeaders, NoHeaders, NoParams, NoParams> {
+    val reqFormat =
+        if (Req::class == Unit::class) {
+            UnitFormat as BodyFormat<Req>
+        } else {
+            JsonFormat.create<Req>()
+        }
+    val resFormat =
+        if (Res::class == Unit::class) {
+            UnitFormat as BodyFormat<Res>
+        } else {
+            JsonFormat.create<Res>()
+        }
+
+    return ApiContractBuilder(
         path = path,
         requestHeaderDecoder = NoHeaders as HeaderField<NoHeaders>,
         responseHeaderDecoder = NoHeaders as HeaderField<NoHeaders>,
         pathDecoder = NoParams as PathField<NoParams>,
         queryDecoder = NoParams as QueryField<NoParams>,
+        requestFormat = reqFormat,
+        responseFormat = resFormat,
     )
+}
 
 /**
  * A contract for the common "health" endpoint.

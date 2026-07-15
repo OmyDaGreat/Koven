@@ -11,7 +11,7 @@ import xyz.malefic.spyder.core.QueryProvider
  * A builder for [ApiContract] types.
  */
 @Suppress("ktlint:standard:max-line-length")
-class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> internal constructor(
+class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> @PublishedApi internal constructor(
     private val path: String,
     private val method: Method = Method.POST,
     private val requiredRequestHeaders: List<HeaderField<*>> = emptyList(),
@@ -21,7 +21,19 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
     private val pathDecoder: PathField<PathP>,
     private val queryDecoder: QueryField<QueryP>,
     private val queryParams: List<String> = emptyList(),
+    private val requestFormat: BodyFormat<Req>,
+    private val responseFormat: BodyFormat<Res>,
 ) {
+    /**
+     * Sets the request body format.
+     */
+    fun requestFormat(format: BodyFormat<Req>) = copy<ReqH, ResH, PathP, QueryP>(requestFormat = format)
+
+    /**
+     * Sets the response body format.
+     */
+    fun responseFormat(format: BodyFormat<Res>) = copy<ReqH, ResH, PathP, QueryP>(responseFormat = format)
+
     /**
      * Sets the HTTP method.
      */
@@ -83,6 +95,8 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
         pathDecoder: PathField<NewPathP> = this.pathDecoder as PathField<NewPathP>,
         queryDecoder: QueryField<NewQueryP> = this.queryDecoder as QueryField<NewQueryP>,
         queryParams: List<String> = this.queryParams,
+        requestFormat: BodyFormat<Req> = this.requestFormat,
+        responseFormat: BodyFormat<Res> = this.responseFormat,
     ): ApiContractBuilder<Req, Res, NewReqH, NewResH, NewPathP, NewQueryP> =
         ApiContractBuilder(
             path,
@@ -94,6 +108,8 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
             pathDecoder,
             queryDecoder,
             queryParams,
+            requestFormat,
+            responseFormat,
         )
 
     /**
@@ -109,6 +125,8 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
             responseHeaderDecoder,
             pathDecoder,
             queryDecoder,
+            requestFormat,
+            responseFormat,
         ) {
             override val queryParams: List<String> = this@ApiContractBuilder.queryParams
         }

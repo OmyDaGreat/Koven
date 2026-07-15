@@ -26,12 +26,7 @@ import xyz.malefic.spyder.core.SpyderJson
 import xyz.malefic.spyder.error.BadRequestIssue
 import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
-import xyz.malefic.spyder.feature.body.CustomBody
-import xyz.malefic.spyder.feature.body.SpyderRawBody
-import xyz.malefic.spyder.feature.body.binary.BinaryBody
-import xyz.malefic.spyder.feature.body.multipart.Multipart
-import xyz.malefic.spyder.feature.body.text.PlainTextBody
-import xyz.malefic.spyder.feature.body.xml.XmlBody
+import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
 
@@ -45,7 +40,7 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
     crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
     baseRegister { req, reqH, pathP, queryP ->
-        val body = decodeBody<Req>(req)
+        val body = decodeBody(req)
         handler(this, reqH, pathP, queryP, body)
     }
 
@@ -84,7 +79,7 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
                 override var totalItems: Long? = null
             }
 
-        val body = decodeBody<Req>(req)
+        val body = decodeBody(req)
         val (items, resH) = handler(this, reqH, pathP, queryP, pagination, body)
 
         val response =
@@ -135,57 +130,47 @@ inline fun <reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : Q
 ): RoutingHttpHandler = register<Res, ReqH, NoHeaders, PathP, QueryP> { req: Multipart -> handler(req) with NoHeaders }
 
 @PublishedApi
-internal inline fun <reified Req> Raise<Issue>.decodeBody(req: Request): Req =
-    when (Req::class) {
-        Unit::class -> {
-            Unit as Req
-        }
+@Suppress("ktlint:standard:max-line-length")
+context(r: Raise<Issue>)
+internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.decodeBody(
+    req: Request,
+): Req =
+    with(r) {
+        when (Req::class) {
+            Unit::class -> {
+                Unit as Req
+            }
 
-        Multipart::class -> {
-            catch({
-                val fields = mutableMapOf<String, String>()
-                val files = mutableMapOf<String, Multipart.File>()
+            Multipart::class -> {
+                catch({
+                    val fields = mutableMapOf<String, String>()
+                    val files = mutableMapOf<String, Multipart.File>()
 
-                req.multipartIterator().forEach { part ->
-                    when (part) {
-                        is MultipartEntity.Field -> {
-                            fields[part.name] = part.value
-                        }
+                    req.multipartIterator().forEach { part ->
+                        when (part) {
+                            is MultipartEntity.Field -> {
+                                fields[part.name] = part.value
+                            }
 
-                        is MultipartEntity.File -> {
-                            files[part.name] =
-                                Multipart.File(
-                                    part.file.filename,
-                                    part.file.contentType.value,
-                                    part.file.content.readAllBytes(),
-                                )
+                            is MultipartEntity.File -> {
+                                files[part.name] =
+                                    Multipart.File(
+                                        part.file.filename,
+                                        part.file.contentType.value,
+                                        part.file.content.readAllBytes(),
+                                    )
+                            }
                         }
                     }
-                }
-                Multipart(fields, files) as Req
-            }) { raise(BadRequestIssue("Invalid multipart request: ${it.message}")) }
-        }
+                    Multipart(fields, files) as Req
+                }) { raise(BadRequestIssue("Invalid multipart request: ${it.message}")) }
+            }
 
-        PlainTextBody::class -> {
-            PlainTextBody(req.bodyString()) as Req
-        }
-
-        XmlBody::class -> {
-            XmlBody(req.bodyString()) as Req
-        }
-
-        BinaryBody::class -> {
-            BinaryBody(req.body.payload.array(), req.header("Content-Type") ?: "application/octet-stream") as Req
-        }
-
-        CustomBody::class, SpyderRawBody::class -> {
-            CustomBody(req.bodyString(), req.header("Content-Type") ?: "text/plain") as Req
-        }
-
-        else -> {
-            catch({
-                SpyderJson.default.decodeFromString<Req>(req.bodyString())
-            }) { raise(BadRequestIssue("Invalid JSON for request body: ${it.message}")) }
+            else -> {
+                catch({
+                    requestFormat.decode(req.body.payload.array(), req.header("Content-Type") ?: requestFormat.contentType)
+                }) { raise(BadRequestIssue("Invalid body: ${it.message}")) }
+            }
         }
     }
 
@@ -229,16 +214,10 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
                             Response(Status.OK)
                         }
 
-                        res is SpyderRawBody -> {
-                            Response(Status.OK)
-                                .body(MemoryBody(res.encode()))
-                                .header("Content-Type", res.contentType)
-                        }
-
                         else -> {
                             Response(Status.OK)
-                                .body(SpyderJson.default.encodeToString(res))
-                                .header("Content-Type", "application/json")
+                                .body(MemoryBody(responseFormat.encode(res)))
+                                .header("Content-Type", responseFormat.contentType)
                         }
                     }
 
