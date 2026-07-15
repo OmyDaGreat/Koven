@@ -6,12 +6,12 @@ $dokka.location:xyz.malefic.spyder.api//PingContract/#/PointingToDeclaration/li
 $dokka.location:xyz.malefic.spyder.api//SecurePingContract/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-secure-ping-contract.html
 $dokka.location:xyz.malefic.spyder.api//apiContract/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/api-contract.html
 $dokka.location:xyz.malefic.spyder.api/ApiContract///PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/index.html
-$dokka.location:xyz.malefic.spyder.api/ApiContract/ApiContract/#kotlin.String#xyz.malefic.spyder.api.Method#kotlin.collections.List[xyz.malefic.spyder.core.HeaderField[*]]#kotlin.collections.List[xyz.malefic.spyder.core.HeaderField[*]]#xyz.malefic.spyder.core.HeaderField[TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider])]#xyz.malefic.spyder.core.HeaderField[TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider])]#xyz.malefic.spyder.core.PathField[TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider])]#xyz.malefic.spyder.core.QueryField[TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider])]#xyz.malefic.spyder.api.BodyFormat[TypeParam(bounds=[kotlin.Any?])]#xyz.malefic.spyder.api.BodyFormat[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/-api-contract.html
+$dokka.location:xyz.malefic.spyder.api/ApiContract/ApiContract/#kotlin.String#xyz.malefic.spyder.api.HttpMethod#kotlin.collections.List[xyz.malefic.spyder.core.HeaderField[*]]#kotlin.collections.List[xyz.malefic.spyder.core.HeaderField[*]]#xyz.malefic.spyder.core.HeaderField[TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider])]#xyz.malefic.spyder.core.HeaderField[TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider])]#xyz.malefic.spyder.core.PathField[TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider])]#xyz.malefic.spyder.core.QueryField[TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider])]#xyz.malefic.spyder.api.BodyFormat[TypeParam(bounds=[kotlin.Any?])]#xyz.malefic.spyder.api.BodyFormat[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/-api-contract.html
 $dokka.location:xyz.malefic.spyder.api/ApiContract/decodePath/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##kotlin.collections.Map[kotlin.String,kotlin.String]/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/decode-path.html
 $dokka.location:xyz.malefic.spyder.api/ApiContract/decodeQuery/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##kotlin.collections.Map[kotlin.String,kotlin.collections.List[kotlin.String]]/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/decode-query.html
 $dokka.location:xyz.malefic.spyder.api/ApiContract/decodeRequestHeaders/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##xyz.malefic.spyder.core.Headers/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/decode-request-headers.html
 $dokka.location:xyz.malefic.spyder.api/ApiContract/decodeResponseHeaders/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##xyz.malefic.spyder.core.Headers/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/decode-response-headers.html
-$dokka.location:xyz.malefic.spyder.api/ApiContract/method/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/method.html
+$dokka.location:xyz.malefic.spyder.api/ApiContract/httpMethod/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/http-method.html
 $dokka.location:xyz.malefic.spyder.api/ApiContract/path/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/path.html
 $dokka.location:xyz.malefic.spyder.api/ApiContract/pathDecoder/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/path-decoder.html
 $dokka.location:xyz.malefic.spyder.api/ApiContract/queryDecoder/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/query-decoder.html
@@ -24,7 +24,7 @@ $dokka.location:xyz.malefic.spyder.api/ApiContract/responseFormat/#/PointingToDe
 $dokka.location:xyz.malefic.spyder.api/ApiContract/responseHeaderDecoder/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract/response-header-decoder.html
 $dokka.location:xyz.malefic.spyder.api/ApiContractBuilder///PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract-builder/index.html
 $dokka.location:xyz.malefic.spyder.api/ApiContractBuilder/build/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract-builder/build.html
-$dokka.location:xyz.malefic.spyder.api/ApiContractBuilder/method/#xyz.malefic.spyder.api.Method/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract-builder/method.html
+$dokka.location:xyz.malefic.spyder.api/ApiContractBuilder/method/#xyz.malefic.spyder.api.HttpMethod/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract-builder/method.html
 $dokka.location:xyz.malefic.spyder.api/ApiContractBuilder/path/#xyz.malefic.spyder.core.PathField[TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider])]/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract-builder/path.html
 $dokka.location:xyz.malefic.spyder.api/ApiContractBuilder/query/#xyz.malefic.spyder.core.QueryField[TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider])]#vararg(kotlin.String)/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract-builder/query.html
 $dokka.location:xyz.malefic.spyder.api/ApiContractBuilder/requestFormat/#xyz.malefic.spyder.api.BodyFormat[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder.api/-api-contract-builder/request-format.html
@@ -45,6 +45,7 @@ $dokka.location:xyz.malefic.spyder.api/BodyFormat///PointingToDeclaration/libra
 $dokka.location:xyz.malefic.spyder.api/BodyFormat/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-body-format/content-type.html
 $dokka.location:xyz.malefic.spyder.api/BodyFormat/decode/#kotlin.ByteArray#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-body-format/decode.html
 $dokka.location:xyz.malefic.spyder.api/BodyFormat/encode/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/library/xyz.malefic.spyder.api/-body-format/encode.html
+$dokka.location:xyz.malefic.spyder.api/BodyFormat/serialization/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-body-format/serialization.html
 $dokka.location:xyz.malefic.spyder.api/FormUrlEncodedFormat///PointingToDeclaration/library/xyz.malefic.spyder.api/-form-url-encoded-format/index.html
 $dokka.location:xyz.malefic.spyder.api/FormUrlEncodedFormat/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-form-url-encoded-format/content-type.html
 $dokka.location:xyz.malefic.spyder.api/FormUrlEncodedFormat/decode/#kotlin.ByteArray#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-form-url-encoded-format/decode.html
@@ -53,6 +54,17 @@ $dokka.location:xyz.malefic.spyder.api/HtmlFormat///PointingToDeclaration/libra
 $dokka.location:xyz.malefic.spyder.api/HtmlFormat/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-html-format/content-type.html
 $dokka.location:xyz.malefic.spyder.api/HtmlFormat/decode/#kotlin.ByteArray#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-html-format/decode.html
 $dokka.location:xyz.malefic.spyder.api/HtmlFormat/encode/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-html-format/encode.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod.DELETE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-http-method/-d-e-l-e-t-e/index.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod.GET///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-http-method/-g-e-t/index.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod.HEAD///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-http-method/-h-e-a-d/index.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod.OPTIONS///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-http-method/-o-p-t-i-o-n-s/index.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod.PATCH///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-http-method/-p-a-t-c-h/index.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod.POST///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-http-method/-p-o-s-t/index.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod.PUT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-http-method/-p-u-t/index.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod///PointingToDeclaration/library/xyz.malefic.spyder.api/-http-method/index.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod/entries/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-http-method/entries.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod/valueOf/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-http-method/value-of.html
+$dokka.location:xyz.malefic.spyder.api/HttpMethod/values/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-http-method/values.html
 $dokka.location:xyz.malefic.spyder.api/JsonFormat.Companion///PointingToDeclaration/library/xyz.malefic.spyder.api/-json-format/-companion/index.html
 $dokka.location:xyz.malefic.spyder.api/JsonFormat.Companion/create/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-json-format/-companion/create.html
 $dokka.location:xyz.malefic.spyder.api/JsonFormat///PointingToDeclaration/library/xyz.malefic.spyder.api/-json-format/index.html
@@ -60,21 +72,19 @@ $dokka.location:xyz.malefic.spyder.api/JsonFormat/JsonFormat/#kotlinx.serializat
 $dokka.location:xyz.malefic.spyder.api/JsonFormat/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-json-format/content-type.html
 $dokka.location:xyz.malefic.spyder.api/JsonFormat/decode/#kotlin.ByteArray#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-json-format/decode.html
 $dokka.location:xyz.malefic.spyder.api/JsonFormat/encode/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/library/xyz.malefic.spyder.api/-json-format/encode.html
-$dokka.location:xyz.malefic.spyder.api/Method.DELETE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-method/-d-e-l-e-t-e/index.html
-$dokka.location:xyz.malefic.spyder.api/Method.GET///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-method/-g-e-t/index.html
-$dokka.location:xyz.malefic.spyder.api/Method.HEAD///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-method/-h-e-a-d/index.html
-$dokka.location:xyz.malefic.spyder.api/Method.OPTIONS///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-method/-o-p-t-i-o-n-s/index.html
-$dokka.location:xyz.malefic.spyder.api/Method.PATCH///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-method/-p-a-t-c-h/index.html
-$dokka.location:xyz.malefic.spyder.api/Method.POST///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-method/-p-o-s-t/index.html
-$dokka.location:xyz.malefic.spyder.api/Method.PUT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.spyder.api/-method/-p-u-t/index.html
-$dokka.location:xyz.malefic.spyder.api/Method///PointingToDeclaration/library/xyz.malefic.spyder.api/-method/index.html
-$dokka.location:xyz.malefic.spyder.api/Method/entries/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-method/entries.html
-$dokka.location:xyz.malefic.spyder.api/Method/valueOf/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-method/value-of.html
-$dokka.location:xyz.malefic.spyder.api/Method/values/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-method/values.html
+$dokka.location:xyz.malefic.spyder.api/JsonFormat/serialization/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-json-format/serialization.html
 $dokka.location:xyz.malefic.spyder.api/PlainTextFormat///PointingToDeclaration/library/xyz.malefic.spyder.api/-plain-text-format/index.html
 $dokka.location:xyz.malefic.spyder.api/PlainTextFormat/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-plain-text-format/content-type.html
 $dokka.location:xyz.malefic.spyder.api/PlainTextFormat/decode/#kotlin.ByteArray#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-plain-text-format/decode.html
 $dokka.location:xyz.malefic.spyder.api/PlainTextFormat/encode/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-plain-text-format/encode.html
+$dokka.location:xyz.malefic.spyder.api/ProtoBufFormat.Companion///PointingToDeclaration/library/xyz.malefic.spyder.api/-proto-buf-format/-companion/index.html
+$dokka.location:xyz.malefic.spyder.api/ProtoBufFormat.Companion/create/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-proto-buf-format/-companion/create.html
+$dokka.location:xyz.malefic.spyder.api/ProtoBufFormat///PointingToDeclaration/library/xyz.malefic.spyder.api/-proto-buf-format/index.html
+$dokka.location:xyz.malefic.spyder.api/ProtoBufFormat/ProtoBufFormat/#kotlinx.serialization.KSerializer[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder.api/-proto-buf-format/-proto-buf-format.html
+$dokka.location:xyz.malefic.spyder.api/ProtoBufFormat/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-proto-buf-format/content-type.html
+$dokka.location:xyz.malefic.spyder.api/ProtoBufFormat/decode/#kotlin.ByteArray#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-proto-buf-format/decode.html
+$dokka.location:xyz.malefic.spyder.api/ProtoBufFormat/encode/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/library/xyz.malefic.spyder.api/-proto-buf-format/encode.html
+$dokka.location:xyz.malefic.spyder.api/ProtoBufFormat/serialization/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-proto-buf-format/serialization.html
 $dokka.location:xyz.malefic.spyder.api/UnitFormat///PointingToDeclaration/library/xyz.malefic.spyder.api/-unit-format/index.html
 $dokka.location:xyz.malefic.spyder.api/UnitFormat/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-unit-format/content-type.html
 $dokka.location:xyz.malefic.spyder.api/UnitFormat/decode/#kotlin.ByteArray#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-unit-format/decode.html
@@ -86,7 +96,7 @@ $dokka.location:xyz.malefic.spyder.api/XmlFormat/encode/#kotlin.String/PointingT
 $dokka.location:xyz.malefic.spyder.client.components////PointingToDeclaration/library/xyz.malefic.spyder.client.components/index.html
 $dokka.location:xyz.malefic.spyder.client.components//Request/#xyz.malefic.spyder.core.ApiState[TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.Unit]#kotlin.Function0[kotlin.Unit]#kotlin.Function1[xyz.malefic.spyder.error.Issue,kotlin.Unit]#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.client.components/-request.html
 $dokka.location:xyz.malefic.spyder.client////PointingToDeclaration/library/xyz.malefic.spyder.client/index.html
-$dokka.location:xyz.malefic.spyder.client//call/com.varabyte.kobweb.browser.ApiFetcher#xyz.malefic.spyder.api.Method#kotlin.String#com.varabyte.kobweb.browser.http.RequestBody?#xyz.malefic.spyder.core.Headers/PointingToDeclaration/library/xyz.malefic.spyder.client/call.html
+$dokka.location:xyz.malefic.spyder.client//call/com.varabyte.kobweb.browser.ApiFetcher#xyz.malefic.spyder.api.HttpMethod#kotlin.String#com.varabyte.kobweb.browser.http.RequestBody?#xyz.malefic.spyder.core.Headers/PointingToDeclaration/library/xyz.malefic.spyder.client/call.html
 $dokka.location:xyz.malefic.spyder.client//call/xyz.malefic.spyder.api.ApiContract[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider])]#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider])#TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider])#TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider])#kotlin.Function1[xyz.malefic.spyder.core.Headers.Builder,kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.client/call.html
 $dokka.location:xyz.malefic.spyder.client//produceApiState/#vararg(kotlin.Any?)#kotlin.coroutines.SuspendFunction0[arrow.core.Either[xyz.malefic.spyder.error.Issue,TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/library/xyz.malefic.spyder.client/produce-api-state.html
 $dokka.location:xyz.malefic.spyder.core////PointingToDeclaration/library/xyz.malefic.spyder.core/index.html
@@ -160,14 +170,6 @@ $dokka.location:xyz.malefic.spyder.core/QueryField///PointingToDeclaration/libr
 $dokka.location:xyz.malefic.spyder.core/QueryField/decodeQuery/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##kotlin.collections.Map[kotlin.String,kotlin.collections.List[kotlin.String]]/PointingToDeclaration/library/xyz.malefic.spyder.core/-query-field/decode-query.html
 $dokka.location:xyz.malefic.spyder.core/QueryProvider///PointingToDeclaration/library/xyz.malefic.spyder.core/-query-provider/index.html
 $dokka.location:xyz.malefic.spyder.core/QueryProvider/provideQuery/#/PointingToDeclaration/library/xyz.malefic.spyder.core/-query-provider/provide-query.html
-$dokka.location:xyz.malefic.spyder.core/SpyderJson///PointingToDeclaration/library/xyz.malefic.spyder.core/-spyder-json/index.html
-$dokka.location:xyz.malefic.spyder.core/SpyderJson/build/#kotlin.Function1[kotlinx.serialization.json.JsonBuilder,kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.core/-spyder-json/build.html
-$dokka.location:xyz.malefic.spyder.core/SpyderJson/configuration/#/PointingToDeclaration/library/xyz.malefic.spyder.core/-spyder-json/configuration.html
-$dokka.location:xyz.malefic.spyder.core/SpyderJson/configure/#kotlin.Function1[kotlinx.serialization.json.JsonBuilder,kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.core/-spyder-json/configure.html
-$dokka.location:xyz.malefic.spyder.core/SpyderJson/default/#/PointingToDeclaration/library/xyz.malefic.spyder.core/-spyder-json/default.html
-$dokka.location:xyz.malefic.spyder.core/SpyderJson/module/#/PointingToDeclaration/library/xyz.malefic.spyder.core/-spyder-json/module.html
-$dokka.location:xyz.malefic.spyder.core/SpyderJson/registerIssue/#/PointingToDeclaration/library/xyz.malefic.spyder.core/-spyder-json/register-issue.html
-$dokka.location:xyz.malefic.spyder.core/SpyderJson/registerIssue/#kotlin.reflect.KClass[TypeParam(bounds=[xyz.malefic.spyder.error.Issue])]#kotlinx.serialization.KSerializer[TypeParam(bounds=[xyz.malefic.spyder.error.Issue])]/PointingToDeclaration/library/xyz.malefic.spyder.core/-spyder-json/register-issue.html
 $dokka.location:xyz.malefic.spyder.error////PointingToDeclaration/library/xyz.malefic.spyder.error/index.html
 $dokka.location:xyz.malefic.spyder.error/BadRequestIssue///PointingToDeclaration/library/xyz.malefic.spyder.error/-bad-request-issue/index.html
 $dokka.location:xyz.malefic.spyder.error/BadRequestIssue/BadRequestIssue/#kotlin.String#kotlin.Short/PointingToDeclaration/library/xyz.malefic.spyder.error/-bad-request-issue/-bad-request-issue.html
@@ -232,6 +234,43 @@ $dokka.location:xyz.malefic.spyder.feature.pagination/Pagination/offset/#/Pointi
 $dokka.location:xyz.malefic.spyder.feature.pagination/Pagination/page/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.pagination/-pagination/page.html
 $dokka.location:xyz.malefic.spyder.feature.pagination/Pagination/provideQuery/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.pagination/-pagination/provide-query.html
 $dokka.location:xyz.malefic.spyder.feature.pagination/Pagination/totalItems/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.pagination/-pagination/total-items.html
+$dokka.location:xyz.malefic.spyder.serialization////PointingToDeclaration/library/xyz.malefic.spyder.serialization/index.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer.Companion///PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/-companion/index.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer.Companion/buildModule/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/-companion/build-module.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer.Companion/module/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/-companion/module.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer.Companion/onChange/#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/-companion/on-change.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer.Companion/registerIssue/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/-companion/register-issue.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer.Companion/registerIssue/#kotlin.reflect.KClass[TypeParam(bounds=[xyz.malefic.spyder.error.Issue])]#kotlinx.serialization.KSerializer[TypeParam(bounds=[xyz.malefic.spyder.error.Issue])]/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/-companion/register-issue.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer///PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/index.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/content-type.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer/createFormat/#kotlinx.serialization.KSerializer[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/create-format.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer/decodeIssue/#kotlin.ByteArray/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/decode-issue.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer/default/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/default.html
+$dokka.location:xyz.malefic.spyder.serialization/Serializer/encodeIssue/#xyz.malefic.spyder.error.Issue/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-serializer/encode-issue.html
+$dokka.location:xyz.malefic.spyder.serialization/Spyder///PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder/index.html
+$dokka.location:xyz.malefic.spyder.serialization/Spyder/apiPrefix/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder/api-prefix.html
+$dokka.location:xyz.malefic.spyder.serialization/Spyder/assetsPrefix/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder/assets-prefix.html
+$dokka.location:xyz.malefic.spyder.serialization/Spyder/filesPrefix/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder/files-prefix.html
+$dokka.location:xyz.malefic.spyder.serialization/Spyder/registerIssue/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder/register-issue.html
+$dokka.location:xyz.malefic.spyder.serialization/Spyder/serialization/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder/serialization.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderJson///PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-json/index.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderJson/build/#kotlin.Function1[kotlinx.serialization.json.JsonBuilder,kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-json/build.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderJson/configuration/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-json/configuration.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderJson/configure/#kotlin.Function1[kotlinx.serialization.json.JsonBuilder,kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-json/configure.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderJson/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-json/content-type.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderJson/createFormat/#kotlinx.serialization.KSerializer[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-json/create-format.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderJson/decodeIssue/#kotlin.ByteArray/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-json/decode-issue.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderJson/default/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-json/default.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderJson/encodeIssue/#xyz.malefic.spyder.error.Issue/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-json/encode-issue.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderProtoBuf///PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-proto-buf/index.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderProtoBuf/build/#kotlin.Function1[kotlinx.serialization.protobuf.ProtoBufBuilder,kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-proto-buf/build.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderProtoBuf/configuration/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-proto-buf/configuration.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderProtoBuf/configure/#kotlin.Function1[kotlinx.serialization.protobuf.ProtoBufBuilder,kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-proto-buf/configure.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderProtoBuf/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-proto-buf/content-type.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderProtoBuf/createFormat/#kotlinx.serialization.KSerializer[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-proto-buf/create-format.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderProtoBuf/decodeIssue/#kotlin.ByteArray/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-proto-buf/decode-issue.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderProtoBuf/default/#/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-proto-buf/default.html
+$dokka.location:xyz.malefic.spyder.serialization/SpyderProtoBuf/encodeIssue/#xyz.malefic.spyder.error.Issue/PointingToDeclaration/library/xyz.malefic.spyder.serialization/-spyder-proto-buf/encode-issue.html
 $dokka.location:xyz.malefic.spyder.server.persistence////PointingToDeclaration/library/xyz.malefic.spyder.server.persistence/index.html
 $dokka.location:xyz.malefic.spyder.server.persistence//jsonFile/#kotlin.String#TypeParam(bounds=[kotlin.Any?])#kotlinx.serialization.KSerializer[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder.server.persistence/json-file.html
 $dokka.location:xyz.malefic.spyder.server.persistence/JsonFile///PointingToDeclaration/library/xyz.malefic.spyder.server.persistence/-json-file/index.html
@@ -246,7 +285,7 @@ $dokka.location:xyz.malefic.spyder.server//register/xyz.malefic.spyder.api.ApiCo
 $dokka.location:xyz.malefic.spyder.server//register/xyz.malefic.spyder.api.ApiContract[TypeParam(bounds=[kotlin.Any?]),xyz.malefic.spyder.feature.pagination.PaginatedResponse[TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider]),xyz.malefic.spyder.core.NoHeaders,TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider])]#kotlin.Function6[arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue],TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider]),xyz.malefic.spyder.feature.pagination.Pagination,TypeParam(bounds=[kotlin.Any?]),kotlin.collections.List[TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/library/xyz.malefic.spyder.server/register.html
 $dokka.location:xyz.malefic.spyder.server//register/xyz.malefic.spyder.api.ApiContract[xyz.malefic.spyder.feature.multipart.Multipart,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider])]#kotlin.Function5[arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue],TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider]),xyz.malefic.spyder.feature.multipart.Multipart,xyz.malefic.spyder.api.ApiResponse[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider])]]/PointingToDeclaration/library/xyz.malefic.spyder.server/register.html
 $dokka.location:xyz.malefic.spyder.server//register/xyz.malefic.spyder.api.ApiContract[xyz.malefic.spyder.feature.multipart.Multipart,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider]),xyz.malefic.spyder.core.NoHeaders,TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider])]#kotlin.Function5[arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue],TypeParam(bounds=[xyz.malefic.spyder.core.HeaderProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.PathProvider]),TypeParam(bounds=[xyz.malefic.spyder.core.QueryProvider]),xyz.malefic.spyder.feature.multipart.Multipart,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.spyder.server/register.html
-$dokka.location:xyz.malefic.spyder.server//toHttp4k/xyz.malefic.spyder.api.Method#/PointingToDeclaration/library/xyz.malefic.spyder.server/to-http4k.html
+$dokka.location:xyz.malefic.spyder.server//toHttp4k/xyz.malefic.spyder.api.HttpMethod#/PointingToDeclaration/library/xyz.malefic.spyder.server/to-http4k.html
 $dokka.location:xyz.malefic.spyder.server/SpyderServer///PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server/index.html
 $dokka.location:xyz.malefic.spyder.server/SpyderServer/block/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server/block.html
 $dokka.location:xyz.malefic.spyder.server/SpyderServer/config/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server/config.html
@@ -269,11 +308,9 @@ $dokka.location:xyz.malefic.spyder.server/SpyderServerConfig///PointingToDeclara
 $dokka.location:xyz.malefic.spyder.server/SpyderServerConfig/SpyderServerConfig/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server-config/-spyder-server-config.html
 $dokka.location:xyz.malefic.spyder.server/SpyderServerConfig/assetsHosting/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server-config/assets-hosting.html
 $dokka.location:xyz.malefic.spyder.server/SpyderServerConfig/assetsPath/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server-config/assets-path.html
-$dokka.location:xyz.malefic.spyder.server/SpyderServerConfig/assetsPrefix/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server-config/assets-prefix.html
 $dokka.location:xyz.malefic.spyder.server/SpyderServerConfig/corsPolicy/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server-config/cors-policy.html
 $dokka.location:xyz.malefic.spyder.server/SpyderServerConfig/filesHosting/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server-config/files-hosting.html
 $dokka.location:xyz.malefic.spyder.server/SpyderServerConfig/filesPath/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server-config/files-path.html
-$dokka.location:xyz.malefic.spyder.server/SpyderServerConfig/filesPrefix/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server-config/files-prefix.html
 $dokka.location:xyz.malefic.spyder.server/SpyderServerConfig/port/#/PointingToDeclaration/library/xyz.malefic.spyder.server/-spyder-server-config/port.html
 xyz.malefic.spyder.api
 xyz.malefic.spyder.client
@@ -283,5 +320,6 @@ xyz.malefic.spyder.error
 xyz.malefic.spyder.feature.auth
 xyz.malefic.spyder.feature.multipart
 xyz.malefic.spyder.feature.pagination
+xyz.malefic.spyder.serialization
 xyz.malefic.spyder.server
 xyz.malefic.spyder.server.persistence
