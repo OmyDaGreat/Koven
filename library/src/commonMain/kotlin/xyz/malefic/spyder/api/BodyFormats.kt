@@ -2,9 +2,9 @@ package xyz.malefic.spyder.api
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import xyz.malefic.spyder.serialization.Serializer
-import xyz.malefic.spyder.serialization.SpyderJson
-import xyz.malefic.spyder.serialization.SpyderProtoBuf
+import xyz.malefic.spyder.serialization.JsonSerializer
+import xyz.malefic.spyder.serialization.ProtoBufSerializer
+import xyz.malefic.spyder.serialization.SerializationEngine
 
 /**
  * Defines how a type [T] is transformed for transmission.
@@ -15,7 +15,7 @@ interface BodyFormat<T> {
     /**
      * The serialization engine that produced this format, if any.
      */
-    val serialization: Serializer<*>? get() = null
+    val serialization: SerializationEngine<*>? get() = null
 
     /**
      * The content type of the body.
@@ -40,7 +40,7 @@ interface BodyFormat<T> {
 }
 
 /**
- * A [BodyFormat] that uses [SpyderJson] to encode and decode values.
+ * A [BodyFormat] that uses [JsonSerializer] to encode and decode values.
  *
  * @param serializer The [KSerializer] to use for encoding and decoding.
  *
@@ -49,15 +49,15 @@ interface BodyFormat<T> {
 class JsonFormat<T>(
     private val serializer: KSerializer<T>,
 ) : BodyFormat<T> {
-    override val serialization = SpyderJson
+    override val serialization = JsonSerializer
     override val contentType = "application/json"
 
-    override fun encode(value: T): ByteArray = SpyderJson.default.encodeToString(serializer, value).encodeToByteArray()
+    override fun encode(value: T): ByteArray = JsonSerializer.default.encodeToString(serializer, value).encodeToByteArray()
 
     override fun decode(
         bytes: ByteArray,
         contentType: String,
-    ): T = SpyderJson.default.decodeFromString(serializer, bytes.decodeToString())
+    ): T = JsonSerializer.default.decodeFromString(serializer, bytes.decodeToString())
 
     companion object {
         /**
@@ -68,21 +68,21 @@ class JsonFormat<T>(
 }
 
 /**
- * A [BodyFormat] that uses [SpyderProtoBuf] to encode and decode values.
+ * A [BodyFormat] that uses [ProtoBufSerializer] to encode and decode values.
  */
 @OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
 class ProtoBufFormat<T>(
     private val serializer: KSerializer<T>,
 ) : BodyFormat<T> {
-    override val serialization = SpyderProtoBuf
+    override val serialization = ProtoBufSerializer
     override val contentType = "application/x-protobuf"
 
-    override fun encode(value: T): ByteArray = SpyderProtoBuf.default.encodeToByteArray(serializer, value)
+    override fun encode(value: T): ByteArray = ProtoBufSerializer.default.encodeToByteArray(serializer, value)
 
     override fun decode(
         bytes: ByteArray,
         contentType: String,
-    ): T = SpyderProtoBuf.default.decodeFromByteArray(serializer, bytes)
+    ): T = ProtoBufSerializer.default.decodeFromByteArray(serializer, bytes)
 
     companion object {
         /**

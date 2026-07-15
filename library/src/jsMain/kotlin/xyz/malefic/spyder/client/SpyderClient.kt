@@ -11,6 +11,7 @@ import org.khronos.webgl.Uint8Array
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
 import org.w3c.xhr.FormData
+import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.api.ApiContract
 import xyz.malefic.spyder.api.ApiResponse
 import xyz.malefic.spyder.core.HeaderProvider
@@ -20,7 +21,6 @@ import xyz.malefic.spyder.core.QueryProvider
 import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.multipart.Multipart
-import xyz.malefic.spyder.serialization.Spyder
 
 /**
  * Extension to make calling contracts more ergonomic.
@@ -105,7 +105,7 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
         if (!response.ok) {
             raise(
                 catch({
-                    (responseFormat.serialization ?: Spyder.serialization).decodeIssue(responseBytes)
+                    (responseFormat.serialization ?: SpyderConfig.serialization).decodeIssue(responseBytes)
                 })
                     { InternalIssue("Server error (${response.status}): ${responseBytes.decodeToString()}", response.status) },
             )

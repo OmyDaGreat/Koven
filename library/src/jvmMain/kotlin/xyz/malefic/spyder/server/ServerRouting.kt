@@ -14,6 +14,7 @@ import org.http4k.core.multipartIterator
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.path
+import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.api.ApiContract
 import xyz.malefic.spyder.api.ApiResponse
 import xyz.malefic.spyder.api.ApiResponse.Companion.with
@@ -28,7 +29,6 @@ import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
-import xyz.malefic.spyder.serialization.Spyder
 
 /**
  * Creates a route for the given [ApiContract].
@@ -179,7 +179,7 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
 internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.baseRegister(
     crossinline logic: Raise<Issue>.(req: Request, reqH: ReqH, pathP: PathP, queryP: QueryP) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
-    "/${Spyder.apiPrefix}/$path" bind httpMethod.toHttp4k to { req ->
+    "/${SpyderConfig.apiPrefix}/$path" bind httpMethod.toHttp4k to { req ->
         val headers = Headers.fromPairs(req.headers)
         val pathParams = "\\{([^}]+)\\}".toRegex().findAll(path).map { it.groupValues[1] }.associateWith { req.path(it) ?: "" }
         val queryMap = queryParams.associateWith { req.queries(it).map { v -> v ?: "" } }
@@ -200,7 +200,7 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
         when (result) {
             is Either.Left -> {
                 val issue = result.value
-                val serialization = responseFormat.serialization ?: Spyder.serialization
+                val serialization = responseFormat.serialization ?: SpyderConfig.serialization
                 val body = serialization.encodeIssue(issue)
                 Response(Status.fromCode(issue.status.toInt()) ?: Status.INTERNAL_SERVER_ERROR)
                     .body(MemoryBody(body))

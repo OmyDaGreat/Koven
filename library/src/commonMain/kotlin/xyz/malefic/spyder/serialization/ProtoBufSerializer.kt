@@ -12,9 +12,9 @@ import xyz.malefic.spyder.error.Issue
  * Global [ProtoBuf] manager for the Spyder framework.
  */
 @OptIn(ExperimentalSerializationApi::class)
-object SpyderProtoBuf : Serializer<ProtoBuf> {
+object ProtoBufSerializer : SerializationEngine<ProtoBuf> {
     init {
-        Serializer.onChange { default = build() }
+        SerializationEngine.onChange { default = build() }
     }
 
     /**
@@ -50,7 +50,7 @@ object SpyderProtoBuf : Serializer<ProtoBuf> {
     fun build(block: ProtoBufBuilder.() -> Unit = {}): ProtoBuf =
         ProtoBuf {
             configuration()
-            serializersModule = Serializer.buildModule()
+            serializersModule = SerializationEngine.buildModule()
             block()
         }
 }

@@ -3,7 +3,7 @@ package xyz.malefic.spyder.server.persistence
 import co.touchlab.kermit.Logger
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import xyz.malefic.spyder.serialization.SpyderJson
+import xyz.malefic.spyder.serialization.JsonSerializer
 import xyz.malefic.spyder.server.SpyderServer
 import java.io.File
 import java.nio.file.Files
@@ -61,7 +61,7 @@ class JsonFile<T>(
     private fun load(): T =
         try {
             if (file.exists()) {
-                SpyderJson.default.decodeFromString(serializer, file.readText())
+                JsonSerializer.default.decodeFromString(serializer, file.readText())
             } else {
                 defaultValue
             }
@@ -72,7 +72,7 @@ class JsonFile<T>(
 
     private fun save(toSave: T) =
         try {
-            val json = SpyderJson.default.encodeToString(serializer, toSave)
+            val json = JsonSerializer.default.encodeToString(serializer, toSave)
             val tempFile = File(file.parent, "$fileName.tmp")
             file.parentFile?.mkdirs()
             tempFile.writeText(json)
@@ -96,5 +96,5 @@ class JsonFile<T>(
 inline fun <reified T> jsonFile(
     fileName: String,
     defaultValue: T,
-    serializer: KSerializer<T> = SpyderJson.default.serializersModule.serializer(),
+    serializer: KSerializer<T> = JsonSerializer.default.serializersModule.serializer(),
 ) = JsonFile(fileName, defaultValue, serializer)

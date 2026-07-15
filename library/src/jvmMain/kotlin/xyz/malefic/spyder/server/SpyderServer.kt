@@ -13,6 +13,7 @@ import org.http4k.server.Http4kServer
 import org.http4k.server.JettyLoom
 import org.http4k.server.ServerConfig
 import org.http4k.server.asServer
+import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.api.ApiContract
 import xyz.malefic.spyder.api.ApiResponse
 import xyz.malefic.spyder.core.HeaderProvider
@@ -23,7 +24,6 @@ import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
-import xyz.malefic.spyder.serialization.Spyder
 import java.io.File
 
 /**
@@ -110,12 +110,12 @@ class SpyderServerBuilder(
                 routes(
                     routes +
                         if (config.assetsHosting) {
-                            arrayOf("/${Spyder.assetsPrefix}" bind static(ResourceLoader.Directory(config.assetsPath)))
+                            arrayOf("/${SpyderConfig.assetsPrefix}" bind static(ResourceLoader.Directory(config.assetsPath)))
                         } else {
                             arrayOf()
                         } +
                         if (config.filesHosting) {
-                            arrayOf("/${Spyder.filesPrefix}" bind static(ResourceLoader.Directory(config.filesPath)))
+                            arrayOf("/${SpyderConfig.filesPrefix}" bind static(ResourceLoader.Directory(config.filesPath)))
                         } else {
                             arrayOf()
                         },

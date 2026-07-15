@@ -3,23 +3,31 @@ package xyz.malefic.spyder.core
 import arrow.core.raise.Raise
 import xyz.malefic.spyder.error.Issue
 
-/** Interface for providing path parameters on the client. */
+/**
+ * Interface for providing path parameters on the client.
+ */
 interface PathProvider {
     fun providePath(): Map<String, String>
 }
 
-/** Interface for decoding path parameters on the server. */
+/**
+ * Interface for decoding path parameters on the server.
+ */
 interface PathField<out T> {
     context(raise: Raise<Issue>)
     fun decodePath(params: Map<String, String>): T
 }
 
-/** Interface for providing query parameters on the client. */
+/**
+ * Interface for providing query parameters on the client.
+ */
 interface QueryProvider {
     fun provideQuery(): Map<String, List<String>>
 }
 
-/** Interface for decoding query parameters on the server. */
+/**
+ * Interface for decoding query parameters on the server.
+ */
 interface QueryField<out T> {
     context(raise: Raise<Issue>)
     fun decodeQuery(params: Map<String, List<String>>): T

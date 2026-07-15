@@ -2,6 +2,7 @@ package xyz.malefic.spyder.api
 
 import arrow.core.raise.Raise
 import kotlinx.serialization.serializer
+import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.core.HeaderField
 import xyz.malefic.spyder.core.HeaderProvider
 import xyz.malefic.spyder.core.Headers
@@ -13,7 +14,6 @@ import xyz.malefic.spyder.core.QueryField
 import xyz.malefic.spyder.core.QueryProvider
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.auth.BearerAuth
-import xyz.malefic.spyder.serialization.Spyder
 
 /**
  * A contract for an API endpoint shared between the client and server.
@@ -95,13 +95,13 @@ inline fun <reified Req, reified Res> apiContract(path: String): ApiContractBuil
         if (Req::class == Unit::class) {
             UnitFormat as BodyFormat<Req>
         } else {
-            Spyder.serialization.createFormat(serializer<Req>())
+            SpyderConfig.serialization.createFormat(serializer<Req>())
         }
     val resFormat =
         if (Res::class == Unit::class) {
             UnitFormat as BodyFormat<Res>
         } else {
-            Spyder.serialization.createFormat(serializer<Res>())
+            SpyderConfig.serialization.createFormat(serializer<Res>())
         }
 
     return ApiContractBuilder(

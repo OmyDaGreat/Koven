@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
  *
  * @param Format The type of [SerialFormat] used.
  */
-interface Serializer<Format : SerialFormat> {
+interface SerializationEngine<Format : SerialFormat> {
     /**
      * The default instance of the [SerialFormat].
      */

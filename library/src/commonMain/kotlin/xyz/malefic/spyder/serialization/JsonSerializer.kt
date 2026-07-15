@@ -10,9 +10,9 @@ import xyz.malefic.spyder.error.Issue
 /**
  * Global [Json] manager for the Spyder framework.
  */
-object SpyderJson : Serializer<Json> {
+object JsonSerializer : SerializationEngine<Json> {
     init {
-        Serializer.onChange { default = build() }
+        SerializationEngine.onChange { default = build() }
     }
 
     /**
@@ -51,7 +51,7 @@ object SpyderJson : Serializer<Json> {
     fun build(block: JsonBuilder.() -> Unit = {}): Json =
         Json {
             configuration()
-            serializersModule = Serializer.buildModule()
+            serializersModule = SerializationEngine.buildModule()
             block()
         }
 }
