@@ -123,7 +123,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-api-contract/index.html">ApiContract</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">Req</a><span class="token punctuation">, </span><a href="-api-contract/index.html">Res</a><span class="token punctuation">, </span><a href="-api-contract/index.html">ReqH</a><span class="token operator"> : </span><a href="../xyz.malefic.spyder.core/-header-provider/index.html">HeaderProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">ResH</a><span class="token operator"> : </span><a href="../xyz.malefic.spyder.core/-header-provider/index.html">HeaderProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">PathP</a><span class="token operator"> : </span><a href="../xyz.malefic.spyder.core/-path-provider/index.html">PathProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">QueryP</a><span class="token operator"> : </span><a href="../xyz.malefic.spyder.core/-query-provider/index.html">QueryProvider</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>path<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>method<span class="token operator">: </span><a href="-method/index.html">Method</a><span class="token operator"> = </span>Method.POST<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredRequestHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../xyz.malefic.spyder.core/-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredResponseHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../xyz.malefic.spyder.core/-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requestHeaderDecoder<span class="token operator">: </span><a href="../xyz.malefic.spyder.core/-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">ReqH</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoHeaders as HeaderField&lt;ReqH&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>responseHeaderDecoder<span class="token operator">: </span><a href="../xyz.malefic.spyder.core/-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">ResH</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoHeaders as HeaderField&lt;ResH&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pathDecoder<span class="token operator">: </span><a href="../xyz.malefic.spyder.core/-path-field/index.html">PathField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">PathP</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoParams as PathField&lt;PathP&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>queryDecoder<span class="token operator">: </span><a href="../xyz.malefic.spyder.core/-query-field/index.html">QueryField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">QueryP</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoParams as QueryField&lt;QueryP&gt;</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A contract for an API endpoint shared between the client and server.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-api-contract/index.html">ApiContract</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">Req</a><span class="token punctuation">, </span><a href="-api-contract/index.html">Res</a><span class="token punctuation">, </span><a href="-api-contract/index.html">ReqH</a><span class="token operator"> : </span><a href="../xyz.malefic.spyder.core/-header-provider/index.html">HeaderProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">ResH</a><span class="token operator"> : </span><a href="../xyz.malefic.spyder.core/-header-provider/index.html">HeaderProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">PathP</a><span class="token operator"> : </span><a href="../xyz.malefic.spyder.core/-path-provider/index.html">PathProvider</a><span class="token punctuation">, </span><a href="-api-contract/index.html">QueryP</a><span class="token operator"> : </span><a href="../xyz.malefic.spyder.core/-query-provider/index.html">QueryProvider</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>path<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>method<span class="token operator">: </span><a href="-method/index.html">Method</a><span class="token operator"> = </span>Method.POST<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredRequestHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../xyz.malefic.spyder.core/-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredResponseHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../xyz.malefic.spyder.core/-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requestHeaderDecoder<span class="token operator">: </span><a href="../xyz.malefic.spyder.core/-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">ReqH</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoHeaders as HeaderField&lt;ReqH&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>responseHeaderDecoder<span class="token operator">: </span><a href="../xyz.malefic.spyder.core/-header-field/index.html">HeaderField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">ResH</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoHeaders as HeaderField&lt;ResH&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pathDecoder<span class="token operator">: </span><a href="../xyz.malefic.spyder.core/-path-field/index.html">PathField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">PathP</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoParams as PathField&lt;PathP&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>queryDecoder<span class="token operator">: </span><a href="../xyz.malefic.spyder.core/-query-field/index.html">QueryField</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">QueryP</a><span class="token operator">&gt;</span><span class="token operator"> = </span>NoParams as QueryField&lt;QueryP&gt;<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requestFormat<span class="token operator">: </span><a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">Req</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>responseFormat<span class="token operator">: </span><a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="-api-contract/index.html">Res</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A contract for an API endpoint shared between the client and server.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -158,6 +158,81 @@
               </div>
             </div>
           </div>
+<a data-name="-1996571621%2FClasslikes%2F-654899660" anchor-label="BinaryFormat" id="-1996571621%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-binary-format/index.html"><span>Binary</span><wbr></wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1996571621%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-binary-format/index.html">BinaryFormat</a> : <a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A <a href="-body-format/index.html">BodyFormat</a> for binary bodies.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="965722842%2FClasslikes%2F-654899660" anchor-label="BodyFormat" id="965722842%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-format/index.html"><span>Body</span><wbr></wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="965722842%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="-body-format/index.html">T</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Defines how a type <a href="-body-format/index.html">T</a> is transformed for transmission.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2133826215%2FClasslikes%2F-654899660" anchor-label="FormUrlEncodedFormat" id="-2133826215%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-form-url-encoded-format/index.html"><span>Form</span><wbr></wbr><span>Url</span><wbr></wbr><span>Encoded</span><wbr></wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2133826215%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-form-url-encoded-format/index.html">FormUrlEncodedFormat</a> : <a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A <a href="-body-format/index.html">BodyFormat</a> for application/x-www-form-urlencoded bodies.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1449489329%2FClasslikes%2F-654899660" anchor-label="HtmlFormat" id="1449489329%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-html-format/index.html"><span>Html</span><wbr></wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1449489329%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-html-format/index.html">HtmlFormat</a> : <a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A <a href="-body-format/index.html">BodyFormat</a> for HTML bodies.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-217635116%2FClasslikes%2F-654899660" anchor-label="JsonFormat" id="-217635116%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-json-format/index.html"><span>Json</span><wbr></wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-217635116%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-json-format/index.html">JsonFormat</a><span class="token operator">&lt;</span><a href="-json-format/index.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="-json-format/index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="-json-format/index.html">T</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A <a href="-body-format/index.html">BodyFormat</a> that uses <a href="../xyz.malefic.spyder.core/-spyder-json/index.html">SpyderJson</a> to encode and decode values.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="436112434%2FClasslikes%2F-654899660" anchor-label="Method" id="436112434%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
@@ -169,6 +244,51 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-method/index.html">Method</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-method/index.html">Method</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Common HTTP methods for API contracts.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1600613249%2FClasslikes%2F-654899660" anchor-label="PlainTextFormat" id="1600613249%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-plain-text-format/index.html"><span>Plain</span><wbr></wbr><span>Text</span><wbr></wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1600613249%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-plain-text-format/index.html">PlainTextFormat</a> : <a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A <a href="-body-format/index.html">BodyFormat</a> for plain text bodies.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1791731384%2FClasslikes%2F-654899660" anchor-label="UnitFormat" id="1791731384%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-unit-format/index.html"><span>Unit</span><wbr></wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1791731384%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-unit-format/index.html">UnitFormat</a> : <a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A <a href="-body-format/index.html">BodyFormat</a> for <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> bodies.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1512124417%2FClasslikes%2F-654899660" anchor-label="XmlFormat" id="1512124417%2FClasslikes%2F-654899660" data-filterable-set=":library/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-xml-format/index.html"><span>Xml</span><wbr></wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1512124417%2FClasslikes%2F-654899660"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-xml-format/index.html">XmlFormat</a> : <a href="-body-format/index.html">BodyFormat</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A <a href="-body-format/index.html">BodyFormat</a> for XML bodies.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -236,7 +356,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="api-contract.html">Req</a><span class="token punctuation">, </span><a href="api-contract.html">Res</a><span class="token operator">&gt; </span><a href="api-contract.html"><span class="token function">apiContract</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">path<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-api-contract-builder/index.html">ApiContractBuilder</a><span class="token operator">&lt;</span><a href="api-contract.html">Req</a><span class="token punctuation">, </span><a href="api-contract.html">Res</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-headers/index.html">NoHeaders</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-headers/index.html">NoHeaders</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-params/index.html">NoParams</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-params/index.html">NoParams</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Entry point for creating an <a href="-api-contract/index.html">ApiContract</a> via builder.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="api-contract.html">Req</a><span class="token punctuation">, </span><a href="api-contract.html">Res</a><span class="token operator">&gt; </span><a href="api-contract.html"><span class="token function">apiContract</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">path<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-api-contract-builder/index.html">ApiContractBuilder</a><span class="token operator">&lt;</span><a href="api-contract.html">Req</a><span class="token punctuation">, </span><a href="api-contract.html">Res</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-headers/index.html">NoHeaders</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-headers/index.html">NoHeaders</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-params/index.html">NoParams</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-params/index.html">NoParams</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Entry point for creating an <a href="-api-contract/index.html">ApiContract</a> via builder.</p></div></div></div>
                 </div>
               </div>
             </div>
