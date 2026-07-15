@@ -5,6 +5,7 @@ import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import arrow.core.raise.either
 import arrow.core.raise.ensure
+import org.http4k.core.MemoryBody
 import org.http4k.core.MultipartEntity
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -25,7 +26,12 @@ import xyz.malefic.spyder.core.SpyderJson
 import xyz.malefic.spyder.error.BadRequestIssue
 import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
-import xyz.malefic.spyder.feature.multipart.Multipart
+import xyz.malefic.spyder.feature.body.CustomBody
+import xyz.malefic.spyder.feature.body.SpyderRawBody
+import xyz.malefic.spyder.feature.body.binary.BinaryBody
+import xyz.malefic.spyder.feature.body.multipart.Multipart
+import xyz.malefic.spyder.feature.body.text.PlainTextBody
+import xyz.malefic.spyder.feature.body.xml.XmlBody
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
 
@@ -130,35 +136,57 @@ inline fun <reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : Q
 
 @PublishedApi
 internal inline fun <reified Req> Raise<Issue>.decodeBody(req: Request): Req =
-    if (Req::class == Unit::class) {
-        Unit as Req
-    } else if (Req::class == Multipart::class) {
-        catch({
-            val fields = mutableMapOf<String, String>()
-            val files = mutableMapOf<String, Multipart.File>()
+    when (Req::class) {
+        Unit::class -> {
+            Unit as Req
+        }
 
-            req.multipartIterator().forEach { part ->
-                when (part) {
-                    is MultipartEntity.Field -> {
-                        fields[part.name] = part.value
-                    }
+        Multipart::class -> {
+            catch({
+                val fields = mutableMapOf<String, String>()
+                val files = mutableMapOf<String, Multipart.File>()
 
-                    is MultipartEntity.File -> {
-                        files[part.name] =
-                            Multipart.File(
-                                part.file.filename,
-                                part.file.contentType.value,
-                                part.file.content.readAllBytes(),
-                            )
+                req.multipartIterator().forEach { part ->
+                    when (part) {
+                        is MultipartEntity.Field -> {
+                            fields[part.name] = part.value
+                        }
+
+                        is MultipartEntity.File -> {
+                            files[part.name] =
+                                Multipart.File(
+                                    part.file.filename,
+                                    part.file.contentType.value,
+                                    part.file.content.readAllBytes(),
+                                )
+                        }
                     }
                 }
-            }
-            Multipart(fields, files) as Req
-        }) { raise(BadRequestIssue("Invalid multipart request: ${it.message}")) }
-    } else {
-        catch({
-            SpyderJson.default.decodeFromString<Req>(req.bodyString())
-        }) { raise(BadRequestIssue("Invalid JSON for request body: ${it.message}")) }
+                Multipart(fields, files) as Req
+            }) { raise(BadRequestIssue("Invalid multipart request: ${it.message}")) }
+        }
+
+        PlainTextBody::class -> {
+            PlainTextBody(req.bodyString()) as Req
+        }
+
+        XmlBody::class -> {
+            XmlBody(req.bodyString()) as Req
+        }
+
+        BinaryBody::class -> {
+            BinaryBody(req.body.payload.array(), req.header("Content-Type") ?: "application/octet-stream") as Req
+        }
+
+        CustomBody::class, SpyderRawBody::class -> {
+            CustomBody(req.bodyString(), req.header("Content-Type") ?: "text/plain") as Req
+        }
+
+        else -> {
+            catch({
+                SpyderJson.default.decodeFromString<Req>(req.bodyString())
+            }) { raise(BadRequestIssue("Invalid JSON for request body: ${it.message}")) }
+        }
     }
 
 @PublishedApi
@@ -196,12 +224,22 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
             is Either.Right -> {
                 val (res, resH) = result.value
                 var response =
-                    if (Res::class == Unit::class) {
-                        Response(Status.OK)
-                    } else {
-                        Response(Status.OK)
-                            .body(SpyderJson.default.encodeToString(res))
-                            .header("Content-Type", "application/json")
+                    when {
+                        Res::class == Unit::class -> {
+                            Response(Status.OK)
+                        }
+
+                        res is SpyderRawBody -> {
+                            Response(Status.OK)
+                                .body(MemoryBody(res.encode()))
+                                .header("Content-Type", res.contentType)
+                        }
+
+                        else -> {
+                            Response(Status.OK)
+                                .body(SpyderJson.default.encodeToString(res))
+                                .header("Content-Type", "application/json")
+                        }
                     }
 
                 Headers.Builder().apply { add(resH) }.build().forEach { (k, v) ->

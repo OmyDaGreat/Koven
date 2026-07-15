@@ -20,7 +20,7 @@ import xyz.malefic.spyder.core.NoHeaders
 import xyz.malefic.spyder.core.PathProvider
 import xyz.malefic.spyder.core.QueryProvider
 import xyz.malefic.spyder.error.Issue
-import xyz.malefic.spyder.feature.multipart.Multipart
+import xyz.malefic.spyder.feature.body.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
 import java.io.File

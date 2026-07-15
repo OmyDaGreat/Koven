@@ -1,4 +1,4 @@
-package xyz.malefic.spyder.feature.multipart
+package xyz.malefic.spyder.feature.body.multipart
 
 /**
  * A representation of a multipart form request.
