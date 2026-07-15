@@ -1,4 +1,4 @@
-package xyz.malefic.spyder
+package xyz.malefic.spyder.error
 
 import co.touchlab.kermit.Logger
 import kotlinx.serialization.Serializable

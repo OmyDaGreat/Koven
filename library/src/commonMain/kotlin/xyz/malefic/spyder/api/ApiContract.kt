@@ -1,7 +1,17 @@
-package xyz.malefic.spyder
+package xyz.malefic.spyder.api
 
 import arrow.core.raise.Raise
-import kotlinx.serialization.Serializable
+import xyz.malefic.spyder.core.HeaderField
+import xyz.malefic.spyder.core.HeaderProvider
+import xyz.malefic.spyder.core.Headers
+import xyz.malefic.spyder.core.NoHeaders
+import xyz.malefic.spyder.core.NoParams
+import xyz.malefic.spyder.core.PathField
+import xyz.malefic.spyder.core.PathProvider
+import xyz.malefic.spyder.core.QueryField
+import xyz.malefic.spyder.core.QueryProvider
+import xyz.malefic.spyder.error.Issue
+import xyz.malefic.spyder.feature.auth.BearerAuth
 
 /**
  * A contract for an API endpoint shared between the client and server.
@@ -71,12 +81,17 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
 }
 
 /**
- * A wrapper for the response body and its type-safe headers.
+ * Entry point for creating an [ApiContract] via builder.
  */
-data class ApiResponse<Res, ResH>(
-    val body: Res,
-    val headers: ResH,
-)
+@Suppress("UNCHECKED_CAST")
+fun <Req, Res> apiContract(path: String) =
+    ApiContractBuilder<Req, Res, NoHeaders, NoHeaders, NoParams, NoParams>(
+        path = path,
+        requestHeaderDecoder = NoHeaders as HeaderField<NoHeaders>,
+        responseHeaderDecoder = NoHeaders as HeaderField<NoHeaders>,
+        pathDecoder = NoParams as PathField<NoParams>,
+        queryDecoder = NoParams as QueryField<NoParams>,
+    )
 
 /**
  * A contract for the common "health" endpoint.
@@ -100,5 +115,5 @@ val PingContract =
 val SecurePingContract =
     apiContract<Unit, String>("auth/ping")
         .method(Method.GET)
-        .requestHeaders(BearerAuth)
+        .requestHeaders(BearerAuth.Companion)
         .build()

@@ -13,15 +13,16 @@ import org.http4k.server.Http4kServer
 import org.http4k.server.JettyLoom
 import org.http4k.server.ServerConfig
 import org.http4k.server.asServer
-import xyz.malefic.spyder.ApiContract
-import xyz.malefic.spyder.HeaderProvider
-import xyz.malefic.spyder.Issue
-import xyz.malefic.spyder.Multipart
-import xyz.malefic.spyder.NoHeaders
-import xyz.malefic.spyder.PaginatedResponse
-import xyz.malefic.spyder.Pagination
-import xyz.malefic.spyder.PathProvider
-import xyz.malefic.spyder.QueryProvider
+import xyz.malefic.spyder.api.ApiContract
+import xyz.malefic.spyder.api.ApiResponse
+import xyz.malefic.spyder.core.HeaderProvider
+import xyz.malefic.spyder.core.NoHeaders
+import xyz.malefic.spyder.core.PathProvider
+import xyz.malefic.spyder.core.QueryProvider
+import xyz.malefic.spyder.error.Issue
+import xyz.malefic.spyder.feature.multipart.Multipart
+import xyz.malefic.spyder.feature.pagination.PaginatedResponse
+import xyz.malefic.spyder.feature.pagination.Pagination
 import java.io.File
 
 /**
@@ -39,11 +40,11 @@ class SpyderServerBuilder(
     /**
      * Adds an [ApiContract] to the server by registering a route with the given [handler].
      *
-     * @param handler The function to handle the request. Should return a [Pair] in the format of `(response body, response headers)`.
+     * @param handler The function to handle the request. Should return an [ApiResponse] in the format of `(response body, response headers)`.
      */
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Pair<Res, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> ApiResponse<Res, ResH>,
     ) = add(register(handler))
 
     /**
@@ -60,12 +61,12 @@ class SpyderServerBuilder(
     /**
      * Adds an [ApiContract] with a multipart request body to the server.
      *
-     * @param handler The function to handle the request. Should return a [Pair] in the format of `(response body, response headers)`.
+     * @param handler The function to handle the request. Should return an [ApiResponse] in the format of `(response body, response headers)`.
      */
     @JvmName("handleMultipart")
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.handleMultipart(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> Pair<Res, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> ApiResponse<Res, ResH>,
     ) = add(register(handler))
 
     /**
@@ -82,12 +83,12 @@ class SpyderServerBuilder(
     /**
      * Adds a paginated [ApiContract] to the server.
      *
-     * @param handler The function to handle the request. Returns a [Pair] of the full list and response headers.
+     * @param handler The function to handle the request. Returns an [ApiResponse] of the full list and response headers.
      */
     @JvmName("handlePaginated")
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> Pair<List<T>, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> ApiResponse<List<T>, ResH>,
     ) = add(register(handler))
 
     /**

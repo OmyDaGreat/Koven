@@ -2,8 +2,8 @@ package xyz.malefic.spyder.client
 
 import com.varabyte.kobweb.browser.ApiFetcher
 import com.varabyte.kobweb.browser.http.RequestBody
-import xyz.malefic.spyder.Headers
-import xyz.malefic.spyder.Method
+import xyz.malefic.spyder.api.Method
+import xyz.malefic.spyder.core.Headers
 
 suspend fun ApiFetcher.call(
     method: Method,

@@ -4,42 +4,23 @@ import org.http4k.filter.CorsPolicy
 
 /**
  * Configuration for the [SpyderServer].
+ *
+ * @property port The port to listen on. Default is 8080.
+ * @property assetsHosting Whether to host static assets. Default is true.
+ * @property assetsPath The directory to host static assets from. Default is "assets".
+ * @property assetsPrefix The prefix for asset URLs. Default is "assets".
+ * @property filesHosting Whether to host user files. Default is true.
+ * @property filesPath The directory to host user files from. Default is "files".
+ * @property filesPrefix The prefix for user file URLs. Default is "files".
+ * @property corsPolicy The CORS policy to use. Default allows all origins and common methods.
  */
-class SpyderServerConfig(
-    /**
-     * The port to run the server on. Default is `8080`.
-     */
-    var port: Int = 8080,
-    /**
-     * Whether to host assets. Default is `true`.
-     */
-    var assetsHosting: Boolean = true,
-    /**
-     * The path to the assets directory. Default is `"assets"`.
-     *
-     * When changed, [assetsPrefix] should be updated accordingly.
-     */
-    var assetsPath: String = "assets",
-    /**
-     * The URL prefix for the assets directory. Default is the same as [assetsPath]. Non-functional is [assetsHosting] is `false`.
-     */
-    var assetsPrefix: String = assetsPath,
-    /**
-     * Whether to host files. Default is `true`.
-     */
-    var filesHosting: Boolean = true,
-    /**
-     * The path to the files directory. Default is `"files"`.
-     *
-     * When changed, [filesPrefix] should be updated accordingly.
-     */
-    var filesPath: String = "files",
-    /**
-     * The URL prefix for the files directory. Default is the same as [filesPath]. Non-functional is [filesHosting] is `false`.
-     */
-    var filesPrefix: String = filesPath,
-    /**
-     * The CORS policy to use. Default is [CorsPolicy.UnsafeGlobalPermissive].
-     */
-    var corsPolicy: CorsPolicy = CorsPolicy.UnsafeGlobalPermissive,
-)
+class SpyderServerConfig {
+    var port: Int = 8080
+    var assetsHosting: Boolean = true
+    var assetsPath: String = "assets"
+    var assetsPrefix: String = "assets"
+    var filesHosting: Boolean = true
+    var filesPath: String = "files"
+    var filesPrefix: String = "files"
+    var corsPolicy: CorsPolicy = CorsPolicy.UnsafeGlobalPermissive
+}

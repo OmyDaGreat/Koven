@@ -3,8 +3,8 @@ package xyz.malefic.spyder.client
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import arrow.core.Either
-import xyz.malefic.spyder.ApiState
-import xyz.malefic.spyder.Issue
+import xyz.malefic.spyder.core.ApiState
+import xyz.malefic.spyder.error.Issue
 
 /**
  * Converts a suspend request returning Either<Issue, T> into a Composable-supporting [ApiState].

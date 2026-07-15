@@ -1,4 +1,4 @@
-package xyz.malefic.spyder
+package xyz.malefic.spyder.core
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -7,6 +7,11 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.overwriteWith
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.serializer
+import xyz.malefic.spyder.error.BadRequestIssue
+import xyz.malefic.spyder.error.InternalIssue
+import xyz.malefic.spyder.error.Issue
+import xyz.malefic.spyder.error.RateLimitedIssue
+import xyz.malefic.spyder.error.UnauthorizedIssue
 import kotlin.reflect.KClass
 
 /**

@@ -1,4 +1,6 @@
-package xyz.malefic.spyder
+package xyz.malefic.spyder.core
+
+import xyz.malefic.spyder.error.Issue
 
 /**
  * A state machine for async API calls.

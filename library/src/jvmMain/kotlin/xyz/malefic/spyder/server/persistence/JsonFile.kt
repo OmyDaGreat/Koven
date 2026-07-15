@@ -1,9 +1,10 @@
-package xyz.malefic.spyder.server
+package xyz.malefic.spyder.server.persistence
 
 import co.touchlab.kermit.Logger
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import xyz.malefic.spyder.SpyderJson
+import xyz.malefic.spyder.core.SpyderJson
+import xyz.malefic.spyder.server.SpyderServer
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption

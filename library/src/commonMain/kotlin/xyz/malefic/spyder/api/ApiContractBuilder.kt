@@ -1,4 +1,11 @@
-package xyz.malefic.spyder
+package xyz.malefic.spyder.api
+
+import xyz.malefic.spyder.core.HeaderField
+import xyz.malefic.spyder.core.HeaderProvider
+import xyz.malefic.spyder.core.PathField
+import xyz.malefic.spyder.core.PathProvider
+import xyz.malefic.spyder.core.QueryField
+import xyz.malefic.spyder.core.QueryProvider
 
 /**
  * A builder for [ApiContract] types.
@@ -24,7 +31,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
      * Sets the request header decoder and the set of required headers for validation.
      *
      * @param decoder The [HeaderField] to decode the request headers.
-     * @param required The set of required headers. If empty, the decoder is used as the required headers, though flattened (such that composite headers pass in their constituent fields).
+     * @param required The set of required headers. If empty, the decoder is used as the required header(s), though flattened (such that composite headers pass in their constituent fields).
      */
     fun <NewReqH : HeaderProvider> requestHeaders(
         decoder: HeaderField<NewReqH>,
@@ -39,7 +46,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
      * Sets the response header decoder and the set of required headers for validation.
      *
      * @param decoder The [HeaderField] to decode the response headers.
-     * @param required The set of required headers. If empty, the decoder is used as the required headers, though flattened (such that composite headers pass in their constituent fields).
+     * @param required The set of required headers. If empty, the decoder is used as the required header(s), though flattened (such that composite headers pass in their constituent fields).
      */
     fun <NewResH : HeaderProvider> responseHeaders(
         decoder: HeaderField<NewResH>,
@@ -106,16 +113,3 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
             override val queryParams: List<String> = this@ApiContractBuilder.queryParams
         }
 }
-
-/**
- * Entry point for creating an [ApiContract] via builder.
- */
-@Suppress("UNCHECKED_CAST")
-fun <Req, Res> apiContract(path: String) =
-    ApiContractBuilder<Req, Res, NoHeaders, NoHeaders, NoParams, NoParams>(
-        path = path,
-        requestHeaderDecoder = NoHeaders as HeaderField<NoHeaders>,
-        responseHeaderDecoder = NoHeaders as HeaderField<NoHeaders>,
-        pathDecoder = NoParams as PathField<NoParams>,
-        queryDecoder = NoParams as QueryField<NoParams>,
-    )

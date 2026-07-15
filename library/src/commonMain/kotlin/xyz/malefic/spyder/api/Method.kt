@@ -1,14 +1,14 @@
-package xyz.malefic.spyder
+package xyz.malefic.spyder.api
 
 /**
- * Http methods supported by both Kobweb & Http4k.
+ * Common HTTP methods for API contracts.
  */
 enum class Method {
     GET,
     POST,
     PUT,
     DELETE,
-    OPTIONS,
     PATCH,
     HEAD,
+    OPTIONS,
 }

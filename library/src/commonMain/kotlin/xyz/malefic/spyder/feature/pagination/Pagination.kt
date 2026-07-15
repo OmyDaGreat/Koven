@@ -1,6 +1,7 @@
-package xyz.malefic.spyder
+package xyz.malefic.spyder.feature.pagination
 
 import kotlinx.serialization.Serializable
+import xyz.malefic.spyder.core.QueryProvider
 import kotlin.math.ceil
 
 /**

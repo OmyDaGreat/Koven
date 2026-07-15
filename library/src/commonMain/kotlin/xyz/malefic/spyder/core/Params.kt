@@ -1,6 +1,7 @@
-package xyz.malefic.spyder
+package xyz.malefic.spyder.core
 
 import arrow.core.raise.Raise
+import xyz.malefic.spyder.error.Issue
 
 /** Interface for providing path parameters on the client. */
 interface PathProvider {

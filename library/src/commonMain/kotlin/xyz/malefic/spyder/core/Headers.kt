@@ -1,7 +1,9 @@
-package xyz.malefic.spyder
+package xyz.malefic.spyder.core
 
 import arrow.core.raise.Raise
 import arrow.core.raise.context.ensureNotNull
+import xyz.malefic.spyder.error.BadRequestIssue
+import xyz.malefic.spyder.error.Issue
 
 /**
  * A wrapper for HTTP headers that maintains insertion order and supports multiple values.
@@ -129,7 +131,7 @@ interface HeaderField<out T> {
 }
 
 /**
- * Represents "No Headers" for contracts like [HealthContract] and [PingContract].
+ * Represents "No Headers" for contracts like [xyz.malefic.spyder.api.HealthContract] and [xyz.malefic.spyder.api.PingContract].
  */
 object NoHeaders : HeaderProvider, HeaderField<NoHeaders> {
     override val field: String = ""
@@ -143,7 +145,7 @@ object NoHeaders : HeaderProvider, HeaderField<NoHeaders> {
 }
 
 /**
- * Interface for header implementations. The companion object of this interface is used to create a [HeaderField]. You can check out an example with [BearerAuth].
+ * Interface for header implementations. The companion object of this interface is used to create a [HeaderField]. You can check out an example with [xyz.malefic.spyder.feature.auth.BearerAuth].
  */
 interface Header : HeaderProvider {
     val field: String
@@ -155,7 +157,7 @@ interface Header : HeaderProvider {
 }
 
 /**
- * A pair of [HeaderProvider]s. Used as a convenience wrapper to combine multiple headers into a single header for [ApiContract]. These can also be composed with each other to create more complex headers.
+ * A pair of [HeaderProvider]s. Used as a convenience wrapper to combine multiple headers into a single header for [xyz.malefic.spyder.api.ApiContract]. These can also be composed with each other to create more complex headers.
  */
 data class HeaderPair<out A : HeaderProvider, out B : HeaderProvider>(
     val first: A,
@@ -185,35 +187,4 @@ class PairField<A : HeaderProvider, B : HeaderProvider>(
     override fun decode(headers: Headers): HeaderPair<A, B> = HeaderPair(fieldA.decode(headers), fieldB.decode(headers))
 
     override fun flatten(): List<HeaderField<*>> = fieldA.flatten() + fieldB.flatten()
-}
-
-/**
- * An example header for bearer authentication.
- */
-class BearerAuth(
-    val token: String,
-) : Header {
-    override val field: String = Companion.field
-    override val values: List<String> = listOf("Bearer $token")
-
-    companion object : HeaderField<BearerAuth> {
-        override val field: String = "Authorization"
-
-        /**
-         * Decodes the Authorization header from [Headers] into a [BearerAuth].
-         *
-         * @param headers The [Headers] to decode.
-         *
-         * @return The decoded [BearerAuth] or null if the header is missing or invalid.
-         */
-        context(_: Raise<Issue>)
-        override fun decode(headers: Headers): BearerAuth =
-            ensureNotNull(
-                headers
-                    .getFirst(field)
-                    ?.takeIf { it.startsWith("Bearer ", ignoreCase = true) }
-                    ?.removePrefix("Bearer ")
-                    ?.let { BearerAuth(it) },
-            ) { BadRequestIssue("Invalid Authorization header") }
-    }
 }

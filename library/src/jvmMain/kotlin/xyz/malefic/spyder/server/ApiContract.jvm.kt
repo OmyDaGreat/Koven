@@ -13,19 +13,21 @@ import org.http4k.core.multipartIterator
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.path
-import xyz.malefic.spyder.ApiContract
-import xyz.malefic.spyder.BadRequestIssue
-import xyz.malefic.spyder.HeaderProvider
-import xyz.malefic.spyder.Headers
-import xyz.malefic.spyder.InternalIssue
-import xyz.malefic.spyder.Issue
-import xyz.malefic.spyder.Multipart
-import xyz.malefic.spyder.NoHeaders
-import xyz.malefic.spyder.PaginatedResponse
-import xyz.malefic.spyder.Pagination
-import xyz.malefic.spyder.PathProvider
-import xyz.malefic.spyder.QueryProvider
-import xyz.malefic.spyder.SpyderJson
+import xyz.malefic.spyder.api.ApiContract
+import xyz.malefic.spyder.api.ApiResponse
+import xyz.malefic.spyder.api.ApiResponse.Companion.with
+import xyz.malefic.spyder.core.HeaderProvider
+import xyz.malefic.spyder.core.Headers
+import xyz.malefic.spyder.core.NoHeaders
+import xyz.malefic.spyder.core.PathProvider
+import xyz.malefic.spyder.core.QueryProvider
+import xyz.malefic.spyder.core.SpyderJson
+import xyz.malefic.spyder.error.BadRequestIssue
+import xyz.malefic.spyder.error.InternalIssue
+import xyz.malefic.spyder.error.Issue
+import xyz.malefic.spyder.feature.multipart.Multipart
+import xyz.malefic.spyder.feature.pagination.PaginatedResponse
+import xyz.malefic.spyder.feature.pagination.Pagination
 
 /**
  * Creates a route for the given [ApiContract].
@@ -34,7 +36,7 @@ import xyz.malefic.spyder.SpyderJson
  */
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Pair<Res, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
     baseRegister { req, reqH, pathP, queryP ->
         val body = decodeBody<Req>(req)
@@ -50,7 +52,7 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, NoHeaders, PathP, QueryP>.register(
     crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Res,
-): RoutingHttpHandler = register<Req, Res, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) to NoHeaders }
+): RoutingHttpHandler = register<Req, Res, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) with NoHeaders }
 
 /**
  * Creates a route for the given [ApiContract] that returns a paginated response with a [Pagination] context.
@@ -62,7 +64,7 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvide
 @JvmName("registerPaginated")
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> Pair<List<T>, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> ApiResponse<List<T>, ResH>,
 ): RoutingHttpHandler =
     baseRegister { req, reqH, pathP, queryP ->
         val page = req.query("page")?.toIntOrNull() ?: 1
@@ -88,7 +90,7 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
                 val end = (start + limit).coerceAtMost(items.size)
                 PaginatedResponse.create(items.subList(start, end), page, limit, total)
             }
-        response to resH
+        response with resH
     }
 
 /**
@@ -96,23 +98,23 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
  *
  * The route will automatically handle `page` and `limit` query parameters to slice the list. If the [Pagination.totalItems] value provided in context is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
  *
- * @param handler The handler function for the route. Should return a [Pair] of the full list and response headers.
+ * @param handler The handler function for the route. Should return an [ApiResponse] of the full list and response headers.
  */
 @JvmName("registerPaginatedNoResponseHeader")
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified T, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders, PathP, QueryP>.register(
     crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> List<T>,
-): RoutingHttpHandler = register<Req, T, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) to NoHeaders }
+): RoutingHttpHandler = register<Req, T, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) with NoHeaders }
 
 /**
  * Creates a route for the given [ApiContract] with a multipart request body.
  *
- * @param handler The handler function for the route. Should return a [Pair] in the format of `(response body, response headers)`.
+ * @param handler The handler function for the route. Should return an [ApiResponse] in the format of `(response body, response headers)`.
  */
 @JvmName("registerMultipart")
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> Pair<Res, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(handler)
 
 /**
@@ -124,7 +126,7 @@ inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : P
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, NoHeaders, PathP, QueryP>.register(
     crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> Res,
-): RoutingHttpHandler = register<Res, ReqH, NoHeaders, PathP, QueryP> { req: Multipart -> handler(req) to NoHeaders }
+): RoutingHttpHandler = register<Res, ReqH, NoHeaders, PathP, QueryP> { req: Multipart -> handler(req) with NoHeaders }
 
 @PublishedApi
 internal inline fun <reified Req> Raise<Issue>.decodeBody(req: Request): Req =
@@ -162,7 +164,7 @@ internal inline fun <reified Req> Raise<Issue>.decodeBody(req: Request): Req =
 @PublishedApi
 @Suppress("ktlint:standard:max-line-length")
 internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.baseRegister(
-    crossinline logic: Raise<Issue>.(req: Request, reqH: ReqH, pathP: PathP, queryP: QueryP) -> Pair<Res, ResH>,
+    crossinline logic: Raise<Issue>.(req: Request, reqH: ReqH, pathP: PathP, queryP: QueryP) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
     "/api/$path" bind method.toHttp4k to { req ->
         val headers = Headers.fromPairs(req.headers)

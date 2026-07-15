@@ -10,16 +10,16 @@ import kotlinx.coroutines.await
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
 import org.w3c.xhr.FormData
-import xyz.malefic.spyder.ApiContract
-import xyz.malefic.spyder.ApiResponse
-import xyz.malefic.spyder.HeaderProvider
-import xyz.malefic.spyder.Headers
-import xyz.malefic.spyder.InternalIssue
-import xyz.malefic.spyder.Issue
-import xyz.malefic.spyder.Multipart
-import xyz.malefic.spyder.PathProvider
-import xyz.malefic.spyder.QueryProvider
-import xyz.malefic.spyder.SpyderJson
+import xyz.malefic.spyder.api.ApiResponse
+import xyz.malefic.spyder.api.ApiContract
+import xyz.malefic.spyder.core.HeaderProvider
+import xyz.malefic.spyder.core.Headers
+import xyz.malefic.spyder.core.PathProvider
+import xyz.malefic.spyder.core.QueryProvider
+import xyz.malefic.spyder.core.SpyderJson
+import xyz.malefic.spyder.error.InternalIssue
+import xyz.malefic.spyder.error.Issue
+import xyz.malefic.spyder.feature.multipart.Multipart
 
 /**
  * Extension to make calling contracts more ergonomic.
