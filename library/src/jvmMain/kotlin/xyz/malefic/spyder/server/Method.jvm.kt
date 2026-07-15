@@ -1,7 +1,7 @@
 package xyz.malefic.spyder.server
 
-import org.http4k.core.Method as Http4kMethod
 import xyz.malefic.spyder.api.Method
+import org.http4k.core.Method as Http4kMethod
 
 val Method.toHttp4k
     get() =
