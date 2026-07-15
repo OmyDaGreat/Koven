@@ -17,10 +17,10 @@ import xyz.malefic.spyder.core.HeaderProvider
 import xyz.malefic.spyder.core.Headers
 import xyz.malefic.spyder.core.PathProvider
 import xyz.malefic.spyder.core.QueryProvider
-import xyz.malefic.spyder.core.SpyderJson
 import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.multipart.Multipart
+import xyz.malefic.spyder.serialization.Spyder
 
 /**
  * Extension to make calling contracts more ergonomic.
@@ -88,7 +88,7 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
                     }
                 window.api
                     .call(
-                        method,
+                        httpMethod,
                         finalPath,
                         body,
                         Headers.build {
@@ -103,10 +103,12 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
         val responseBytes = Uint8Array(response.arrayBuffer().await()).unsafeCast<ByteArray>()
 
         if (!response.ok) {
-            val issue =
-                catch({ SpyderJson.default.decodeFromString<Issue>(responseBytes.decodeToString()) })
-                { InternalIssue("Server error (${response.status}): ${responseBytes.decodeToString()}", response.status) }
-            raise(issue)
+            raise(
+                catch({
+                    (responseFormat.serialization ?: Spyder.serialization).decodeIssue(responseBytes)
+                })
+                    { InternalIssue("Server error (${response.status}): ${responseBytes.decodeToString()}", response.status) },
+            )
         }
 
         val rawHeaders = mutableMapOf<String, List<String>>()

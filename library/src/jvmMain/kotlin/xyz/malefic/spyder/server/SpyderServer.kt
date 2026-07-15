@@ -23,6 +23,7 @@ import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
+import xyz.malefic.spyder.serialization.Spyder
 import java.io.File
 
 /**
@@ -109,12 +110,12 @@ class SpyderServerBuilder(
                 routes(
                     routes +
                         if (config.assetsHosting) {
-                            arrayOf("/${config.assetsPrefix}" bind static(ResourceLoader.Directory(config.assetsPath)))
+                            arrayOf("/${Spyder.assetsPrefix}" bind static(ResourceLoader.Directory(config.assetsPath)))
                         } else {
                             arrayOf()
                         } +
                         if (config.filesHosting) {
-                            arrayOf("/${config.filesPrefix}" bind static(ResourceLoader.Directory(config.filesPath)))
+                            arrayOf("/${Spyder.filesPrefix}" bind static(ResourceLoader.Directory(config.filesPath)))
                         } else {
                             arrayOf()
                         },

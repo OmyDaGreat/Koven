@@ -22,13 +22,13 @@ import xyz.malefic.spyder.core.Headers
 import xyz.malefic.spyder.core.NoHeaders
 import xyz.malefic.spyder.core.PathProvider
 import xyz.malefic.spyder.core.QueryProvider
-import xyz.malefic.spyder.core.SpyderJson
 import xyz.malefic.spyder.error.BadRequestIssue
 import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
+import xyz.malefic.spyder.serialization.Spyder
 
 /**
  * Creates a route for the given [ApiContract].
@@ -179,7 +179,7 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
 internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.baseRegister(
     crossinline logic: Raise<Issue>.(req: Request, reqH: ReqH, pathP: PathP, queryP: QueryP) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
-    "/api/$path" bind method.toHttp4k to { req ->
+    "/${Spyder.apiPrefix}/$path" bind httpMethod.toHttp4k to { req ->
         val headers = Headers.fromPairs(req.headers)
         val pathParams = "\\{([^}]+)\\}".toRegex().findAll(path).map { it.groupValues[1] }.associateWith { req.path(it) ?: "" }
         val queryMap = queryParams.associateWith { req.queries(it).map { v -> v ?: "" } }
@@ -200,10 +200,11 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
         when (result) {
             is Either.Left -> {
                 val issue = result.value
-                val body = SpyderJson.default.encodeToString(Issue.serializer(), issue)
+                val serialization = responseFormat.serialization ?: Spyder.serialization
+                val body = serialization.encodeIssue(issue)
                 Response(Status.fromCode(issue.status.toInt()) ?: Status.INTERNAL_SERVER_ERROR)
-                    .body(body)
-                    .header("Content-Type", "application/json")
+                    .body(MemoryBody(body))
+                    .header("Content-Type", serialization.contentType)
             }
 
             is Either.Right -> {

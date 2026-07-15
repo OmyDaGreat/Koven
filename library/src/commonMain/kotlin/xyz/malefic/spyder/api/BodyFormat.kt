@@ -2,7 +2,9 @@ package xyz.malefic.spyder.api
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import xyz.malefic.spyder.core.SpyderJson
+import xyz.malefic.spyder.serialization.Serializer
+import xyz.malefic.spyder.serialization.SpyderJson
+import xyz.malefic.spyder.serialization.SpyderProtoBuf
 
 /**
  * Defines how a type [T] is transformed for transmission.
@@ -10,6 +12,11 @@ import xyz.malefic.spyder.core.SpyderJson
  * @param T The type of the body to encode/decode.
  */
 interface BodyFormat<T> {
+    /**
+     * The serialization engine that produced this format, if any.
+     */
+    val serialization: Serializer<*>? get() = null
+
     /**
      * The content type of the body.
      */
@@ -42,6 +49,7 @@ interface BodyFormat<T> {
 class JsonFormat<T>(
     private val serializer: KSerializer<T>,
 ) : BodyFormat<T> {
+    override val serialization = SpyderJson
     override val contentType = "application/json"
 
     override fun encode(value: T): ByteArray = SpyderJson.default.encodeToString(serializer, value).encodeToByteArray()
@@ -56,6 +64,31 @@ class JsonFormat<T>(
          * Creates a [JsonFormat] for the given type [T].
          */
         inline fun <reified T> create(): JsonFormat<T> = JsonFormat(serializer<T>())
+    }
+}
+
+/**
+ * A [BodyFormat] that uses [SpyderProtoBuf] to encode and decode values.
+ */
+@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+class ProtoBufFormat<T>(
+    private val serializer: KSerializer<T>,
+) : BodyFormat<T> {
+    override val serialization = SpyderProtoBuf
+    override val contentType = "application/x-protobuf"
+
+    override fun encode(value: T): ByteArray = SpyderProtoBuf.default.encodeToByteArray(serializer, value)
+
+    override fun decode(
+        bytes: ByteArray,
+        contentType: String,
+    ): T = SpyderProtoBuf.default.decodeFromByteArray(serializer, bytes)
+
+    companion object {
+        /**
+         * Creates a [ProtoBufFormat] for the given type [T].
+         */
+        inline fun <reified T> create(): ProtoBufFormat<T> = ProtoBufFormat(serializer<T>())
     }
 }
 

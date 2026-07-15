@@ -4,23 +4,35 @@ import org.http4k.filter.CorsPolicy
 
 /**
  * Configuration for the [SpyderServer].
- *
- * @property port The port to listen on. Default is 8080.
- * @property assetsHosting Whether to host static assets. Default is true.
- * @property assetsPath The directory to host static assets from. Default is "assets".
- * @property assetsPrefix The prefix for asset URLs. Default is "assets".
- * @property filesHosting Whether to host user files. Default is true.
- * @property filesPath The directory to host user files from. Default is "files".
- * @property filesPrefix The prefix for user file URLs. Default is "files".
- * @property corsPolicy The CORS policy to use. Default allows all origins and common methods.
  */
 class SpyderServerConfig {
+    /**
+     * The port to listen on. Defaults to `8080`.
+     */
     var port: Int = 8080
+
+    /**
+     * Whether to host static assets. Defaults to `true`.
+     */
     var assetsHosting: Boolean = true
+
+    /**
+     * The directory to host static assets from. Defaults to `"assets"`.
+     */
     var assetsPath: String = "assets"
-    var assetsPrefix: String = "assets"
+
+    /**
+     * Whether to host user files. Defaults to `true`.
+     */
     var filesHosting: Boolean = true
+
+    /**
+     * The directory to host user files from. Defaults to `"files"`.
+     */
     var filesPath: String = "files"
-    var filesPrefix: String = "files"
+
+    /**
+     * The CORS policy to use. Defaults to [CorsPolicy.UnsafeGlobalPermissive].
+     */
     var corsPolicy: CorsPolicy = CorsPolicy.UnsafeGlobalPermissive
 }

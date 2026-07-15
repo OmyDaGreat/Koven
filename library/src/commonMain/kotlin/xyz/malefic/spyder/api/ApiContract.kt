@@ -1,6 +1,7 @@
 package xyz.malefic.spyder.api
 
 import arrow.core.raise.Raise
+import kotlinx.serialization.serializer
 import xyz.malefic.spyder.core.HeaderField
 import xyz.malefic.spyder.core.HeaderProvider
 import xyz.malefic.spyder.core.Headers
@@ -12,12 +13,13 @@ import xyz.malefic.spyder.core.QueryField
 import xyz.malefic.spyder.core.QueryProvider
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.auth.BearerAuth
+import xyz.malefic.spyder.serialization.Spyder
 
 /**
  * A contract for an API endpoint shared between the client and server.
  *
  * @param path The path of the API endpoint. Automatically prefixed with "api/".
- * @param method The HTTP method to use for the API endpoint. Default is [Method.POST].
+ * @param httpMethod The HTTP method to use for the API endpoint. Default is [HttpMethod.POST].
  * @param requiredRequestHeaders The set of required request header fields for the API endpoint.
  * @param requiredResponseHeaders The set of required response header fields for the API endpoint.
  * @param requestHeaderDecoder The [HeaderField] to decode the request headers.
@@ -36,7 +38,7 @@ import xyz.malefic.spyder.feature.auth.BearerAuth
  */
 abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider>(
     val path: String,
-    val method: Method = Method.POST,
+    val httpMethod: HttpMethod = HttpMethod.POST,
     val requiredRequestHeaders: List<HeaderField<*>> = emptyList(),
     val requiredResponseHeaders: List<HeaderField<*>> = emptyList(),
     @Suppress("UNCHECKED_CAST")
@@ -93,13 +95,13 @@ inline fun <reified Req, reified Res> apiContract(path: String): ApiContractBuil
         if (Req::class == Unit::class) {
             UnitFormat as BodyFormat<Req>
         } else {
-            JsonFormat.create<Req>()
+            Spyder.serialization.createFormat(serializer<Req>())
         }
     val resFormat =
         if (Res::class == Unit::class) {
             UnitFormat as BodyFormat<Res>
         } else {
-            JsonFormat.create<Res>()
+            Spyder.serialization.createFormat(serializer<Res>())
         }
 
     return ApiContractBuilder(
@@ -118,7 +120,7 @@ inline fun <reified Req, reified Res> apiContract(path: String): ApiContractBuil
  */
 val HealthContract =
     apiContract<Unit, String>("health")
-        .method(Method.GET)
+        .method(HttpMethod.GET)
         .build()
 
 /**
@@ -126,7 +128,7 @@ val HealthContract =
  */
 val PingContract =
     apiContract<Unit, String>("ping")
-        .method(Method.GET)
+        .method(HttpMethod.GET)
         .build()
 
 /**
@@ -134,6 +136,6 @@ val PingContract =
  */
 val SecurePingContract =
     apiContract<Unit, String>("auth/ping")
-        .method(Method.GET)
+        .method(HttpMethod.GET)
         .requestHeaders(BearerAuth.Companion)
         .build()

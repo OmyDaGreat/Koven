@@ -34,7 +34,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kermit)
-            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.bundles.serialization)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.arrow.core)

@@ -1,16 +1,16 @@
 package xyz.malefic.spyder.server
 
-import xyz.malefic.spyder.api.Method
+import xyz.malefic.spyder.api.HttpMethod
 import org.http4k.core.Method as Http4kMethod
 
-val Method.toHttp4k
+val HttpMethod.toHttp4k
     get() =
         when (this) {
-            Method.GET -> Http4kMethod.GET
-            Method.POST -> Http4kMethod.POST
-            Method.PUT -> Http4kMethod.PUT
-            Method.DELETE -> Http4kMethod.DELETE
-            Method.PATCH -> Http4kMethod.PATCH
-            Method.HEAD -> Http4kMethod.HEAD
-            Method.OPTIONS -> Http4kMethod.OPTIONS
+            HttpMethod.GET -> Http4kMethod.GET
+            HttpMethod.POST -> Http4kMethod.POST
+            HttpMethod.PUT -> Http4kMethod.PUT
+            HttpMethod.DELETE -> Http4kMethod.DELETE
+            HttpMethod.PATCH -> Http4kMethod.PATCH
+            HttpMethod.HEAD -> Http4kMethod.HEAD
+            HttpMethod.OPTIONS -> Http4kMethod.OPTIONS
         }
