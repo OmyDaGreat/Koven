@@ -28,7 +28,7 @@ import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.auth.AuthType
 import xyz.malefic.spyder.feature.auth.Principal
-import xyz.malefic.spyder.feature.auth.server.LocalAuthHandler
+import xyz.malefic.spyder.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.spyder.feature.auth.server.OAuth2AuthHandler
 import xyz.malefic.spyder.feature.auth.server.WebAuthnAuthHandler
 import xyz.malefic.spyder.feature.multipart.Multipart
@@ -144,7 +144,7 @@ internal fun ApiContract<*, *, *, *, *, *>.authenticate(req: Request): Principal
 
     return when (val auth = SpyderConfig.auth) {
         is AuthType.NoAuth -> anonymousPrincipal
-        is AuthType.Local -> LocalAuthHandler.authenticate(req)
+        is AuthType.Password -> PasswordAuthHandler.authenticate(req)
         is AuthType.OAuth2 -> OAuth2AuthHandler.authenticate(req)
         is AuthType.WebAuthn -> WebAuthnAuthHandler.authenticate(req)
     }

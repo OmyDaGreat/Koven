@@ -42,10 +42,10 @@ import kotlin.io.encoding.Base64
 import kotlin.uuid.Uuid
 
 /**
- * Server-side handler for [AuthType.Local].
+ * Server-side handler for [AuthType.Password].
  */
-object LocalAuthHandler : ServerAuthHandler<AuthType.Local> {
-    private val log = Logger.withTag("LocalAuth")
+object PasswordAuthHandler : ServerAuthHandler<AuthType.Password> {
+    private val log = Logger.withTag("PasswordAuth")
     private val secureRandom = SecureRandom()
     private val bcrypt = BCrypt.withDefaults()
     private val verifier = BCrypt.verifyer()
@@ -89,17 +89,17 @@ object LocalAuthHandler : ServerAuthHandler<AuthType.Local> {
     }
 
     infix fun Response.withCookie(refreshToken: String): Response {
-        val localConfig = SpyderConfig.auth as? AuthType.Local ?: return this
+        val authConfig = SpyderConfig.auth as? AuthType.Password ?: return this
         return cookie(
             Cookie(
                 "refresh_token",
                 refreshToken,
-                localConfig.refreshTokenTtl.inWholeSeconds,
+                authConfig.refreshTokenTtl.inWholeSeconds,
                 path = "/${SpyderConfig.apiPrefix}",
                 httpOnly = true,
                 secure = true,
                 sameSite = SameSite.None,
-                domain = localConfig.cookieDomain,
+                domain = authConfig.cookieDomain,
             ),
         )
     }
@@ -116,8 +116,8 @@ object LocalAuthHandler : ServerAuthHandler<AuthType.Local> {
     private fun generateSecret(bytes: Int = 32) = ByteArray(bytes).also { secureRandom.nextBytes(it) }.let { base64.encode(it) }
 
     private fun UserEntity.createAccessToken(): String {
-        val localConfig = SpyderConfig.auth as? AuthType.Local
-        val ttl = localConfig?.accessTokenTtl ?: AuthType.Local().accessTokenTtl
+        val authConfig = SpyderConfig.auth as? AuthType.Password
+        val ttl = authConfig?.accessTokenTtl ?: AuthType.Password().accessTokenTtl
         return JWT
             .create()
             .withSubject(id.value.toString())
@@ -127,9 +127,9 @@ object LocalAuthHandler : ServerAuthHandler<AuthType.Local> {
 
     context(_: JdbcTransaction)
     fun UserEntity.issueTokenPair(): TokenModel {
-        val localConfig = SpyderConfig.auth as? AuthType.Local
-        val refreshTtl = localConfig?.refreshTokenTtl ?: AuthType.Local().refreshTokenTtl
-        val accessTtl = localConfig?.accessTokenTtl ?: AuthType.Local().accessTokenTtl
+        val authConfig = SpyderConfig.auth as? AuthType.Password
+        val refreshTtl = authConfig?.refreshTokenTtl ?: AuthType.Password().refreshTokenTtl
+        val accessTtl = authConfig?.accessTokenTtl ?: AuthType.Password().accessTokenTtl
 
         val accessToken = createAccessToken()
         val secret = generateSecret()

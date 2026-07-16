@@ -14,6 +14,7 @@ import org.w3c.xhr.FormData
 import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.api.ApiContract
 import xyz.malefic.spyder.api.ApiResponse
+import xyz.malefic.spyder.client.auth.AuthSession
 import xyz.malefic.spyder.core.HeaderProvider
 import xyz.malefic.spyder.core.Headers
 import xyz.malefic.spyder.core.PathProvider
@@ -93,6 +94,9 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
                         body,
                         Headers.build {
                             add(headers)
+                            if (isProtected && AuthSession.isAuthenticated) {
+                                set("Authorization", "Bearer ${AuthSession.accessToken}")
+                            }
                             headerBlock()
                         },
                     )

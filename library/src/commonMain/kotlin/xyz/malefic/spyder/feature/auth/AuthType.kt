@@ -14,9 +14,9 @@ sealed interface AuthType {
     data object NoAuth : AuthType
 
     /**
-     * Locally managed, with the framework automatically handling token issuing, rotation, and cookies.
+     * Managed by the framework, with automatic handling of token issuing, rotation, and cookies.
      */
-    data class Local(
+    data class Password(
         val accessTokenTtl: Duration = 15.minutes,
         val refreshTokenTtl: Duration = 30.days,
         val cookieDomain: String? = null,
