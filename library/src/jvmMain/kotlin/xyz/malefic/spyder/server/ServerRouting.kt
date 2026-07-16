@@ -28,8 +28,8 @@ import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.auth.AuthType
 import xyz.malefic.spyder.feature.auth.Principal
-import xyz.malefic.spyder.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.spyder.feature.auth.server.OAuth2AuthHandler
+import xyz.malefic.spyder.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.spyder.feature.auth.server.WebAuthnAuthHandler
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse

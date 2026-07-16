@@ -30,7 +30,7 @@ object AuthSession {
             val id = localStorage.getItem(USER_ID_KEY)?.let { Uuid.parseOrNull(it) }
             val username = localStorage.getItem(USERNAME_KEY)
             if (id != null && username != null) SimplePrincipal(id, username) else null
-        }
+        },
     )
         private set
 
@@ -42,7 +42,10 @@ object AuthSession {
     /**
      * Updates the session with new authentication data.
      */
-    fun login(token: String, user: Principal) {
+    fun login(
+        token: String,
+        user: Principal,
+    ) {
         accessToken = token
         principal = user
         localStorage.setItem(ACCESS_TOKEN_KEY, token)
