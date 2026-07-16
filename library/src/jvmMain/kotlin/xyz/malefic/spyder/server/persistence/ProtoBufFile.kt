@@ -1,9 +1,10 @@
 package xyz.malefic.spyder.server.persistence
 
 import co.touchlab.kermit.Logger
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import xyz.malefic.spyder.serialization.JsonSerializer
+import xyz.malefic.spyder.serialization.ProtoBufSerializer
 import xyz.malefic.spyder.server.SpyderServer
 import java.io.File
 import java.nio.file.Files
@@ -15,9 +16,10 @@ import kotlin.getValue
 import kotlin.reflect.KProperty
 
 /**
- * A delegate for loading and saving a value, in JSON, from a file.
+ * A delegate for loading and saving a value, in ProtoBuf, from a file.
  */
-class JsonFile<T>(
+@OptIn(ExperimentalSerializationApi::class)
+class ProtoBufFile<T>(
     private val fileName: String,
     private val defaultValue: T,
     private val serializer: KSerializer<T>,
@@ -61,21 +63,21 @@ class JsonFile<T>(
     private fun load(): T =
         try {
             if (file.exists()) {
-                JsonSerializer.default.decodeFromString(serializer, file.readText())
+                ProtoBufSerializer.default.decodeFromByteArray(serializer, file.readBytes())
             } else {
                 defaultValue
             }
         } catch (e: Exception) {
-            Logger.e(e, "JsonFile") { "Error loading $fileName" }
+            Logger.e(e, "ProtoBufFile") { "Error loading $fileName" }
             defaultValue
         }
 
     private fun save(toSave: T) =
         try {
-            val json = JsonSerializer.default.encodeToString(serializer, toSave)
+            val bytes = ProtoBufSerializer.default.encodeToByteArray(serializer, toSave)
             val tempFile = File(file.parent, "$fileName.tmp")
             file.parentFile?.mkdirs()
-            tempFile.writeText(json)
+            tempFile.writeBytes(bytes)
 
             val path = file.toPath()
             val tempPath = tempFile.toPath()
@@ -86,15 +88,16 @@ class JsonFile<T>(
                 StandardCopyOption.ATOMIC_MOVE,
             )
         } catch (e: Exception) {
-            Logger.e(e, "JsonFile") { "Error saving $fileName" }
+            Logger.e(e, "ProtoBufFile") { "Error saving $fileName" }
         }
 }
 
 /**
- * A delegate for loading and saving a value, in JSON, from a file.
+ * A delegate for loading and saving a value, in ProtoBuf, from a file.
  */
-inline fun <reified T> jsonFile(
+@OptIn(ExperimentalSerializationApi::class)
+inline fun <reified T> protoBufFile(
     fileName: String,
     defaultValue: T,
-    serializer: KSerializer<T> = JsonSerializer.default.serializersModule.serializer(),
-) = JsonFile(fileName, defaultValue, serializer)
+    serializer: KSerializer<T> = ProtoBufSerializer.default.serializersModule.serializer(),
+) = ProtoBufFile(fileName, defaultValue, serializer)
