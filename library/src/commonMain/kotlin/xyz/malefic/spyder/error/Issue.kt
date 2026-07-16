@@ -47,10 +47,70 @@ data class BadRequestIssue(
  * Common issue for authentication errors.
  */
 @Serializable
-data class UnauthorizedIssue(
-    override val message: String = "Unauthorized",
-    override val status: Short = 401,
-) : Issue()
+sealed class AuthIssue : Issue() {
+    @Serializable
+    data class Unauthorized(
+        override val message: String = "Unauthorized",
+        override val status: Short = 401,
+    ) : AuthIssue()
+
+    @Serializable
+    data class InvalidCredentials(
+        override val message: String = "Invalid username or password",
+        override val status: Short = 401,
+    ) : AuthIssue()
+
+    @Serializable
+    data class InvalidToken(
+        override val message: String = "Invalid or expired token",
+        override val status: Short = 401,
+    ) : AuthIssue()
+
+    @Serializable
+    data class AccountLocked(
+        val unlockAt: Long,
+        override val status: Short = 401,
+    ) : AuthIssue() {
+        override val message = "Account locked until $unlockAt"
+    }
+
+    @Serializable
+    data class MissingToken(
+        override val message: String = "Missing authentication token",
+        override val status: Short = 401,
+    ) : AuthIssue()
+}
+
+/**
+ * Common issue for user-related errors.
+ */
+@Serializable
+sealed class UserIssue : Issue() {
+    @Serializable
+    data class AlreadyExists(
+        override val message: String = "User already exists",
+        override val status: Short = 400,
+    ) : UserIssue()
+
+    @Serializable
+    data class NotFound(
+        override val message: String = "User not found",
+        override val status: Short = 404,
+    ) : UserIssue()
+
+    @Serializable
+    data class InvalidUser(
+        val usernameIssues: List<String> = emptyList(),
+        val passwordIssues: List<String> = emptyList(),
+        override val status: Short = 400,
+    ) : UserIssue() {
+        override val message: String =
+            buildList {
+                if (usernameIssues.isNotEmpty()) add("Invalid username: ${usernameIssues.joinToString(", ")}")
+                if (passwordIssues.isNotEmpty()) add("Invalid password: ${passwordIssues.joinToString(", ")}")
+            }.joinToString("; ")
+    }
+}
 
 /**
  * Common issue for rate limiting.

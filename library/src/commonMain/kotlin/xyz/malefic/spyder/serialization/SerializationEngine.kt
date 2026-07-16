@@ -7,11 +7,12 @@ import kotlinx.serialization.modules.overwriteWith
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.serializer
 import xyz.malefic.spyder.api.BodyFormat
+import xyz.malefic.spyder.error.AuthIssue
 import xyz.malefic.spyder.error.BadRequestIssue
 import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.error.RateLimitedIssue
-import xyz.malefic.spyder.error.UnauthorizedIssue
+import xyz.malefic.spyder.error.UserIssue
 import kotlin.reflect.KClass
 
 /**
@@ -75,7 +76,14 @@ interface SerializationEngine<Format : SerialFormat> {
         init {
             registerIssue<InternalIssue>()
             registerIssue<BadRequestIssue>()
-            registerIssue<UnauthorizedIssue>()
+            registerIssue<AuthIssue.Unauthorized>()
+            registerIssue<AuthIssue.InvalidCredentials>()
+            registerIssue<AuthIssue.InvalidToken>()
+            registerIssue<AuthIssue.AccountLocked>()
+            registerIssue<AuthIssue.MissingToken>()
+            registerIssue<UserIssue.AlreadyExists>()
+            registerIssue<UserIssue.NotFound>()
+            registerIssue<UserIssue.InvalidUser>()
             registerIssue<RateLimitedIssue>()
         }
 

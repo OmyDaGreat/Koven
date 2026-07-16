@@ -45,6 +45,14 @@ kotlin {
         jvmMain.dependencies {
             implementation(project.dependencies.platform(libs.http4k.bom))
             implementation(libs.bundles.http4k)
+            implementation(libs.jwt)
+            implementation(libs.bcrypt)
+            implementation(libs.konform)
+            implementation(libs.nbvcxz)
+            implementation(libs.exposed.core)
+            implementation(libs.exposed.dao)
+            implementation(libs.exposed.jdbc)
+            implementation(libs.exposed.datetime)
         }
         jsMain.dependencies {
             implementation(libs.bundles.kobweb)

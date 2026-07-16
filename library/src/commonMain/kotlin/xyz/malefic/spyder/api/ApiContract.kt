@@ -19,7 +19,7 @@ import xyz.malefic.spyder.feature.auth.BearerAuth
  * A contract for an API endpoint shared between the client and server.
  *
  * @param path The path of the API endpoint. Automatically prefixed with "api/".
- * @param httpMethod The HTTP method to use for the API endpoint. Default is [HttpMethod.POST].
+ * @param httpMethod The HTTP method to use for the API endpoint. Defaults to [HttpMethod.POST].
  * @param requiredRequestHeaders The set of required request header fields for the API endpoint.
  * @param requiredResponseHeaders The set of required response header fields for the API endpoint.
  * @param requestHeaderDecoder The [HeaderField] to decode the request headers.
@@ -28,6 +28,7 @@ import xyz.malefic.spyder.feature.auth.BearerAuth
  * @param queryDecoder The [QueryField] to decode the query parameters.
  * @param requestFormat The [BodyFormat] to use for the request body. Defaults to [UnitFormat] or [JsonFormat].
  * @param responseFormat The [BodyFormat] to use for the response body. Defaults to [UnitFormat] or [JsonFormat].
+ * @param isProtected Whether the API endpoint requires authentication. Defaults to `false`.
  *
  * @param Req The type of the request body. If the request body is empty, this should be `Unit`.
  * @param Res The type of the response body. If the response body is empty, this should be `Unit`.
@@ -51,6 +52,7 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
     val queryDecoder: QueryField<QueryP> = NoParams as QueryField<QueryP>,
     val requestFormat: BodyFormat<Req>,
     val responseFormat: BodyFormat<Res>,
+    val isProtected: Boolean = false,
 ) {
     /**
      * The set of query parameters allowed for the API endpoint.

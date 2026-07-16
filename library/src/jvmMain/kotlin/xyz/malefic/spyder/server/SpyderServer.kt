@@ -21,6 +21,7 @@ import xyz.malefic.spyder.core.NoHeaders
 import xyz.malefic.spyder.core.PathProvider
 import xyz.malefic.spyder.core.QueryProvider
 import xyz.malefic.spyder.error.Issue
+import xyz.malefic.spyder.feature.auth.Principal
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
@@ -45,7 +46,7 @@ class SpyderServerBuilder(
      */
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> ApiResponse<Res, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Req) -> ApiResponse<Res, ResH>,
     ) = add(register(handler))
 
     /**
@@ -56,7 +57,7 @@ class SpyderServerBuilder(
     @JvmName("handleNoResponseHeader")
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, NoHeaders, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Res,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Req) -> Res,
     ) = add(register(handler))
 
     /**
@@ -67,7 +68,7 @@ class SpyderServerBuilder(
     @JvmName("handleMultipart")
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.handleMultipart(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> ApiResponse<Res, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Multipart) -> ApiResponse<Res, ResH>,
     ) = add(register(handler))
 
     /**
@@ -78,7 +79,7 @@ class SpyderServerBuilder(
     @JvmName("handleMultipartNoResponseHeader")
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, NoHeaders, PathP, QueryP>.handleMultipartNoHeader(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> Res,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Multipart) -> Res,
     ) = add(register(handler))
 
     /**
@@ -89,7 +90,7 @@ class SpyderServerBuilder(
     @JvmName("handlePaginated")
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> ApiResponse<List<T>, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) (Req) -> ApiResponse<List<T>, ResH>,
     ) = add(register(handler))
 
     /**
@@ -100,7 +101,7 @@ class SpyderServerBuilder(
     @JvmName("handlePaginatedNoResponseHeader")
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified T, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> List<T>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) (Req) -> List<T>,
     ) = add(register(handler))
 
     internal fun buildHandler(): RoutingHttpHandler =

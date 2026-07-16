@@ -3,8 +3,8 @@ package xyz.malefic.spyder.client.components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import xyz.malefic.spyder.core.ApiState
+import xyz.malefic.spyder.error.AuthIssue
 import xyz.malefic.spyder.error.Issue
-import xyz.malefic.spyder.error.UnauthorizedIssue
 
 /**
  * A basic composable for rendering API states, serving to wrap your own UI logic within [successContent]. The recommendation for its usage would be to wrap it with reasonable defaults according to your own application, as detailed in each parameter.
@@ -32,7 +32,7 @@ fun <T> Request(
 
         is ApiState.Error -> {
             when (state.issue) {
-                is UnauthorizedIssue -> LaunchedEffect(state) { onUnauthorized() }
+                is AuthIssue -> LaunchedEffect(state) { onUnauthorized() }
                 else -> errorContent(state.issue)
             }
         }

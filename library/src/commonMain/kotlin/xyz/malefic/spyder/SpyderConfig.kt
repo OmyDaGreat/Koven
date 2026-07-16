@@ -1,6 +1,7 @@
 package xyz.malefic.spyder
 
 import xyz.malefic.spyder.error.Issue
+import xyz.malefic.spyder.feature.auth.AuthType
 import xyz.malefic.spyder.serialization.JsonSerializer
 import xyz.malefic.spyder.serialization.SerializationEngine
 
@@ -27,6 +28,11 @@ object SpyderConfig {
      * The prefix for all user file routes. Defaults to `"files"`.
      */
     var filesPrefix: String = "files"
+
+    /**
+     * The configuration for authentication. Defaults to [AuthType.NoAuth].
+     */
+    var auth: AuthType = AuthType.NoAuth
 
     /**
      * Registers a new [xyz.malefic.spyder.error.Issue] subclass globally.

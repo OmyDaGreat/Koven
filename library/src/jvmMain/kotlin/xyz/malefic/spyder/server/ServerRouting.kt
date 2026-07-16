@@ -26,9 +26,15 @@ import xyz.malefic.spyder.core.QueryProvider
 import xyz.malefic.spyder.error.BadRequestIssue
 import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
+import xyz.malefic.spyder.feature.auth.AuthType
+import xyz.malefic.spyder.feature.auth.Principal
+import xyz.malefic.spyder.feature.auth.server.LocalAuthHandler
+import xyz.malefic.spyder.feature.auth.server.OAuth2AuthHandler
+import xyz.malefic.spyder.feature.auth.server.WebAuthnAuthHandler
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
+import kotlin.uuid.Uuid
 
 /**
  * Creates a route for the given [ApiContract].
@@ -37,11 +43,12 @@ import xyz.malefic.spyder.feature.pagination.Pagination
  */
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> ApiResponse<Res, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Req) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
     baseRegister { req, reqH, pathP, queryP ->
+        val principal = authenticate(req)
         val body = decodeBody(req)
-        handler(this, reqH, pathP, queryP, body)
+        handler(this, reqH, pathP, queryP, principal, body)
     }
 
 /**
@@ -52,7 +59,7 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
 @JvmName("registerNoResponseHeader")
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, NoHeaders, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Req) -> Res,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Req) -> Res,
 ): RoutingHttpHandler = register<Req, Res, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) with NoHeaders }
 
 /**
@@ -65,9 +72,10 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvide
 @JvmName("registerPaginated")
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> ApiResponse<List<T>, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) (Req) -> ApiResponse<List<T>, ResH>,
 ): RoutingHttpHandler =
     baseRegister { req, reqH, pathP, queryP ->
+        val principal = authenticate(req)
         val page = req.query("page")?.toIntOrNull() ?: 1
         val limit = req.query("limit")?.toIntOrNull() ?: 20
 
@@ -80,7 +88,7 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
             }
 
         val body = decodeBody(req)
-        val (items, resH) = handler(this, reqH, pathP, queryP, pagination, body)
+        val (items, resH) = handler(this, reqH, pathP, queryP, pagination, principal, body)
 
         val response =
             if (pagination.totalItems != null) {
@@ -104,7 +112,7 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
 @JvmName("registerPaginatedNoResponseHeader")
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified T, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination) (Req) -> List<T>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) (Req) -> List<T>,
 ): RoutingHttpHandler = register<Req, T, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) with NoHeaders }
 
 /**
@@ -115,7 +123,7 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, PathP : PathProvider,
 @JvmName("registerMultipart")
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> ApiResponse<Res, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Multipart) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(handler)
 
 /**
@@ -126,8 +134,28 @@ inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : P
 @JvmName("registerMultipartNoResponseHeader")
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, NoHeaders, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP) (Multipart) -> Res,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Multipart) -> Res,
 ): RoutingHttpHandler = register<Res, ReqH, NoHeaders, PathP, QueryP> { req: Multipart -> handler(req) with NoHeaders }
+
+@PublishedApi
+context(_: Raise<Issue>)
+internal fun ApiContract<*, *, *, *, *, *>.authenticate(req: Request): Principal {
+    if (!isProtected || SpyderConfig.auth == AuthType.NoAuth) return anonymousPrincipal
+
+    return when (val auth = SpyderConfig.auth) {
+        is AuthType.NoAuth -> anonymousPrincipal
+        is AuthType.Local -> LocalAuthHandler.authenticate(req)
+        is AuthType.OAuth2 -> OAuth2AuthHandler.authenticate(req)
+        is AuthType.WebAuthn -> WebAuthnAuthHandler.authenticate(req)
+    }
+}
+
+@PublishedApi
+internal val anonymousPrincipal =
+    object : Principal {
+        override val userId: Uuid = Uuid.NIL
+        override val username: String = "anonymous"
+    }
 
 @PublishedApi
 @Suppress("ktlint:standard:max-line-length")

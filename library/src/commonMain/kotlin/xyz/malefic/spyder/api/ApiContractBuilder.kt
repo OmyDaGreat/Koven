@@ -23,6 +23,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
     private val queryParams: List<String> = emptyList(),
     private val requestFormat: BodyFormat<Req>,
     private val responseFormat: BodyFormat<Res>,
+    private val isProtected: Boolean = false,
 ) {
     /**
      * Sets the request body format.
@@ -38,6 +39,11 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
      * Sets the HTTP method.
      */
     fun method(httpMethod: HttpMethod) = copy<ReqH, ResH, PathP, QueryP>(httpMethod = httpMethod)
+
+    /**
+     * Marks the endpoint as requiring authentication.
+     */
+    fun protected() = copy<ReqH, ResH, PathP, QueryP>(isProtected = true)
 
     /**
      * Sets the request header decoder and the set of required headers for validation.
@@ -97,6 +103,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
         queryParams: List<String> = this.queryParams,
         requestFormat: BodyFormat<Req> = this.requestFormat,
         responseFormat: BodyFormat<Res> = this.responseFormat,
+        isProtected: Boolean = this.isProtected,
     ): ApiContractBuilder<Req, Res, NewReqH, NewResH, NewPathP, NewQueryP> =
         ApiContractBuilder(
             path,
@@ -110,6 +117,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
             queryParams,
             requestFormat,
             responseFormat,
+            isProtected,
         )
 
     /**
@@ -127,6 +135,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
             queryDecoder,
             requestFormat,
             responseFormat,
+            isProtected,
         ) {
             override val queryParams: List<String> = this@ApiContractBuilder.queryParams
         }
