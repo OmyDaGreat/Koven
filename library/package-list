@@ -96,6 +96,13 @@ $dokka.location:xyz.malefic.spyder.api/XmlFormat///PointingToDeclaration/librar
 $dokka.location:xyz.malefic.spyder.api/XmlFormat/contentType/#/PointingToDeclaration/library/xyz.malefic.spyder.api/-xml-format/content-type.html
 $dokka.location:xyz.malefic.spyder.api/XmlFormat/decode/#kotlin.ByteArray#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-xml-format/decode.html
 $dokka.location:xyz.malefic.spyder.api/XmlFormat/encode/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.api/-xml-format/encode.html
+$dokka.location:xyz.malefic.spyder.client.auth////PointingToDeclaration/library/xyz.malefic.spyder.client.auth/index.html
+$dokka.location:xyz.malefic.spyder.client.auth/AuthSession///PointingToDeclaration/library/xyz.malefic.spyder.client.auth/-auth-session/index.html
+$dokka.location:xyz.malefic.spyder.client.auth/AuthSession/accessToken/#/PointingToDeclaration/library/xyz.malefic.spyder.client.auth/-auth-session/access-token.html
+$dokka.location:xyz.malefic.spyder.client.auth/AuthSession/isAuthenticated/#/PointingToDeclaration/library/xyz.malefic.spyder.client.auth/-auth-session/is-authenticated.html
+$dokka.location:xyz.malefic.spyder.client.auth/AuthSession/login/#kotlin.String#xyz.malefic.spyder.feature.auth.Principal/PointingToDeclaration/library/xyz.malefic.spyder.client.auth/-auth-session/login.html
+$dokka.location:xyz.malefic.spyder.client.auth/AuthSession/logout/#/PointingToDeclaration/library/xyz.malefic.spyder.client.auth/-auth-session/logout.html
+$dokka.location:xyz.malefic.spyder.client.auth/AuthSession/principal/#/PointingToDeclaration/library/xyz.malefic.spyder.client.auth/-auth-session/principal.html
 $dokka.location:xyz.malefic.spyder.client.components////PointingToDeclaration/library/xyz.malefic.spyder.client.components/index.html
 $dokka.location:xyz.malefic.spyder.client.components//Request/#xyz.malefic.spyder.core.ApiState[TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.Unit]#kotlin.Function0[kotlin.Unit]#kotlin.Function1[xyz.malefic.spyder.error.Issue,kotlin.Unit]#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/library/xyz.malefic.spyder.client.components/-request.html
 $dokka.location:xyz.malefic.spyder.client////PointingToDeclaration/library/xyz.malefic.spyder.client/index.html
@@ -260,16 +267,16 @@ $dokka.location:xyz.malefic.spyder.feature.auth.server/AuthTokens/expiresAt/#/Po
 $dokka.location:xyz.malefic.spyder.feature.auth.server/AuthTokens/revokedAt/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-auth-tokens/revoked-at.html
 $dokka.location:xyz.malefic.spyder.feature.auth.server/AuthTokens/secretHash/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-auth-tokens/secret-hash.html
 $dokka.location:xyz.malefic.spyder.feature.auth.server/AuthTokens/user/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-auth-tokens/user.html
-$dokka.location:xyz.malefic.spyder.feature.auth.server/LocalAuthHandler///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-local-auth-handler/index.html
-$dokka.location:xyz.malefic.spyder.feature.auth.server/LocalAuthHandler/authenticate/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##org.http4k.core.Request/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-local-auth-handler/authenticate.html
-$dokka.location:xyz.malefic.spyder.feature.auth.server/LocalAuthHandler/getTokensFromLogin/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##xyz.malefic.spyder.feature.auth.model.UserRequestModel/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-local-auth-handler/get-tokens-from-login.html
-$dokka.location:xyz.malefic.spyder.feature.auth.server/LocalAuthHandler/hashPassword/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-local-auth-handler/hash-password.html
-$dokka.location:xyz.malefic.spyder.feature.auth.server/LocalAuthHandler/issueTokenPair/org.jetbrains.exposed.v1.jdbc.JdbcTransaction#xyz.malefic.spyder.feature.auth.server.UserEntity#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-local-auth-handler/issue-token-pair.html
-$dokka.location:xyz.malefic.spyder.feature.auth.server/LocalAuthHandler/refreshTokens/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-local-auth-handler/refresh-tokens.html
-$dokka.location:xyz.malefic.spyder.feature.auth.server/LocalAuthHandler/register/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]#xyz.malefic.spyder.feature.auth.model.UserRequestModel#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-local-auth-handler/register.html
-$dokka.location:xyz.malefic.spyder.feature.auth.server/LocalAuthHandler/withCookie/org.http4k.core.Response#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-local-auth-handler/with-cookie.html
 $dokka.location:xyz.malefic.spyder.feature.auth.server/OAuth2AuthHandler///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-o-auth2-auth-handler/index.html
 $dokka.location:xyz.malefic.spyder.feature.auth.server/OAuth2AuthHandler/authenticate/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##org.http4k.core.Request/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-o-auth2-auth-handler/authenticate.html
+$dokka.location:xyz.malefic.spyder.feature.auth.server/PasswordAuthHandler///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-password-auth-handler/index.html
+$dokka.location:xyz.malefic.spyder.feature.auth.server/PasswordAuthHandler/authenticate/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##org.http4k.core.Request/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-password-auth-handler/authenticate.html
+$dokka.location:xyz.malefic.spyder.feature.auth.server/PasswordAuthHandler/getTokensFromLogin/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##xyz.malefic.spyder.feature.auth.model.UserRequestModel/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-password-auth-handler/get-tokens-from-login.html
+$dokka.location:xyz.malefic.spyder.feature.auth.server/PasswordAuthHandler/hashPassword/#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-password-auth-handler/hash-password.html
+$dokka.location:xyz.malefic.spyder.feature.auth.server/PasswordAuthHandler/issueTokenPair/org.jetbrains.exposed.v1.jdbc.JdbcTransaction#xyz.malefic.spyder.feature.auth.server.UserEntity#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-password-auth-handler/issue-token-pair.html
+$dokka.location:xyz.malefic.spyder.feature.auth.server/PasswordAuthHandler/refreshTokens/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-password-auth-handler/refresh-tokens.html
+$dokka.location:xyz.malefic.spyder.feature.auth.server/PasswordAuthHandler/register/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]#xyz.malefic.spyder.feature.auth.model.UserRequestModel#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-password-auth-handler/register.html
+$dokka.location:xyz.malefic.spyder.feature.auth.server/PasswordAuthHandler/withCookie/org.http4k.core.Response#kotlin.String/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-password-auth-handler/with-cookie.html
 $dokka.location:xyz.malefic.spyder.feature.auth.server/ServerAuthHandler///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-server-auth-handler/index.html
 $dokka.location:xyz.malefic.spyder.feature.auth.server/ServerAuthHandler/authenticate/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##org.http4k.core.Request/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-server-auth-handler/authenticate.html
 $dokka.location:xyz.malefic.spyder.feature.auth.server/UserEntity.Companion///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-user-entity/-companion/index.html
@@ -290,11 +297,6 @@ $dokka.location:xyz.malefic.spyder.feature.auth.server/Users/username/#/Pointing
 $dokka.location:xyz.malefic.spyder.feature.auth.server/WebAuthnAuthHandler///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-web-authn-auth-handler/index.html
 $dokka.location:xyz.malefic.spyder.feature.auth.server/WebAuthnAuthHandler/authenticate/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##org.http4k.core.Request/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth.server/-web-authn-auth-handler/authenticate.html
 $dokka.location:xyz.malefic.spyder.feature.auth////PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/index.html
-$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Local///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-local/index.html
-$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Local/Local/#kotlin.time.Duration#kotlin.time.Duration#kotlin.String?/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-local/-local.html
-$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Local/accessTokenTtl/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-local/access-token-ttl.html
-$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Local/cookieDomain/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-local/cookie-domain.html
-$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Local/refreshTokenTtl/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-local/refresh-token-ttl.html
 $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.NoAuth///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-no-auth/index.html
 $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.OAuth2///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-o-auth2/index.html
 $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.OAuth2/OAuth2/#xyz.malefic.spyder.feature.auth.OAuthProviderType#kotlin.String#kotlin.String#kotlin.String#kotlin.collections.List[kotlin.String]/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-o-auth2/-o-auth2.html
@@ -303,6 +305,11 @@ $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.OAuth2/clientSecret/#/P
 $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.OAuth2/provider/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-o-auth2/provider.html
 $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.OAuth2/redirectUri/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-o-auth2/redirect-uri.html
 $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.OAuth2/scopes/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-o-auth2/scopes.html
+$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Password///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-password/index.html
+$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Password/Password/#kotlin.time.Duration#kotlin.time.Duration#kotlin.String?/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-password/-password.html
+$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Password/accessTokenTtl/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-password/access-token-ttl.html
+$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Password/cookieDomain/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-password/cookie-domain.html
+$dokka.location:xyz.malefic.spyder.feature.auth/AuthType.Password/refreshTokenTtl/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-password/refresh-token-ttl.html
 $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.WebAuthn///PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-web-authn/index.html
 $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.WebAuthn/WebAuthn/#kotlin.String#kotlin.String#kotlin.String#kotlin.Boolean/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-web-authn/-web-authn.html
 $dokka.location:xyz.malefic.spyder.feature.auth/AuthType.WebAuthn/appOrigin/#/PointingToDeclaration/library/xyz.malefic.spyder.feature.auth/-auth-type/-web-authn/app-origin.html
@@ -447,6 +454,7 @@ $dokka.location:xyz.malefic.spyder/SpyderConfig/serialization/#/PointingToDeclar
 xyz.malefic.spyder
 xyz.malefic.spyder.api
 xyz.malefic.spyder.client
+xyz.malefic.spyder.client.auth
 xyz.malefic.spyder.client.components
 xyz.malefic.spyder.core
 xyz.malefic.spyder.error
