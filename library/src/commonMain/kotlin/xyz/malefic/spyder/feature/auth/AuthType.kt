@@ -23,23 +23,13 @@ sealed interface AuthType {
     ) : AuthType
 
     /**
-     * Delegated to [OAuthProviderType] with standard OAuth interceptors.
+     * Delegated to [OAuthProvider] with standard OAuth interceptors.
      */
-    data class OAuth2(
-        val provider: OAuthProviderType,
+    data class OAuth(
+        val provider: OAuthProvider,
         val clientId: String,
         val clientSecret: String,
         val redirectUri: String,
         val scopes: List<String> = listOf("openid", "profile", "email"),
-    ) : AuthType
-
-    /**
-     * Passwordless authentication utilizing hardware biometrics/passkeys.
-     */
-    data class WebAuthn(
-        val rpId: String,
-        val rpName: String,
-        val appOrigin: String,
-        val requireUserVerification: Boolean = true,
     ) : AuthType
 }

@@ -30,7 +30,6 @@ import xyz.malefic.spyder.feature.auth.AuthType
 import xyz.malefic.spyder.feature.auth.Principal
 import xyz.malefic.spyder.feature.auth.server.OAuth2AuthHandler
 import xyz.malefic.spyder.feature.auth.server.PasswordAuthHandler
-import xyz.malefic.spyder.feature.auth.server.WebAuthnAuthHandler
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
@@ -145,8 +144,7 @@ internal fun ApiContract<*, *, *, *, *, *>.authenticate(req: Request): Principal
     return when (val auth = SpyderConfig.auth) {
         is AuthType.NoAuth -> anonymousPrincipal
         is AuthType.Password -> PasswordAuthHandler.authenticate(req)
-        is AuthType.OAuth2 -> OAuth2AuthHandler.authenticate(req)
-        is AuthType.WebAuthn -> WebAuthnAuthHandler.authenticate(req)
+        is AuthType.OAuth -> OAuth2AuthHandler.authenticate(req)
     }
 }
 
