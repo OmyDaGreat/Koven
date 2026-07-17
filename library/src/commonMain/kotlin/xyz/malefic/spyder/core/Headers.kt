@@ -145,6 +145,18 @@ object NoHeaders : HeaderProvider, HeaderField<NoHeaders> {
 }
 
 /**
+ * Represents any headers. Temporarily exists as a result of the lack of cookie management.
+ */
+object AnyHeaders : HeaderField<HeaderProvider> {
+    override val field: String = ""
+
+    context(_: Raise<Issue>)
+    override fun decode(headers: Headers): HeaderProvider = headers
+
+    override fun flatten(): List<HeaderField<*>> = emptyList()
+}
+
+/**
  * Interface for header implementations. The companion object of this interface is used to create a [HeaderField]. You can check out an example with [xyz.malefic.spyder.feature.auth.BearerAuth].
  */
 interface Header : HeaderProvider {

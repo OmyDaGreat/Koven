@@ -20,7 +20,6 @@ import xyz.malefic.spyder.api.ApiResponse
 import xyz.malefic.spyder.api.ApiResponse.Companion.with
 import xyz.malefic.spyder.core.HeaderProvider
 import xyz.malefic.spyder.core.Headers
-import xyz.malefic.spyder.core.NoHeaders
 import xyz.malefic.spyder.core.PathProvider
 import xyz.malefic.spyder.core.QueryProvider
 import xyz.malefic.spyder.error.BadRequestIssue
@@ -28,7 +27,7 @@ import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.feature.auth.AuthType
 import xyz.malefic.spyder.feature.auth.Principal
-import xyz.malefic.spyder.feature.auth.server.OAuth2AuthHandler
+import xyz.malefic.spyder.feature.auth.server.OAuthHandler
 import xyz.malefic.spyder.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
@@ -38,40 +37,31 @@ import kotlin.uuid.Uuid
 /**
  * Creates a route for the given [ApiContract].
  *
- * @param handler The handler function for the route. Should return a [Pair] in the format of `(response body, response headers)`.
+ * @param handler The handler function for the route. Should return an [ApiResponse] in the format of `(response body, response headers)`.
  */
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Req) -> ApiResponse<Res, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal, Request) (Request, Req) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
     baseRegister { req, reqH, pathP, queryP ->
         val principal = authenticate(req)
         val body = decodeBody(req)
-        handler(this, reqH, pathP, queryP, principal, body)
+        handler(this, reqH, pathP, queryP, principal, req, req, body)
     }
-
-/**
- * Creates a route for the given [ApiContract].
- *
- * @param handler The handler function for the route. Should return the response body directly.
- */
-@JvmName("registerNoResponseHeader")
-@Suppress("ktlint:standard:max-line-length")
-inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, NoHeaders, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Req) -> Res,
-): RoutingHttpHandler = register<Req, Res, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) with NoHeaders }
 
 /**
  * Creates a route for the given [ApiContract] that returns a paginated response with a [Pagination] context.
  *
  * The route will automatically handle `page` and `limit` query parameters to slice the list. If the [Pagination.totalItems] value provided in context is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
  *
- * @param handler The handler function for the route. Should return a [Pair] in the format of `(response list, response headers)`.
+ * @param handler The handler function for the route. Should return an [ApiResponse] in the format of `(response list, response headers)`.
  */
-@JvmName("registerPaginated")
 @Suppress("ktlint:standard:max-line-length")
-inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) (Req) -> ApiResponse<List<T>, ResH>,
+inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.registerPaginated(
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal, Request) (
+        Request,
+        Req,
+    ) -> ApiResponse<List<T>, ResH>,
 ): RoutingHttpHandler =
     baseRegister { req, reqH, pathP, queryP ->
         val principal = authenticate(req)
@@ -87,7 +77,7 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
             }
 
         val body = decodeBody(req)
-        val (items, resH) = handler(this, reqH, pathP, queryP, pagination, principal, body)
+        val (items, resH) = handler(this, reqH, pathP, queryP, pagination, principal, req, req, body)
 
         val response =
             if (pagination.totalItems != null) {
@@ -102,39 +92,14 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
     }
 
 /**
- * Creates a route for the given [ApiContract] that returns a paginated response with a [Pagination] context.
- *
- * The route will automatically handle `page` and `limit` query parameters to slice the list. If the [Pagination.totalItems] value provided in context is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
- *
- * @param handler The handler function for the route. Should return an [ApiResponse] of the full list and response headers.
- */
-@JvmName("registerPaginatedNoResponseHeader")
-@Suppress("ktlint:standard:max-line-length")
-inline fun <reified Req, reified T, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) (Req) -> List<T>,
-): RoutingHttpHandler = register<Req, T, ReqH, NoHeaders, PathP, QueryP> { req: Req -> handler(req) with NoHeaders }
-
-/**
  * Creates a route for the given [ApiContract] with a multipart request body.
  *
  * @param handler The handler function for the route. Should return an [ApiResponse] in the format of `(response body, response headers)`.
  */
-@JvmName("registerMultipart")
 @Suppress("ktlint:standard:max-line-length")
-inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Multipart) -> ApiResponse<Res, ResH>,
+inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.registerMultipart(
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal, Request) (Request, Multipart) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(handler)
-
-/**
- * Creates a route for the given [ApiContract] with a multipart request body.
- *
- * @param handler The handler function for the route. Should return the response body directly.
- */
-@JvmName("registerMultipartNoResponseHeader")
-@Suppress("ktlint:standard:max-line-length")
-inline fun <reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, NoHeaders, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Multipart) -> Res,
-): RoutingHttpHandler = register<Res, ReqH, NoHeaders, PathP, QueryP> { req: Multipart -> handler(req) with NoHeaders }
 
 @PublishedApi
 context(_: Raise<Issue>)
@@ -144,7 +109,7 @@ internal fun ApiContract<*, *, *, *, *, *>.authenticate(req: Request): Principal
     return when (val auth = SpyderConfig.auth) {
         is AuthType.NoAuth -> anonymousPrincipal
         is AuthType.Password -> PasswordAuthHandler.authenticate(req)
-        is AuthType.OAuth -> OAuth2AuthHandler.authenticate(req)
+        is AuthType.OAuth -> OAuthHandler.authenticate(req)
     }
 }
 

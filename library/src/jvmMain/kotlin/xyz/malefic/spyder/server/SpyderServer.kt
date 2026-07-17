@@ -1,6 +1,7 @@
 package xyz.malefic.spyder.server
 
 import arrow.core.raise.Raise
+import org.http4k.core.Request
 import org.http4k.core.then
 import org.http4k.filter.ServerFilters
 import org.http4k.filter.debug
@@ -17,11 +18,13 @@ import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.api.ApiContract
 import xyz.malefic.spyder.api.ApiResponse
 import xyz.malefic.spyder.core.HeaderProvider
-import xyz.malefic.spyder.core.NoHeaders
 import xyz.malefic.spyder.core.PathProvider
 import xyz.malefic.spyder.core.QueryProvider
 import xyz.malefic.spyder.error.Issue
+import xyz.malefic.spyder.feature.auth.AuthType
 import xyz.malefic.spyder.feature.auth.Principal
+import xyz.malefic.spyder.feature.auth.server.OAuthHandler
+import xyz.malefic.spyder.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
@@ -46,18 +49,7 @@ class SpyderServerBuilder(
      */
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Req) -> ApiResponse<Res, ResH>,
-    ) = add(register(handler))
-
-    /**
-     * Adds an [ApiContract] to the server by registering a route with the given [handler].
-     *
-     * @param handler The function to handle the request. Should return the response body directly.
-     */
-    @JvmName("handleNoResponseHeader")
-    @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, NoHeaders, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Req) -> Res,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal, Request) (Request, Req) -> ApiResponse<Res, ResH>,
     ) = add(register(handler))
 
     /**
@@ -65,63 +57,53 @@ class SpyderServerBuilder(
      *
      * @param handler The function to handle the request. Should return an [ApiResponse] in the format of `(response body, response headers)`.
      */
-    @JvmName("handleMultipart")
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.handleMultipart(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Multipart) -> ApiResponse<Res, ResH>,
-    ) = add(register(handler))
-
-    /**
-     * Adds an [ApiContract] with a multipart request body to the server.
-     *
-     * @param handler The function to handle the request. Should return the response body directly.
-     */
-    @JvmName("handleMultipartNoResponseHeader")
-    @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Res, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, NoHeaders, PathP, QueryP>.handleMultipartNoHeader(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) (Multipart) -> Res,
-    ) = add(register(handler))
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal, Request) (Request, Multipart) -> ApiResponse<Res, ResH>,
+    ) = add(registerMultipart(handler))
 
     /**
      * Adds a paginated [ApiContract] to the server.
      *
      * @param handler The function to handle the request. Returns an [ApiResponse] of the full list and response headers.
      */
-    @JvmName("handlePaginated")
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) (Req) -> ApiResponse<List<T>, ResH>,
-    ) = add(register(handler))
+    inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.handlePaginated(
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal, Request) (
+            Request,
+            Req,
+        ) -> ApiResponse<List<T>, ResH>,
+    ) = add(registerPaginated(handler))
 
-    /**
-     * Adds a paginated [ApiContract] to the server.
-     *
-     * @param handler The function to handle the request. Returns the full list of items.
-     */
-    @JvmName("handlePaginatedNoResponseHeader")
-    @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified T, ReqH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, NoHeaders, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) (Req) -> List<T>,
-    ) = add(register(handler))
+    internal fun buildHandler(): RoutingHttpHandler {
+        val authHandlerRoutes =
+            when (val auth = SpyderConfig.auth) {
+                is AuthType.NoAuth -> null
+                is AuthType.Password -> PasswordAuthHandler.authRoutes
+                is AuthType.OAuth -> OAuthHandler.authRoutes
+            }
 
-    internal fun buildHandler(): RoutingHttpHandler =
-        ServerFilters
+        return ServerFilters
             .Cors(config.corsPolicy)
             .then(
                 routes(
-                    routes +
+                    listOfNotNull(
+                        authHandlerRoutes,
+                    ) +
+                        routes +
                         if (config.assetsHosting) {
-                            arrayOf("/${SpyderConfig.assetsPrefix}" bind static(ResourceLoader.Directory(config.assetsPath)))
+                            listOf("/${SpyderConfig.assetsPrefix}" bind static(ResourceLoader.Directory(config.assetsPath)))
                         } else {
-                            arrayOf()
+                            emptyList()
                         } +
                         if (config.filesHosting) {
-                            arrayOf("/${SpyderConfig.filesPrefix}" bind static(ResourceLoader.Directory(config.filesPath)))
+                            listOf("/${SpyderConfig.filesPrefix}" bind static(ResourceLoader.Directory(config.filesPath)))
                         } else {
-                            arrayOf()
+                            emptyList()
                         },
                 ),
             )
+    }
 }
 
 /**

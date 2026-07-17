@@ -23,18 +23,28 @@ import org.http4k.core.Response
 import org.http4k.core.cookie.Cookie
 import org.http4k.core.cookie.SameSite
 import org.http4k.core.cookie.cookie
+import org.http4k.routing.RoutingHttpHandler
+import org.http4k.routing.routes
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.spyder.SpyderConfig
+import xyz.malefic.spyder.api.ApiResponse
+import xyz.malefic.spyder.core.Header
+import xyz.malefic.spyder.core.NoHeaders
 import xyz.malefic.spyder.error.AuthIssue
 import xyz.malefic.spyder.error.BadRequestIssue
 import xyz.malefic.spyder.error.Issue
 import xyz.malefic.spyder.error.UserIssue
 import xyz.malefic.spyder.feature.auth.AuthType
+import xyz.malefic.spyder.feature.auth.LoginContract
+import xyz.malefic.spyder.feature.auth.LogoutContract
 import xyz.malefic.spyder.feature.auth.Principal
+import xyz.malefic.spyder.feature.auth.RefreshContract
+import xyz.malefic.spyder.feature.auth.RegisterContract
 import xyz.malefic.spyder.feature.auth.model.TokenModel
 import xyz.malefic.spyder.feature.auth.model.UserRequestModel
+import xyz.malefic.spyder.server.register
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Date
@@ -44,7 +54,7 @@ import kotlin.uuid.Uuid
 /**
  * Server-side handler for [AuthType.Password].
  */
-object PasswordAuthHandler : ServerAuthHandler<AuthType.Password> {
+object PasswordAuthHandler : AuthHandler<AuthType.Password> {
     private val log = Logger.withTag("PasswordAuth")
     private val secureRandom = SecureRandom()
     private val bcrypt = BCrypt.withDefaults()
@@ -64,6 +74,46 @@ object PasswordAuthHandler : ServerAuthHandler<AuthType.Password> {
     }
 
     private val jwtVerifier by lazy { JWT.require(jwtAlgorithm).build() }
+
+    override val authRoutes: RoutingHttpHandler =
+        routes(
+            LoginContract.register { _, body ->
+                val tokens = getTokensFromLogin(body)
+                ApiResponse(tokens.response, RefreshCookie(tokens.refreshToken))
+            },
+            RegisterContract.register { _, body ->
+                val tokens = body.register()
+                ApiResponse(tokens.response, RefreshCookie(tokens.refreshToken))
+            },
+            RefreshContract.register { req, _ ->
+                val refreshToken =
+                    req.cookie("refresh_token")?.value
+                        ?: raise(AuthIssue.InvalidToken("Refresh token cookie missing"))
+                val tokens = refreshTokens(refreshToken)
+                ApiResponse(tokens.response, RefreshCookie(tokens.refreshToken))
+            },
+            LogoutContract.register { req, _ ->
+                val refreshToken = req.cookie("refresh_token")?.value
+                if (refreshToken != null) logout(refreshToken)
+                ApiResponse(Unit, NoHeaders)
+            },
+        )
+
+    context(_: Raise<Issue>)
+    fun logout(refreshToken: String) =
+        transaction {
+            val parts = refreshToken.split(":")
+            ensure(parts.size == 2) { BadRequestIssue("Invalid refresh token format") }
+            val idPart = parts[0]
+            val secret = parts[1]
+
+            val id = ensureNotNull(Uuid.parseOrNull(idPart)) { BadRequestIssue("Invalid refresh token ID") }
+            val token = ensureNotNull(AuthTokenEntity.findById(id)) { AuthIssue.InvalidToken("Refresh token not found") }
+
+            if (token.secretHash == hash(secret)) {
+                token.revokedAt = System.currentTimeMillis()
+            }
+        }
 
     context(_: Raise<Issue>)
     override fun authenticate(request: Request): Principal {
@@ -86,6 +136,43 @@ object PasswordAuthHandler : ServerAuthHandler<AuthType.Password> {
         return transaction {
             ensureNotNull(UserEntity.findById(userId)) { AuthIssue.InvalidToken("User not found") }
         }
+    }
+
+    private class RefreshCookie(
+        val token: String,
+    ) : Header {
+        override val field: String = "Set-Cookie"
+        override val values: List<String> by lazy {
+            val authConfig = SpyderConfig.auth as? AuthType.Password
+            listOf(
+                Cookie(
+                    "refresh_token",
+                    token,
+                    authConfig?.refreshTokenTtl?.inWholeSeconds,
+                    path = "/${SpyderConfig.apiPrefix}",
+                    httpOnly = true,
+                    secure = true,
+                    sameSite = SameSite.None,
+                    domain = authConfig?.cookieDomain,
+                ).fullCookieString(),
+            )
+        }
+    }
+
+    private object ClearRefreshCookie : Header {
+        override val field: String = "Set-Cookie"
+        override val values: List<String> =
+            listOf(
+                Cookie(
+                    "refresh_token",
+                    "",
+                    maxAge = 0,
+                    path = "/${SpyderConfig.apiPrefix}",
+                    httpOnly = true,
+                    secure = true,
+                    sameSite = SameSite.None,
+                ).fullCookieString(),
+            )
     }
 
     infix fun Response.withCookie(refreshToken: String): Response {
