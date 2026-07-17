@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>OAuth2AuthHandler</title>
+    <title>userInfoEndpoint</title>
     <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
         <script>var pathToRoot = "../../../";</script>
     <script>document.documentElement.classList.replace("no-js", "js");</script>
@@ -46,8 +46,8 @@
 1.0.0        </div>
         <div class="navigation-controls">
         <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
-                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
-                        data-filter=":library/jvmMain">jvm</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true"
+                        data-filter=":library/commonMain">common</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
                         data-role="dropdown-toggle"
@@ -62,12 +62,12 @@
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
-                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":library/jvmMain"
-                                       data-filter=":library/jvmMain"/>
+                                <input type="checkbox" class="checkbox--input" id=":library/commonMain"
+                                       data-filter=":library/commonMain"/>
                                 <span class="checkbox--icon"></span>
-                                jvm
+                                common
                             </label>
                         </li>
                 </ul>
@@ -103,40 +103,12 @@
         </nav>
         <div id="resizer" class="resizer" data-item-type="BAR"></div>
         <div id="main" data-item-type="SECTION" role="main">
-<div class="main-content" data-page-type="classlike" id="content" pageIds="library::xyz.malefic.spyder.feature.auth.server/OAuth2AuthHandler///PointingToDeclaration//839895618">
-  <div class="breadcrumbs"><a href="../../../index.html">library</a><span class="delimiter">/</span><a href="../index.html">xyz.malefic.spyder.feature.auth.server</a><span class="delimiter">/</span><span class="current">OAuth2AuthHandler</span></div>
+<div class="main-content" data-page-type="member" id="content" pageIds="library::xyz.malefic.spyder.feature.auth/OAuthProvider/userInfoEndpoint/#/PointingToDeclaration//-654899660">
+  <div class="breadcrumbs"><a href="../../../index.html">library</a><span class="delimiter">/</span><a href="../index.html">xyz.malefic.spyder.feature.auth</a><span class="delimiter">/</span><a href="index.html">OAuthProvider</a><span class="delimiter">/</span><span class="current">userInfoEndpoint</span></div>
   <div class="cover ">
-    <h1 class="cover"><span>OAuth2Auth</span><wbr></wbr><span><span>Handler</span></span></h1>
-    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">OAuth2AuthHandler</a> : <a href="../-server-auth-handler/index.html">ServerAuthHandler</a><span class="token operator">&lt;</span><a href="../../xyz.malefic.spyder.feature.auth/-auth-type/-o-auth/index.html">AuthType.OAuth</a><span class="token operator">&gt; </span></div><p class="paragraph">Placeholder handler for <a href="../../xyz.malefic.spyder.feature.auth/-auth-type/-o-auth/index.html">AuthType.OAuth</a>.</p></div>    </div>
+    <h1 class="cover"><span>user</span><wbr></wbr><span>Info</span><wbr></wbr><span><span>Endpoint</span></span></h1>
   </div>
-  <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
-    <div class="tabs-section-body">
-      <div data-togglable="FUNCTION">
-        <h2 class="tableheader">Functions</h2>
-        <div class="table"><a data-name="1136455599%2FFunctions%2F839895618" anchor-label="authenticate" id="1136455599%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
-          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="authenticate.html"><span><span>authenticate</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1136455599%2FFunctions%2F839895618"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">context</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">_<span class="token operator">: </span><span data-unresolved-link="arrow.core.raise/Raise///PointingToDeclaration/">Raise</span><span class="token operator">&lt;</span><a href="../../xyz.malefic.spyder.error/-issue/index.html">Issue</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><br><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="authenticate.html"><span class="token function">authenticate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">request<span class="token operator">: </span><span data-unresolved-link="org.http4k.core/Request///PointingToDeclaration/">Request</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../xyz.malefic.spyder.feature.auth/-principal/index.html">Principal</a></div><div class="brief "><p class="paragraph">Authenticates the given <a href="../-server-auth-handler/authenticate.html">request</a> and returns the <a href="../../xyz.malefic.spyder.feature.auth/-principal/index.html">Principal</a> if successful.</p></div></div>                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="user-info-endpoint.html">userInfoEndpoint</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
 </div>
     <div class="footer">
         <div class="footer--container">
