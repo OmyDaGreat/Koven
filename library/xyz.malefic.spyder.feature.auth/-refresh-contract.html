@@ -2,9 +2,9 @@
 <html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>authenticate</title>
-    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
-        <script>var pathToRoot = "../../../";</script>
+    <title>RefreshContract</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../";</script>
     <script>document.documentElement.classList.replace("no-js", "js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
       if (storage == null) {
@@ -19,23 +19,23 @@
         }
       }
     </script>
-<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
-<link href="../../../styles/style.css" rel="Stylesheet">
-<link href="../../../styles/main.css" rel="Stylesheet">
-<link href="../../../styles/prism.css" rel="Stylesheet">
-<link href="../../../styles/logo-styles.css" rel="Stylesheet">
-<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
-<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
-<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
-<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
-<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
-<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer="defer"></script>
 </head>
 <body>
 <div class="root">
     <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
-            <a class="library-name--link" href="../../../index.html" tabindex="1">
+            <a class="library-name--link" href="../../index.html" tabindex="1">
                     library
             </a>
         <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
@@ -46,8 +46,8 @@
 1.0.0        </div>
         <div class="navigation-controls">
         <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
-                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
-                        data-filter=":library/jvmMain">jvm</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true"
+                        data-filter=":library/commonMain">common</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
                         data-role="dropdown-toggle"
@@ -62,12 +62,12 @@
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
-                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":library/jvmMain"
-                                       data-filter=":library/jvmMain"/>
+                                <input type="checkbox" class="checkbox--input" id=":library/commonMain"
+                                       data-filter=":library/commonMain"/>
                                 <span class="checkbox--icon"></span>
-                                jvm
+                                common
                             </label>
                         </li>
                 </ul>
@@ -103,14 +103,12 @@
         </nav>
         <div id="resizer" class="resizer" data-item-type="BAR"></div>
         <div id="main" data-item-type="SECTION" role="main">
-<div class="main-content" data-page-type="member" id="content" pageIds="library::xyz.malefic.spyder.feature.auth.server/OAuth2AuthHandler/authenticate/arrow.core.raise.Raise[xyz.malefic.spyder.error.Issue]##org.http4k.core.Request/PointingToDeclaration//839895618">
-  <div class="breadcrumbs"><a href="../../../index.html">library</a><span class="delimiter">/</span><a href="../index.html">xyz.malefic.spyder.feature.auth.server</a><span class="delimiter">/</span><a href="index.html">OAuth2AuthHandler</a><span class="delimiter">/</span><span class="current">authenticate</span></div>
+<div class="main-content" data-page-type="member" id="content" pageIds="library::xyz.malefic.spyder.feature.auth//RefreshContract/#/PointingToDeclaration//-654899660">
+  <div class="breadcrumbs"><a href="../../index.html">library</a><span class="delimiter">/</span><a href="index.html">xyz.malefic.spyder.feature.auth</a><span class="delimiter">/</span><span class="current">RefreshContract</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>authenticate</span></span></h1>
+    <h1 class="cover"><span>Refresh</span><wbr></wbr><span><span>Contract</span></span></h1>
   </div>
-  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">context</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">_<span class="token operator">: </span><span data-unresolved-link="arrow.core.raise/Raise///PointingToDeclaration/">Raise</span><span class="token operator">&lt;</span><a href="../../xyz.malefic.spyder.error/-issue/index.html">Issue</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><br><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="authenticate.html"><span class="token function">authenticate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">request<span class="token operator">: </span><span data-unresolved-link="org.http4k.core/Request///PointingToDeclaration/">Request</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../xyz.malefic.spyder.feature.auth/-principal/index.html">Principal</a></div><p class="paragraph">Authenticates the given <a href="../-server-auth-handler/authenticate.html">request</a> and returns the <a href="../../xyz.malefic.spyder.feature.auth/-principal/index.html">Principal</a> if successful.</p></div>  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-refresh-contract.html">RefreshContract</a><span class="token operator">: </span><a href="../xyz.malefic.spyder.api/-api-contract/index.html">ApiContract</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.feature.auth.model/-token-response-model/index.html">TokenResponseModel</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-headers/index.html">NoHeaders</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-header-provider/index.html">HeaderProvider</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-params/index.html">NoParams</a><span class="token punctuation">, </span><a href="../xyz.malefic.spyder.core/-no-params/index.html">NoParams</a><span class="token operator">&gt;</span></div><p class="paragraph">A contract for the token refresh endpoint.</p></div></div>
 </div>
     <div class="footer">
         <div class="footer--container">
