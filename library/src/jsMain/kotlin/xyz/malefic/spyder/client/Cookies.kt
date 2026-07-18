@@ -46,7 +46,8 @@ object Cookies {
         field: CookieField<String>,
         value: String,
     ) {
-        if (field.isHttpOnly) return
+        if (field.isHttpOnly()) return
+
         set(field.create(value))
     }
 

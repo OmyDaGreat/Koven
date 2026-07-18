@@ -28,8 +28,7 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
      * Gets a cookie from the response by its field.
      */
     context(_: Raise<Issue>)
-    operator fun <T> get(field: CookieField<T>): T =
-        field.decode(cookies.flatMap { it.provide() }.associate { it.name to it.value })
+    operator fun <T> get(field: CookieField<T>): T = field.decode(cookies.flatMap { it.provide() }.associate { it.name to it.value })
 
     companion object {
         /**

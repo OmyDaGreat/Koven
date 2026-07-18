@@ -14,11 +14,12 @@ interface AuthHandler<T : AuthType> {
     /**
      * Standard authentication routes provided by the handler.
      */
-    val authRoutes: RoutingHttpHandler
+    context(auth: T)
+    fun authRoutes(): RoutingHttpHandler
 
     /**
      * Authenticates the given [request] and returns the [Principal] if successful.
      */
-    context(_: Raise<Issue>)
+    context(auth: T, _: Raise<Issue>)
     fun authenticate(request: Request): Principal
 }

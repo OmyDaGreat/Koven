@@ -1,5 +1,7 @@
 package xyz.malefic.spyder.feature.auth
 
+import io.konform.validation.Validation
+import xyz.malefic.spyder.feature.auth.model.UserRequestModel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
@@ -20,6 +22,7 @@ sealed interface AuthType {
         val accessTokenTtl: Duration = 15.minutes,
         val refreshTokenTtl: Duration = 30.days,
         val cookieDomain: String? = null,
+        val validation: Validation<UserRequestModel> = defaultPasswordValidation,
     ) : AuthType
 
     /**

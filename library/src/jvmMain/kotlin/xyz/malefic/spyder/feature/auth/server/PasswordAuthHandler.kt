@@ -11,11 +11,6 @@ import at.favre.lib.crypto.bcrypt.BCrypt
 import co.touchlab.kermit.Logger
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import io.konform.validation.Validation
-import io.konform.validation.constraints.maxLength
-import io.konform.validation.constraints.minLength
-import io.konform.validation.constraints.notBlank
-import io.konform.validation.constraints.pattern
 import io.konform.validation.messagesAtPath
 import me.gosimple.nbvcxz.Nbvcxz
 import me.gosimple.nbvcxz.resources.ConfigurationBuilder
@@ -79,63 +74,68 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
      * HttpOnly cookie for the refresh token.
      */
     object RefreshTokenCookie : CookieField<String> {
+        var auth: AuthType.Password? = null
+
         override val name: String = "refresh_token"
-        override val isHttpOnly: Boolean = true
-        override val maxAge: Long? get() = (SpyderConfig.auth as? AuthType.Password)?.refreshTokenTtl?.inWholeSeconds
-        override val path: String = "/${SpyderConfig.apiPrefix}"
-        override val domain: String? get() = (SpyderConfig.auth as? AuthType.Password)?.cookieDomain
-        override val secure: Boolean = true
-        override val sameSite: SameSite = SameSite.None
+
+        override fun maxAge(): Long? = auth?.refreshTokenTtl?.inWholeSeconds
+
+        override fun path(): String = "/${SpyderConfig.apiPrefix}"
+
+        override fun domain(): String? = auth?.cookieDomain
+
+        override fun secure(): Boolean = true
+
+        override fun isHttpOnly(): Boolean = true
+
+        override fun sameSite(): SameSite = SameSite.None
+
+        /**
+         * Creates a [Cookie] using the properties defined in this field, with an [AuthType.Password] context for safety.
+         */
+        context(auth: AuthType.Password)
+        infix fun create(token: String): Cookie = super.create(token.also { this.auth = auth })
+
+        /**
+         * Creates an empty [Cookie] with the properties defined in this field for the purpose of clearing an already-existent cookie, with an [AuthType.Password] context for safety.
+         */
+        context(auth: AuthType.Password)
+        infix fun clear(unit: Unit): Cookie {
+            this.auth = auth
+            return super.clear()
+        }
 
         context(_: Raise<Issue>)
         override fun decode(cookies: Map<String, String>): String =
             ensureNotNull(cookies[name]) { AuthIssue.InvalidToken("Refresh token cookie missing") }
-
-        /**
-         * Clears the refresh token cookie by overwriting its value.
-         */
-        fun clear(): Cookie = create("").copy(maxAge = 0)
     }
 
-    override val authRoutes: RoutingHttpHandler =
+    context(auth: AuthType.Password)
+    override fun authRoutes(): RoutingHttpHandler =
         routes(
             LoginContract.register { _, body ->
                 val tokens = getTokensFromLogin(body)
-                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(tokens.refreshToken)
+                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(token = tokens.refreshToken)
             },
             RegisterContract.register { _, body ->
                 val tokens = body.register()
-                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(tokens.refreshToken)
+                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(token = tokens.refreshToken)
             },
             RefreshContract.register { req, _ ->
                 val tokens = refreshTokens(req[RefreshTokenCookie])
-                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(tokens.refreshToken)
+                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(token = tokens.refreshToken)
             },
             LogoutContract.register { req, _ ->
                 val refreshToken = either { req[RefreshTokenCookie] }.getOrNull()
                 if (refreshToken != null) logout(refreshToken)
-                ApiResponse(Unit, NoHeaders) with RefreshTokenCookie.clear()
+                ApiResponse(Unit, NoHeaders) with RefreshTokenCookie.clear(Unit)
             },
         )
 
-    context(_: Raise<Issue>)
-    fun logout(refreshToken: String) =
-        transaction {
-            val parts = refreshToken.split(":")
-            ensure(parts.size == 2) { BadRequestIssue("Invalid refresh token format") }
-            val idPart = parts[0]
-            val secret = parts[1]
-
-            val id = ensureNotNull(Uuid.parseOrNull(idPart)) { BadRequestIssue("Invalid refresh token ID") }
-            val token = ensureNotNull(AuthTokenEntity.findById(id)) { AuthIssue.InvalidToken("Refresh token not found") }
-
-            if (token.secretHash == hash(secret)) {
-                token.revokedAt = System.currentTimeMillis()
-            }
-        }
-
-    context(_: Raise<Issue>)
+    context(auth: AuthType.Password, _: Raise<Issue>)
     override fun authenticate(request: Request): Principal {
+        if (RefreshTokenCookie.auth == null) RefreshTokenCookie.auth = auth
+
         val token =
             request
                 .header("Authorization")
@@ -168,22 +168,16 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
 
     private fun generateSecret(bytes: Int = 32) = ByteArray(bytes).also { secureRandom.nextBytes(it) }.let { base64.encode(it) }
 
-    private fun UserEntity.createAccessToken(): String {
-        val authConfig = SpyderConfig.auth as? AuthType.Password
-        val ttl = authConfig?.accessTokenTtl ?: AuthType.Password().accessTokenTtl
-        return JWT
+    context(auth: AuthType.Password)
+    private fun UserEntity.createAccessToken(): String =
+        JWT
             .create()
             .withSubject(id.value.toString())
-            .withExpiresAt(Date(System.currentTimeMillis() + ttl.inWholeMilliseconds))
+            .withExpiresAt(Date(System.currentTimeMillis() + auth.accessTokenTtl.inWholeMilliseconds))
             .sign(jwtAlgorithm)
-    }
 
-    context(_: JdbcTransaction)
+    context(_: JdbcTransaction, auth: AuthType.Password)
     fun UserEntity.issueTokenPair(): TokenModel {
-        val authConfig = SpyderConfig.auth as? AuthType.Password
-        val refreshTtl = authConfig?.refreshTokenTtl ?: AuthType.Password().refreshTokenTtl
-        val accessTtl = authConfig?.accessTokenTtl ?: AuthType.Password().accessTokenTtl
-
         val accessToken = createAccessToken()
         val secret = generateSecret()
 
@@ -191,17 +185,17 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
             AuthTokenEntity.new {
                 this.user = this@issueTokenPair
                 this.secretHash = hash(secret)
-                this.expiresAt = System.currentTimeMillis() + refreshTtl.inWholeMilliseconds
+                this.expiresAt = System.currentTimeMillis() + auth.refreshTokenTtl.inWholeMilliseconds
             }
 
         return TokenModel(
             accessToken = accessToken,
             refreshToken = "${entity.id.value}:$secret",
-            expiresIn = accessTtl.inWholeSeconds,
+            expiresIn = auth.accessTokenTtl.inWholeSeconds,
         )
     }
 
-    context(_: Raise<Issue>)
+    context(_: Raise<Issue>, auth: AuthType.Password)
     fun refreshTokens(refreshToken: String): TokenModel =
         transaction {
             val parts = refreshToken.split(":")
@@ -222,7 +216,7 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
             token.user.issueTokenPair()
         }
 
-    context(_: Raise<Issue>)
+    context(_: Raise<Issue>, auth: AuthType.Password)
     fun getTokensFromLogin(user: UserRequestModel): TokenModel =
         transaction {
             val userEntity =
@@ -244,28 +238,10 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
             userEntity.issueTokenPair()
         }
 
-    private val validateUser =
-        Validation {
-            UserRequestModel::username {
-                notBlank()
-                minLength(3) hint "Username must have at least 3 characters"
-                maxLength(32) hint "Username must have at most 32 characters"
-                constrain("Username must not contain spaces") { string -> !string.any { it.isWhitespace() } }
-                pattern(Regex("""^[\x21-\x7E&&[^"'`\\<>/:;%&{}|\[\]]]+$""")) hint
-                    "Username must use printable ASCII and cannot include spaces or these characters: \" ' \\ < > / : ; % & { } | [ ]"
-            }
-            UserRequestModel::password {
-                notBlank()
-                minLength(12) hint "Password must have at least 12 characters"
-                maxLength(64) hint "Password must have at most 64 characters"
-                constrain("Password is not strong enough") { nbvcxz.estimate(it).basicScore >= 3 }
-            }
-        }
-
-    context(_: Raise<Issue>)
+    context(_: Raise<Issue>, auth: AuthType.Password)
     fun UserRequestModel.register(): TokenModel =
         transaction {
-            val userValidation = validateUser(this@register)
+            val userValidation = auth.validation(this@register)
             ensure(userValidation.isValid) {
                 UserIssue.InvalidUser(
                     userValidation.errors.messagesAtPath(UserRequestModel::username),
@@ -278,5 +254,21 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
                     username = this@register.username
                     hashedPassword = hashPassword(password)
                 }.issueTokenPair()
+        }
+
+    context(_: Raise<Issue>)
+    fun logout(refreshToken: String) =
+        transaction {
+            val parts = refreshToken.split(":")
+            ensure(parts.size == 2) { BadRequestIssue("Invalid refresh token format") }
+            val idPart = parts[0]
+            val secret = parts[1]
+
+            val id = ensureNotNull(Uuid.parseOrNull(idPart)) { BadRequestIssue("Invalid refresh token ID") }
+            val token = ensureNotNull(AuthTokenEntity.findById(id)) { AuthIssue.InvalidToken("Refresh token not found") }
+
+            if (token.secretHash == hash(secret)) {
+                token.revokedAt = System.currentTimeMillis()
+            }
         }
 }

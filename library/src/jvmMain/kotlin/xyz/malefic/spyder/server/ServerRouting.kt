@@ -120,8 +120,8 @@ internal fun ApiContract<*, *, *, *, *, *>.authenticate(req: Request): Principal
 
     return when (val auth = SpyderConfig.auth) {
         is AuthType.NoAuth -> anonymousPrincipal
-        is AuthType.Password -> PasswordAuthHandler.authenticate(req)
-        is AuthType.OAuth -> OAuthHandler.authenticate(req)
+        is AuthType.Password -> with(PasswordAuthHandler) { with(auth) { authenticate(req) } }
+        is AuthType.OAuth -> with(OAuthHandler) { with(auth) { authenticate(req) } }
     }
 }
 

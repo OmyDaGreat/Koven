@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.arrow.core)
+            implementation(libs.konform)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -47,7 +48,6 @@ kotlin {
             implementation(libs.bundles.http4k)
             implementation(libs.jwt)
             implementation(libs.bcrypt)
-            implementation(libs.konform)
             implementation(libs.nbvcxz)
             implementation(libs.exposed.core)
             implementation(libs.exposed.dao)

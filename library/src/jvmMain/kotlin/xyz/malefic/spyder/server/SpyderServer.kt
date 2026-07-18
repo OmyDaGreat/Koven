@@ -79,8 +79,8 @@ class SpyderServerBuilder(
         val authHandlerRoutes =
             when (val auth = SpyderConfig.auth) {
                 is AuthType.NoAuth -> null
-                is AuthType.Password -> PasswordAuthHandler.authRoutes
-                is AuthType.OAuth -> OAuthHandler.authRoutes
+                is AuthType.Password -> with(PasswordAuthHandler) { with(auth) { authRoutes() } }
+                is AuthType.OAuth -> with(OAuthHandler) { with(auth) { authRoutes() } }
             }
 
         return ServerFilters
