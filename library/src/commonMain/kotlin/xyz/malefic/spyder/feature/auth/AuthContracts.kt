@@ -1,38 +1,30 @@
 package xyz.malefic.spyder.feature.auth
 
 import xyz.malefic.spyder.api.apiContract
-import xyz.malefic.spyder.core.NoHeaders
 import xyz.malefic.spyder.feature.auth.model.TokenResponseModel
 import xyz.malefic.spyder.feature.auth.model.UserRequestModel
 
 /**
  * A contract for the user login endpoint.
  */
-val LoginContract =
-    apiContract<UserRequestModel, TokenResponseModel>("auth/login")
-        .responseHeaders(NoHeaders)
-        .build()
+val LoginContract = apiContract<UserRequestModel, TokenResponseModel>("auth/login").build()
 
 /**
  * A contract for the user registration endpoint.
  */
-val RegisterContract =
-    apiContract<UserRequestModel, TokenResponseModel>("auth/register")
-        .responseHeaders(NoHeaders)
-        .build()
+val RegisterContract = apiContract<UserRequestModel, TokenResponseModel>("auth/register").build()
 
 /**
  * A contract for the token refresh endpoint.
  */
-val RefreshContract =
-    apiContract<Unit, TokenResponseModel>("auth/refresh")
-        .responseHeaders(NoHeaders)
-        .build()
+val RefreshContract = apiContract<Unit, TokenResponseModel>("auth/refresh").build()
 
 /**
  * A contract for the logout endpoint.
  */
-val LogoutContract =
-    apiContract<Unit, Unit>("auth/logout")
-        .responseHeaders(NoHeaders)
-        .build()
+val LogoutContract = apiContract<Unit, Unit>("auth/logout").build()
+
+/**
+ * A contract for the password strength endpoint.
+ */
+val PasswordStrengthContract = apiContract<String, Pair<Int, String?>>("auth/strength").build()

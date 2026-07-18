@@ -12,7 +12,7 @@ import xyz.malefic.spyder.error.Issue
  * Usage example:
  * ```
  * val apiState by produceApiState(userId) {
- *     UserContract.call(UserRequest(userId), NoHeaders)
+ *     UserContract.call(UserRequest(userId), NoHeader)
  * }
  * ```
  *

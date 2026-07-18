@@ -21,10 +21,9 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.spyder.SpyderConfig
-import xyz.malefic.spyder.api.ApiResponse
+import xyz.malefic.spyder.api.ApiResponse.Companion.with
 import xyz.malefic.spyder.core.Cookie
 import xyz.malefic.spyder.core.CookieField
-import xyz.malefic.spyder.core.NoHeaders
 import xyz.malefic.spyder.core.SameSite
 import xyz.malefic.spyder.error.AuthIssue
 import xyz.malefic.spyder.error.BadRequestIssue
@@ -33,6 +32,7 @@ import xyz.malefic.spyder.error.UserIssue
 import xyz.malefic.spyder.feature.auth.AuthType
 import xyz.malefic.spyder.feature.auth.LoginContract
 import xyz.malefic.spyder.feature.auth.LogoutContract
+import xyz.malefic.spyder.feature.auth.PasswordStrengthContract
 import xyz.malefic.spyder.feature.auth.Principal
 import xyz.malefic.spyder.feature.auth.RefreshContract
 import xyz.malefic.spyder.feature.auth.RegisterContract
@@ -110,25 +110,31 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
             ensureNotNull(cookies[name]) { AuthIssue.InvalidToken("Refresh token cookie missing") }
     }
 
+    fun String.strength(): Pair<Int, String?> = with(nbvcxz.estimate(this)) { basicScore to feedback.warning }
+
     context(auth: AuthType.Password)
     override fun authRoutes(): RoutingHttpHandler =
         routes(
-            LoginContract.register { _, body ->
+            PasswordStrengthContract.register { string ->
+                string.strength()
+            },
+            LoginContract.register { body ->
                 val tokens = getTokensFromLogin(body)
-                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(token = tokens.refreshToken)
+                tokens.response with RefreshTokenCookie.create(token = tokens.refreshToken)
             },
-            RegisterContract.register { _, body ->
+            RegisterContract.register { body ->
                 val tokens = body.register()
-                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(token = tokens.refreshToken)
+                tokens.response with RefreshTokenCookie.create(token = tokens.refreshToken)
             },
-            RefreshContract.register { req, _ ->
-                val tokens = refreshTokens(req[RefreshTokenCookie])
-                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(token = tokens.refreshToken)
+            RefreshContract.register { _ ->
+                val tokens = refreshTokens(this[RefreshTokenCookie])
+                tokens.response with RefreshTokenCookie.create(token = tokens.refreshToken)
             },
-            LogoutContract.register { req, _ ->
+            LogoutContract.register { _ ->
+                val req = this
                 val refreshToken = either { req[RefreshTokenCookie] }.getOrNull()
                 if (refreshToken != null) logout(refreshToken)
-                ApiResponse(Unit, NoHeaders) with RefreshTokenCookie.clear(Unit)
+                RefreshTokenCookie.clear(Unit)
             },
         )
 

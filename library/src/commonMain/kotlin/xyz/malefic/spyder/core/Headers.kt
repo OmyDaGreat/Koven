@@ -131,15 +131,15 @@ interface HeaderField<out T> {
 }
 
 /**
- * Represents "No Headers" for contracts like [xyz.malefic.spyder.api.HealthContract] and [xyz.malefic.spyder.api.PingContract].
+ * Represents "No Header" for contracts like [xyz.malefic.spyder.api.HealthContract] and [xyz.malefic.spyder.api.PingContract].
  */
-object NoHeaders : HeaderProvider, HeaderField<NoHeaders> {
+object NoHeader : HeaderProvider, HeaderField<NoHeader> {
     override val field: String = ""
 
     override fun Headers.Builder.provide() {}
 
     context(_: Raise<Issue>)
-    override fun decode(headers: Headers): NoHeaders = this
+    override fun decode(headers: Headers): NoHeader = this
 
     override fun flatten(): List<HeaderField<*>> = emptyList()
 }

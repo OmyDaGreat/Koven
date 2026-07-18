@@ -16,7 +16,6 @@ import org.http4k.server.ServerConfig
 import org.http4k.server.asServer
 import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.api.ApiContract
-import xyz.malefic.spyder.api.ApiResponse
 import xyz.malefic.spyder.core.HeaderProvider
 import xyz.malefic.spyder.core.PathProvider
 import xyz.malefic.spyder.core.QueryProvider
@@ -45,34 +44,31 @@ class SpyderServerBuilder(
     /**
      * Adds an [ApiContract] to the server by registering a route with the given [handler].
      *
-     * @param handler The function to handle the request. Should return an [ApiResponse] in the format of `(response body, response headers)`.
+     * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.handle(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal, Request) (Request, Req) -> ApiResponse<Res, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Req) -> Any?,
     ) = add(register(handler))
 
     /**
      * Adds an [ApiContract] with a multipart request body to the server.
      *
-     * @param handler The function to handle the request. Should return an [ApiResponse] in the format of `(response body, response headers)`.
+     * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.handleMultipart(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal, Request) (Request, Multipart) -> ApiResponse<Res, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Multipart) -> Any?,
     ) = add(registerMultipart(handler))
 
     /**
      * Adds a paginated [ApiContract] to the server.
      *
-     * @param handler The function to handle the request. Returns an [ApiResponse] of the full list and response headers.
+     * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.handlePaginated(
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal, Request) (
-            Request,
-            Req,
-        ) -> ApiResponse<List<T>, ResH>,
+        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) Request.(Req) -> Any?,
     ) = add(registerPaginated(handler))
 
     internal fun buildHandler(): RoutingHttpHandler {

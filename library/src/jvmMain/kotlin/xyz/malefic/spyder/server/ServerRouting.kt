@@ -21,6 +21,7 @@ import xyz.malefic.spyder.api.ApiContract
 import xyz.malefic.spyder.api.ApiResponse
 import xyz.malefic.spyder.api.ApiResponse.Companion.with
 import xyz.malefic.spyder.core.CookieField
+import xyz.malefic.spyder.core.CookieProvider
 import xyz.malefic.spyder.core.HeaderProvider
 import xyz.malefic.spyder.core.Headers
 import xyz.malefic.spyder.core.PathProvider
@@ -49,16 +50,48 @@ operator fun <T> Request.get(field: CookieField<T>): T = field.decode(cookies().
 /**
  * Creates a route for the given [ApiContract].
  *
- * @param handler The handler function for the route. Should return an [ApiResponse] in the format of `(response body, response headers)`.
+ * The handler function can return:
+ * - [ApiResponse] for a full response with body, headers, and cookies.
+ * - [Res] for a simple response body.
+ * - [HeaderProvider] for a response with only headers.
+ * - [CookieProvider] or `List<CookieProvider>` for a response with only cookies.
+ * - [Unit] for an empty response.
+ *
+ * @param handler The handler function for the route.
  */
-@Suppress("ktlint:standard:max-line-length")
+@Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.register(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal, Request) (Request, Req) -> ApiResponse<Res, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Req) -> Any?,
 ): RoutingHttpHandler =
     baseRegister { req, reqH, pathP, queryP ->
         val principal = authenticate(req)
         val body = decodeBody(req)
-        handler(this, reqH, pathP, queryP, principal, req, req, body)
+
+        when (val result = handler(this@baseRegister, reqH, pathP, queryP, principal, req, body)) {
+            is ApiResponse<*, *> -> {
+                result as ApiResponse<Res, ResH>
+            }
+
+            is List<*> -> {
+                if (result.firstOrNull() is CookieProvider) {
+                    ApiResponse(Unit as Res, decodeResponseHeaders(Headers()), result as List<CookieProvider>)
+                } else {
+                    ApiResponse(result as Res, decodeResponseHeaders(Headers()))
+                }
+            }
+
+            is CookieProvider -> {
+                ApiResponse(Unit as Res, decodeResponseHeaders(Headers()), listOf(result))
+            }
+
+            is HeaderProvider -> {
+                ApiResponse(Unit as Res, result as ResH)
+            }
+
+            else -> {
+                ApiResponse(result as Res, decodeResponseHeaders(Headers()))
+            }
+        }
     }
 
 /**
@@ -66,14 +99,15 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
  *
  * The route will automatically handle `page` and `limit` query parameters to slice the list. If the [Pagination.totalItems] value provided in context is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
  *
- * @param handler The handler function for the route. Should return an [ApiResponse] in the format of `(response list, response headers)`.
+ * The handler function can return:
+ * - [ApiResponse] containing a `List<T>`.
+ * - `List<T>` directly.
+ *
+ * @param handler The handler function for the route.
  */
-@Suppress("ktlint:standard:max-line-length")
+@Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
 inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.registerPaginated(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal, Request) (
-        Request,
-        Req,
-    ) -> ApiResponse<List<T>, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) Request.(Req) -> Any?,
 ): RoutingHttpHandler =
     baseRegister { req, reqH, pathP, queryP ->
         val principal = authenticate(req)
@@ -89,7 +123,13 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
             }
 
         val body = decodeBody(req)
-        val (items, resH) = handler(this, reqH, pathP, queryP, pagination, principal, req, req, body)
+        val result = handler(this@baseRegister, reqH, pathP, queryP, pagination, principal, req, body)
+
+        val (items, resH) =
+            when (result) {
+                is ApiResponse<*, *> -> (result.body as List<T>) to (result.headers as ResH)
+                else -> (result as List<T>) to decodeResponseHeaders(Headers())
+            }
 
         val response =
             if (pagination.totalItems != null) {
@@ -106,11 +146,11 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
 /**
  * Creates a route for the given [ApiContract] with a multipart request body.
  *
- * @param handler The handler function for the route. Should return an [ApiResponse] in the format of `(response body, response headers)`.
+ * @param handler The handler function for the route.
  */
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.registerMultipart(
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal, Request) (Request, Multipart) -> ApiResponse<Res, ResH>,
+    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Multipart) -> Any?,
 ): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(handler)
 
 @PublishedApi

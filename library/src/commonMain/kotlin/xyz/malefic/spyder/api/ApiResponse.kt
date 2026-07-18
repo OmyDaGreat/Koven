@@ -4,6 +4,7 @@ import arrow.core.raise.Raise
 import xyz.malefic.spyder.core.CookieField
 import xyz.malefic.spyder.core.CookieProvider
 import xyz.malefic.spyder.core.HeaderProvider
+import xyz.malefic.spyder.core.NoHeader
 import xyz.malefic.spyder.error.Issue
 
 /**
@@ -22,7 +23,12 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
     /**
      * Adds multiple cookies to the response.
      */
-    fun with(vararg newCookies: CookieProvider) = copy(cookies = cookies + newCookies.toList())
+    infix fun with(newCookies: List<CookieProvider>) = copy(cookies = cookies + newCookies)
+
+    /**
+     * Adds multiple cookies to the response.
+     */
+    fun with(vararg newCookies: CookieProvider) = with(newCookies.toList())
 
     /**
      * Gets a cookie from the response by its field.
@@ -35,5 +41,25 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
          * Creates an [ApiResponse] with the given [headers].
          */
         infix fun <Res, ResH : HeaderProvider> Res.with(headers: ResH) = ApiResponse(this, headers)
+
+        /**
+         * Creates an [ApiResponse] with the given [cookie].
+         */
+        infix fun <Res> Res.with(cookie: CookieProvider) = ApiResponse(this, NoHeader).with(cookie)
+
+        /**
+         * Creates an [ApiResponse] with the given [newCookies].
+         */
+        infix fun <Res> Res.with(newCookies: List<CookieProvider>) = ApiResponse(this, NoHeader).with(newCookies)
+
+        /**
+         * Creates an [ApiResponse] with the given [newCookies].
+         */
+        fun <Res> Res.with(vararg newCookies: CookieProvider) = ApiResponse(this, NoHeader).with(newCookies.toList())
+
+        /**
+         * Creates a blank [ApiResponse].
+         */
+        val Blank = ApiResponse(Unit, NoHeader)
     }
 }

@@ -6,7 +6,7 @@ import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.core.HeaderField
 import xyz.malefic.spyder.core.HeaderProvider
 import xyz.malefic.spyder.core.Headers
-import xyz.malefic.spyder.core.NoHeaders
+import xyz.malefic.spyder.core.NoHeader
 import xyz.malefic.spyder.core.NoParams
 import xyz.malefic.spyder.core.PathField
 import xyz.malefic.spyder.core.PathProvider
@@ -32,8 +32,8 @@ import xyz.malefic.spyder.feature.auth.BearerAuth
  *
  * @param Req The type of the request body. If the request body is empty, this should be `Unit`.
  * @param Res The type of the response body. If the response body is empty, this should be `Unit`.
- * @param ReqH The [HeaderProvider] type of the request headers. Use [NoHeaders] for no headers.
- * @param ResH The [HeaderProvider] type of the response headers. Use [NoHeaders] for no headers.
+ * @param ReqH The [HeaderProvider] type of the request headers. Use [NoHeader] for no headers.
+ * @param ResH The [HeaderProvider] type of the response headers. Use [NoHeader] for no headers.
  * @param PathP The [PathProvider] type of the path parameters. Use [NoParams] for no path parameters.
  * @param QueryP The [QueryProvider] type of the query parameters. Use [NoParams] for no query parameters.
  */
@@ -43,9 +43,9 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
     val requiredRequestHeaders: List<HeaderField<*>> = emptyList(),
     val requiredResponseHeaders: List<HeaderField<*>> = emptyList(),
     @Suppress("UNCHECKED_CAST")
-    val requestHeaderDecoder: HeaderField<ReqH> = NoHeaders as HeaderField<ReqH>,
+    val requestHeaderDecoder: HeaderField<ReqH> = NoHeader as HeaderField<ReqH>,
     @Suppress("UNCHECKED_CAST")
-    val responseHeaderDecoder: HeaderField<ResH> = NoHeaders as HeaderField<ResH>,
+    val responseHeaderDecoder: HeaderField<ResH> = NoHeader as HeaderField<ResH>,
     @Suppress("UNCHECKED_CAST")
     val pathDecoder: PathField<PathP> = NoParams as PathField<PathP>,
     @Suppress("UNCHECKED_CAST")
@@ -92,7 +92,7 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
  * Entry point for creating an [ApiContract] via builder.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified Req, reified Res> apiContract(path: String): ApiContractBuilder<Req, Res, NoHeaders, NoHeaders, NoParams, NoParams> {
+inline fun <reified Req, reified Res> apiContract(path: String): ApiContractBuilder<Req, Res, NoHeader, NoHeader, NoParams, NoParams> {
     val reqFormat =
         if (Req::class == Unit::class) {
             UnitFormat as BodyFormat<Req>
@@ -108,8 +108,8 @@ inline fun <reified Req, reified Res> apiContract(path: String): ApiContractBuil
 
     return ApiContractBuilder(
         path = path,
-        requestHeaderDecoder = NoHeaders as HeaderField<NoHeaders>,
-        responseHeaderDecoder = NoHeaders as HeaderField<NoHeaders>,
+        requestHeaderDecoder = NoHeader as HeaderField<NoHeader>,
+        responseHeaderDecoder = NoHeader as HeaderField<NoHeader>,
         pathDecoder = NoParams as PathField<NoParams>,
         queryDecoder = NoParams as QueryField<NoParams>,
         requestFormat = reqFormat,
