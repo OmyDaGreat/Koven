@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "spyder"
+rootProject.name = "koven"
 include(":library")
