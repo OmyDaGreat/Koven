@@ -1,7 +1,7 @@
 package xyz.malefic.spyder.feature.auth
 
 import xyz.malefic.spyder.api.apiContract
-import xyz.malefic.spyder.core.AnyHeaders
+import xyz.malefic.spyder.core.NoHeaders
 import xyz.malefic.spyder.feature.auth.model.TokenResponseModel
 import xyz.malefic.spyder.feature.auth.model.UserRequestModel
 
@@ -10,7 +10,7 @@ import xyz.malefic.spyder.feature.auth.model.UserRequestModel
  */
 val LoginContract =
     apiContract<UserRequestModel, TokenResponseModel>("auth/login")
-        .responseHeaders(AnyHeaders)
+        .responseHeaders(NoHeaders)
         .build()
 
 /**
@@ -18,7 +18,7 @@ val LoginContract =
  */
 val RegisterContract =
     apiContract<UserRequestModel, TokenResponseModel>("auth/register")
-        .responseHeaders(AnyHeaders)
+        .responseHeaders(NoHeaders)
         .build()
 
 /**
@@ -26,7 +26,7 @@ val RegisterContract =
  */
 val RefreshContract =
     apiContract<Unit, TokenResponseModel>("auth/refresh")
-        .responseHeaders(AnyHeaders)
+        .responseHeaders(NoHeaders)
         .build()
 
 /**
@@ -34,5 +34,5 @@ val RefreshContract =
  */
 val LogoutContract =
     apiContract<Unit, Unit>("auth/logout")
-        .responseHeaders(AnyHeaders)
+        .responseHeaders(NoHeaders)
         .build()

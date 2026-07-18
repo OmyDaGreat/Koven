@@ -6,6 +6,7 @@ import arrow.core.raise.Raise
 import arrow.core.raise.context.ensure
 import arrow.core.raise.context.ensureNotNull
 import arrow.core.raise.context.raise
+import arrow.core.raise.either
 import at.favre.lib.crypto.bcrypt.BCrypt
 import co.touchlab.kermit.Logger
 import com.auth0.jwt.JWT
@@ -19,10 +20,6 @@ import io.konform.validation.messagesAtPath
 import me.gosimple.nbvcxz.Nbvcxz
 import me.gosimple.nbvcxz.resources.ConfigurationBuilder
 import org.http4k.core.Request
-import org.http4k.core.Response
-import org.http4k.core.cookie.Cookie
-import org.http4k.core.cookie.SameSite
-import org.http4k.core.cookie.cookie
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.routes
 import org.jetbrains.exposed.v1.core.eq
@@ -30,8 +27,10 @@ import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.api.ApiResponse
-import xyz.malefic.spyder.core.Header
+import xyz.malefic.spyder.core.Cookie
+import xyz.malefic.spyder.core.CookieField
 import xyz.malefic.spyder.core.NoHeaders
+import xyz.malefic.spyder.core.SameSite
 import xyz.malefic.spyder.error.AuthIssue
 import xyz.malefic.spyder.error.BadRequestIssue
 import xyz.malefic.spyder.error.Issue
@@ -44,6 +43,7 @@ import xyz.malefic.spyder.feature.auth.RefreshContract
 import xyz.malefic.spyder.feature.auth.RegisterContract
 import xyz.malefic.spyder.feature.auth.model.TokenModel
 import xyz.malefic.spyder.feature.auth.model.UserRequestModel
+import xyz.malefic.spyder.server.get
 import xyz.malefic.spyder.server.register
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -52,7 +52,7 @@ import kotlin.io.encoding.Base64
 import kotlin.uuid.Uuid
 
 /**
- * Server-side handler for [AuthType.Password].
+ * Server-side handler for [AuthType.Password], implementing [AuthHandler].
  */
 object PasswordAuthHandler : AuthHandler<AuthType.Password> {
     private val log = Logger.withTag("PasswordAuth")
@@ -75,27 +75,46 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
 
     private val jwtVerifier by lazy { JWT.require(jwtAlgorithm).build() }
 
+    /**
+     * HttpOnly cookie for the refresh token.
+     */
+    object RefreshTokenCookie : CookieField<String> {
+        override val name: String = "refresh_token"
+        override val isHttpOnly: Boolean = true
+        override val maxAge: Long? get() = (SpyderConfig.auth as? AuthType.Password)?.refreshTokenTtl?.inWholeSeconds
+        override val path: String = "/${SpyderConfig.apiPrefix}"
+        override val domain: String? get() = (SpyderConfig.auth as? AuthType.Password)?.cookieDomain
+        override val secure: Boolean = true
+        override val sameSite: SameSite = SameSite.None
+
+        context(_: Raise<Issue>)
+        override fun decode(cookies: Map<String, String>): String =
+            ensureNotNull(cookies[name]) { AuthIssue.InvalidToken("Refresh token cookie missing") }
+
+        /**
+         * Clears the refresh token cookie by overwriting its value.
+         */
+        fun clear(): Cookie = create("").copy(maxAge = 0)
+    }
+
     override val authRoutes: RoutingHttpHandler =
         routes(
             LoginContract.register { _, body ->
                 val tokens = getTokensFromLogin(body)
-                ApiResponse(tokens.response, RefreshCookie(tokens.refreshToken))
+                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(tokens.refreshToken)
             },
             RegisterContract.register { _, body ->
                 val tokens = body.register()
-                ApiResponse(tokens.response, RefreshCookie(tokens.refreshToken))
+                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(tokens.refreshToken)
             },
             RefreshContract.register { req, _ ->
-                val refreshToken =
-                    req.cookie("refresh_token")?.value
-                        ?: raise(AuthIssue.InvalidToken("Refresh token cookie missing"))
-                val tokens = refreshTokens(refreshToken)
-                ApiResponse(tokens.response, RefreshCookie(tokens.refreshToken))
+                val tokens = refreshTokens(req[RefreshTokenCookie])
+                ApiResponse(tokens.response, NoHeaders) with RefreshTokenCookie.create(tokens.refreshToken)
             },
             LogoutContract.register { req, _ ->
-                val refreshToken = req.cookie("refresh_token")?.value
+                val refreshToken = either { req[RefreshTokenCookie] }.getOrNull()
                 if (refreshToken != null) logout(refreshToken)
-                ApiResponse(Unit, NoHeaders)
+                ApiResponse(Unit, NoHeaders) with RefreshTokenCookie.clear()
             },
         )
 
@@ -136,59 +155,6 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
         return transaction {
             ensureNotNull(UserEntity.findById(userId)) { AuthIssue.InvalidToken("User not found") }
         }
-    }
-
-    private class RefreshCookie(
-        val token: String,
-    ) : Header {
-        override val field: String = "Set-Cookie"
-        override val values: List<String> by lazy {
-            val authConfig = SpyderConfig.auth as? AuthType.Password
-            listOf(
-                Cookie(
-                    "refresh_token",
-                    token,
-                    authConfig?.refreshTokenTtl?.inWholeSeconds,
-                    path = "/${SpyderConfig.apiPrefix}",
-                    httpOnly = true,
-                    secure = true,
-                    sameSite = SameSite.None,
-                    domain = authConfig?.cookieDomain,
-                ).fullCookieString(),
-            )
-        }
-    }
-
-    private object ClearRefreshCookie : Header {
-        override val field: String = "Set-Cookie"
-        override val values: List<String> =
-            listOf(
-                Cookie(
-                    "refresh_token",
-                    "",
-                    maxAge = 0,
-                    path = "/${SpyderConfig.apiPrefix}",
-                    httpOnly = true,
-                    secure = true,
-                    sameSite = SameSite.None,
-                ).fullCookieString(),
-            )
-    }
-
-    infix fun Response.withCookie(refreshToken: String): Response {
-        val authConfig = SpyderConfig.auth as? AuthType.Password ?: return this
-        return cookie(
-            Cookie(
-                "refresh_token",
-                refreshToken,
-                authConfig.refreshTokenTtl.inWholeSeconds,
-                path = "/${SpyderConfig.apiPrefix}",
-                httpOnly = true,
-                secure = true,
-                sameSite = SameSite.None,
-                domain = authConfig.cookieDomain,
-            ),
-        )
     }
 
     fun hashPassword(password: String): String = bcrypt.hashToString(12, password.toCharArray())

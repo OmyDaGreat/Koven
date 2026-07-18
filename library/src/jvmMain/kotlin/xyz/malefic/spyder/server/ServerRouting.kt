@@ -10,6 +10,8 @@ import org.http4k.core.MultipartEntity
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
+import org.http4k.core.cookie.cookie
+import org.http4k.core.cookie.cookies
 import org.http4k.core.multipartIterator
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
@@ -18,10 +20,12 @@ import xyz.malefic.spyder.SpyderConfig
 import xyz.malefic.spyder.api.ApiContract
 import xyz.malefic.spyder.api.ApiResponse
 import xyz.malefic.spyder.api.ApiResponse.Companion.with
+import xyz.malefic.spyder.core.CookieField
 import xyz.malefic.spyder.core.HeaderProvider
 import xyz.malefic.spyder.core.Headers
 import xyz.malefic.spyder.core.PathProvider
 import xyz.malefic.spyder.core.QueryProvider
+import xyz.malefic.spyder.core.SameSite
 import xyz.malefic.spyder.error.BadRequestIssue
 import xyz.malefic.spyder.error.InternalIssue
 import xyz.malefic.spyder.error.Issue
@@ -33,6 +37,14 @@ import xyz.malefic.spyder.feature.multipart.Multipart
 import xyz.malefic.spyder.feature.pagination.PaginatedResponse
 import xyz.malefic.spyder.feature.pagination.Pagination
 import kotlin.uuid.Uuid
+import org.http4k.core.cookie.Cookie as Http4kCookie
+import org.http4k.core.cookie.SameSite as Http4kSameSite
+
+/**
+ * Gets a cookie from the [Request] by its [field].
+ */
+context(_: Raise<Issue>)
+operator fun <T> Request.get(field: CookieField<T>): T = field.decode(cookies().associate { it.name to it.value })
 
 /**
  * Creates a route for the given [ApiContract].
@@ -199,7 +211,7 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
             }
 
             is Either.Right -> {
-                val (res, resH) = result.value
+                val (res, resH, cookies) = result.value
                 var response =
                     when {
                         Res::class == Unit::class -> {
@@ -215,6 +227,27 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
 
                 Headers.Builder().apply { add(resH) }.build().forEach { (k, v) ->
                     v.forEach { response = response.header(k, it) }
+                }
+
+                cookies.flatMap { it.provide() }.forEach { cookie ->
+                    response =
+                        response.cookie(
+                            Http4kCookie(
+                                name = cookie.name,
+                                value = cookie.value,
+                                maxAge = cookie.maxAge,
+                                path = cookie.path,
+                                domain = cookie.domain,
+                                secure = cookie.secure,
+                                httpOnly = cookie.httpOnly,
+                                sameSite =
+                                    when (cookie.sameSite) {
+                                        SameSite.Strict -> Http4kSameSite.Strict
+                                        SameSite.Lax -> Http4kSameSite.Lax
+                                        SameSite.None -> Http4kSameSite.None
+                                    },
+                            ),
+                        )
                 }
 
                 response

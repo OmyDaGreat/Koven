@@ -1,15 +1,40 @@
 package xyz.malefic.spyder.api
 
+import arrow.core.raise.Raise
+import xyz.malefic.spyder.core.CookieField
+import xyz.malefic.spyder.core.CookieProvider
 import xyz.malefic.spyder.core.HeaderProvider
+import xyz.malefic.spyder.error.Issue
 
 /**
- * A wrapper for the response body and its type-safe headers.
+ * A wrapper for the response body and its header(s).
  */
-data class ApiResponse<Res, ResH>(
+data class ApiResponse<Res, ResH : HeaderProvider>(
     val body: Res,
     val headers: ResH,
+    val cookies: List<CookieProvider> = emptyList(),
 ) {
+    /**
+     * Adds a cookie to the response.
+     */
+    infix fun with(cookie: CookieProvider) = copy(cookies = cookies + cookie)
+
+    /**
+     * Adds multiple cookies to the response.
+     */
+    fun with(vararg newCookies: CookieProvider) = copy(cookies = cookies + newCookies.toList())
+
+    /**
+     * Gets a cookie from the response by its field.
+     */
+    context(_: Raise<Issue>)
+    operator fun <T> get(field: CookieField<T>): T =
+        field.decode(cookies.flatMap { it.provide() }.associate { it.name to it.value })
+
     companion object {
+        /**
+         * Creates an [ApiResponse] with the given [headers].
+         */
         infix fun <Res, ResH : HeaderProvider> Res.with(headers: ResH) = ApiResponse(this, headers)
     }
 }
