@@ -195,6 +195,8 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
             }
 
         return TokenModel(
+            userId = id.value,
+            username = username,
             accessToken = accessToken,
             refreshToken = "${entity.id.value}:$secret",
             expiresIn = auth.accessTokenTtl.inWholeSeconds,

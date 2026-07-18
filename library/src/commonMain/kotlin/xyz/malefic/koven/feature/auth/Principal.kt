@@ -1,5 +1,7 @@
 package xyz.malefic.koven.feature.auth
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
 /**
@@ -20,7 +22,8 @@ interface Principal {
 /**
  * A simple implementation of [Principal].
  */
+@Serializable
 data class SimplePrincipal(
-    override val userId: Uuid,
+    @SerialName("user_id") override val userId: Uuid,
     override val username: String,
 ) : Principal
