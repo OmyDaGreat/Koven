@@ -58,6 +58,21 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
         fun <Res> Res.with(vararg newCookies: CookieProvider) = ApiResponse(this, NoHeader).with(newCookies.toList())
 
         /**
+         * Creates an [ApiResponse] with the given [cookie].
+         */
+        infix fun <ResH : HeaderProvider> ResH.with(cookie: CookieProvider) = ApiResponse(Unit, this).with(cookie)
+
+        /**
+         * Creates an [ApiResponse] with the given [newCookies].
+         */
+        infix fun <ResH : HeaderProvider> ResH.with(newCookies: List<CookieProvider>) = ApiResponse(Unit, this).with(newCookies)
+
+        /**
+         * Creates an [ApiResponse] with the given [newCookies].
+         */
+        fun <ResH : HeaderProvider> ResH.with(vararg newCookies: CookieProvider) = ApiResponse(Unit, this).with(newCookies.toList())
+
+        /**
          * Creates a blank [ApiResponse].
          */
         val Blank = ApiResponse(Unit, NoHeader)
