@@ -109,26 +109,47 @@
     <h1 class="cover"><span>OAuth</span><wbr></wbr><span><span>Handler</span></span></h1>
     <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
       <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">OAuthHandler</a> : <a href="../-auth-handler/index.html">AuthHandler</a><span class="token operator">&lt;</span><a href="../../xyz.malefic.koven.feature.auth/-auth-type/-o-auth/index.html">AuthType.OAuth</a><span class="token operator">&gt; </span></div><p class="paragraph">Placeholder handler for <a href="../../xyz.malefic.koven.feature.auth/-auth-type/-o-auth/index.html">AuthType.OAuth</a>.</p></div>    </div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">OAuthHandler</a> : <a href="../-auth-handler/index.html">AuthHandler</a><span class="token operator">&lt;</span><a href="../../xyz.malefic.koven.feature.auth/-auth-type/-o-auth/index.html">AuthType.OAuth</a><span class="token operator">&gt; </span></div><p class="paragraph">Server-side handler for <a href="../../xyz.malefic.koven.feature.auth/-auth-type/-o-auth/index.html">AuthType.OAuth</a>, implementing <a href="../-auth-handler/index.html">AuthHandler</a>.</p></div>    </div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="FUNCTION">
-        <h2 class="tableheader">Functions</h2>
-        <div class="table"><a data-name="2034297960%2FFunctions%2F839895618" anchor-label="authenticate" id="2034297960%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-1997943884%2FProperties%2F839895618" anchor-label="serverClient" id="-1997943884%2FProperties%2F839895618" data-filterable-set=":library/jvmMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="authenticate.html"><span><span>authenticate</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2034297960%2FFunctions%2F839895618"></span>
+                  <div><a href="server-client.html"><span>server</span><wbr></wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1997943884%2FProperties%2F839895618"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
                     <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">context</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">auth<span class="token operator">: </span><a href="../../xyz.malefic.koven.feature.auth/-auth-type/-o-auth/index.html">AuthType.OAuth</a><span class="token punctuation">, </span></span><span class="parameter ">_<span class="token operator">: </span><span data-unresolved-link="arrow.core.raise/Raise///PointingToDeclaration/">Raise</span><span class="token operator">&lt;</span><a href="../../xyz.malefic.koven.error/-issue/index.html">Issue</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><br><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="authenticate.html"><span class="token function">authenticate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">request<span class="token operator">: </span><span data-unresolved-link="org.http4k.core/Request///PointingToDeclaration/">Request</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../xyz.malefic.koven.feature.auth/-principal/index.html">Principal</a></div><div class="brief "><p class="paragraph">Authenticates the given <a href="../-auth-handler/authenticate.html">request</a> and returns the <a href="../../xyz.malefic.koven.feature.auth/-principal/index.html">Principal</a> if successful.</p></div></div>                  </div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="server-client.html">serverClient</a><span class="token operator">: </span><span data-unresolved-link="org.http4k.client/DualSyncAsyncHttpHandler///PointingToDeclaration/">DualSyncAsyncHttpHandler</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="1378686486%2FFunctions%2F839895618" anchor-label="authenticate" id="1378686486%2FFunctions%2F839895618" data-filterable-set=":library/jvmMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-auth-handler/authenticate.html"><span><span>authenticate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1378686486%2FFunctions%2F839895618"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":library/jvmMain" data-filterable-set=":library/jvmMain" data-active="" data-toggle=":library/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":library/jvmMain"><div class="symbol monospace"><span class="token keyword">context</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">auth<span class="token operator">: </span><a href="../-auth-handler/index.html">T</a><span class="token punctuation">, </span></span><span class="parameter ">_<span class="token operator">: </span><span data-unresolved-link="arrow.core.raise/Raise///PointingToDeclaration/">Raise</span><span class="token operator">&lt;</span><a href="../../xyz.malefic.koven.error/-issue/index.html">Issue</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><br><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-auth-handler/authenticate.html"><span class="token function">authenticate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">request<span class="token operator">: </span><span data-unresolved-link="org.http4k.core/Request///PointingToDeclaration/">Request</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../xyz.malefic.koven.feature.auth/-principal/index.html">Principal</a></div><div class="brief "><p class="paragraph">Authenticates the given <a href="../-auth-handler/authenticate.html">request</a> and returns the <a href="../../xyz.malefic.koven.feature.auth/-principal/index.html">Principal</a> if successful.</p></div></div>                  </div>
                 </div>
               </div>
             </div>
