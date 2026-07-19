@@ -10,7 +10,6 @@ import org.http4k.core.MultipartEntity
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.core.cookie.cookie
 import org.http4k.core.cookie.cookies
 import org.http4k.core.multipartIterator
 import org.http4k.routing.RoutingHttpHandler
@@ -26,7 +25,6 @@ import xyz.malefic.koven.core.HeaderProvider
 import xyz.malefic.koven.core.Headers
 import xyz.malefic.koven.core.PathProvider
 import xyz.malefic.koven.core.QueryProvider
-import xyz.malefic.koven.core.SameSite
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.InternalIssue
 import xyz.malefic.koven.error.Issue
@@ -38,8 +36,6 @@ import xyz.malefic.koven.feature.multipart.Multipart
 import xyz.malefic.koven.feature.pagination.PaginatedResponse
 import xyz.malefic.koven.feature.pagination.Pagination
 import kotlin.uuid.Uuid
-import org.http4k.core.cookie.Cookie as Http4kCookie
-import org.http4k.core.cookie.SameSite as Http4kSameSite
 
 /**
  * Gets a cookie from the [Request] by its [field].
@@ -154,6 +150,7 @@ inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : P
 ): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(handler)
 
 @PublishedApi
+@Suppress("RedundantWith")
 context(_: Raise<Issue>)
 internal fun ApiContract<*, *, *, *, *, *>.authenticate(req: Request): Principal {
     if (!isProtected || KovenConfig.auth == AuthType.NoAuth) return anonymousPrincipal
@@ -271,23 +268,7 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
 
                 cookies.flatMap { it.provide() }.forEach { cookie ->
                     response =
-                        response.cookie(
-                            Http4kCookie(
-                                name = cookie.name,
-                                value = cookie.value,
-                                maxAge = cookie.maxAge,
-                                path = cookie.path,
-                                domain = cookie.domain,
-                                secure = cookie.secure,
-                                httpOnly = cookie.httpOnly,
-                                sameSite =
-                                    when (cookie.sameSite) {
-                                        SameSite.Strict -> Http4kSameSite.Strict
-                                        SameSite.Lax -> Http4kSameSite.Lax
-                                        SameSite.None -> Http4kSameSite.None
-                                    },
-                            ),
-                        )
+                        response.cookie(cookie)
                 }
 
                 response

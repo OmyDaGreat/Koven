@@ -35,6 +35,11 @@ object KovenConfig {
     var auth: AuthType = AuthType.NoAuth
 
     /**
+     * Whether to use the `secure` flag for authentication cookies. Defaults to `true`.
+     */
+    var useSecureCookies: Boolean = true
+
+    /**
      * Registers a new [xyz.malefic.koven.error.Issue] subclass globally.
      */
     inline fun <reified T : Issue> registerIssue() = SerializationEngine.registerIssue<T>()

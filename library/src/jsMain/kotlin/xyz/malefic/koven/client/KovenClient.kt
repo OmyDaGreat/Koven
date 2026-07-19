@@ -3,7 +3,9 @@ package xyz.malefic.koven.client
 import arrow.core.Either
 import arrow.core.raise.catch
 import arrow.core.raise.either
+import com.varabyte.kobweb.browser.ApiFetcher
 import com.varabyte.kobweb.browser.api
+import com.varabyte.kobweb.browser.http.RequestBody
 import com.varabyte.kobweb.browser.http.bodyOf
 import kotlinx.browser.window
 import kotlinx.coroutines.await
@@ -14,6 +16,7 @@ import org.w3c.xhr.FormData
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiContract
 import xyz.malefic.koven.api.ApiResponse
+import xyz.malefic.koven.api.HttpMethod
 import xyz.malefic.koven.client.auth.AuthSession
 import xyz.malefic.koven.core.HeaderProvider
 import xyz.malefic.koven.core.Headers
@@ -22,6 +25,21 @@ import xyz.malefic.koven.core.QueryProvider
 import xyz.malefic.koven.error.InternalIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.multipart.Multipart
+
+suspend fun ApiFetcher.call(
+    httpMethod: HttpMethod,
+    path: String,
+    body: RequestBody? = null,
+    headers: Headers = Headers(),
+) = when (httpMethod) {
+    HttpMethod.GET -> get(path, headers)
+    HttpMethod.POST -> post(path, body, headers)
+    HttpMethod.PUT -> put(path, body, headers)
+    HttpMethod.DELETE -> delete(path, headers)
+    HttpMethod.OPTIONS -> options(path, headers)
+    HttpMethod.PATCH -> patch(path, body, headers)
+    HttpMethod.HEAD -> head(path, headers)
+}
 
 /**
  * Extension to make calling contracts more ergonomic.

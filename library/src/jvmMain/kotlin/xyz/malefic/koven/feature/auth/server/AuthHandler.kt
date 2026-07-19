@@ -21,5 +21,5 @@ interface AuthHandler<T : AuthType> {
      * Authenticates the given [request] and returns the [Principal] if successful.
      */
     context(auth: T, _: Raise<Issue>)
-    fun authenticate(request: Request): Principal
+    fun authenticate(request: Request): Principal = AuthService.authenticate(request)
 }

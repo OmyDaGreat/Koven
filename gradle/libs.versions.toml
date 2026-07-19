@@ -35,6 +35,7 @@ http4k-format = { group = "org.http4k", name = "http4k-format-kotlinx-serializat
 http4k-server = { group = "org.http4k", name = "http4k-server-jetty" }
 http4k-api = { group = "org.http4k", name = "http4k-api-openapi" }
 http4k-oauth = { group = "org.http4k", name = "http4k-security-oauth" }
+http4k-client = { group = "org.http4k", name = "http4k-client-jetty" }
 
 kobweb-core = { group = "com.varabyte.kobweb", name = "kobweb-core", version.ref = "kobweb" }
 
@@ -52,7 +53,7 @@ exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version
 exposed-datetime = { group = "org.jetbrains.exposed", name = "exposed-kotlin-datetime", version.ref = "exposed" }
 
 [bundles]
-http4k = ["http4k-core", "http4k-config", "http4k-format", "http4k-server", "http4k-multipart", "http4k-oauth"]
+http4k = ["http4k-core", "http4k-config", "http4k-format", "http4k-server", "http4k-multipart", "http4k-oauth", "http4k-client"]
 kobweb = ["kobweb-core", "compose-html-core", "compose-runtime"]
 serialization = ["kotlinx-serialization-json", "kotlinx-serialization-protobuf"]
 

@@ -4,11 +4,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import arrow.core.Either
+import com.varabyte.kobweb.core.PageContext
 import kotlinx.browser.localStorage
+import kotlinx.browser.window
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.w3c.dom.url.URLSearchParams
+import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.client.call
 import xyz.malefic.koven.core.NoHeader
 import xyz.malefic.koven.core.NoParams
+import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.Issue
+import xyz.malefic.koven.feature.auth.AuthType
 import xyz.malefic.koven.feature.auth.LoginContract
 import xyz.malefic.koven.feature.auth.LogoutContract
 import xyz.malefic.koven.feature.auth.PasswordStrengthContract
@@ -45,6 +54,18 @@ object AuthSession {
     )
         private set
 
+    init {
+        val params = URLSearchParams(window.location.search)
+        if (params.get("auth_success") == "true") {
+            window.history.replaceState(null, "", window.location.pathname)
+            CoroutineScope(Dispatchers.Main).launch {
+                refresh().onLeft {
+                    // Silently fail if bootstrap refresh fails, user remains unauthenticated
+                }
+            }
+        }
+    }
+
     /**
      * Whether the user is currently authenticated.
      */
@@ -52,14 +73,34 @@ object AuthSession {
 
     /**
      * Performs a login request.
+     *
+     * If the current [KovenConfig.auth] is [AuthType.Password], [credentials] must be provided.
+     * If it is [AuthType.OAuth], the browser will be redirected to the provider's login page.
      */
-    suspend fun login(credentials: UserRequestModel): Either<Issue, Unit> =
-        LoginContract.call(credentials, NoHeader, NoParams, NoParams).map {
-            updateSession(it.body.accessToken, it.body)
+    context(ctx: PageContext)
+    suspend fun login(credentials: UserRequestModel? = null): Either<Issue, Unit> =
+        when (val auth = KovenConfig.auth) {
+            is AuthType.Password -> {
+                if (credentials == null) return Either.Left(AuthIssue.InvalidCredentials("Credentials required for password login"))
+                LoginContract.call(credentials, NoHeader, NoParams, NoParams).map {
+                    updateSession(it.body.accessToken, it.body)
+                }
+            }
+
+            is AuthType.OAuth -> {
+                val provider = auth.provider.name.lowercase()
+                val next = window.location.href
+                ctx.router.navigateTo("/${KovenConfig.apiPrefix}/auth/login/$provider?next=$next")
+                Either.Right(Unit)
+            }
+
+            else -> {
+                Either.Left(AuthIssue.Unauthorized("Authentication is disabled"))
+            }
         }
 
     /**
-     * Performs a registration request.
+     * Performs a registration request, specifically in [AuthType.Password].
      */
     suspend fun register(credentials: UserRequestModel): Either<Issue, Unit> =
         RegisterContract.call(credentials, NoHeader, NoParams, NoParams).map {
@@ -67,7 +108,7 @@ object AuthSession {
         }
 
     /**
-     * Performs a token refresh request.
+     * Performs a token refresh request, specifically in [AuthType.Password].
      */
     suspend fun refresh(): Either<Issue, Unit> =
         RefreshContract.call(Unit, NoHeader, NoParams, NoParams).map {
@@ -78,12 +119,21 @@ object AuthSession {
      * Performs a logout request.
      */
     suspend fun logout(): Either<Issue, Unit> =
-        LogoutContract.call(Unit, NoHeader, NoParams, NoParams).map {
-            clearSession()
+        when (KovenConfig.auth) {
+            is AuthType.NoAuth -> {
+                clearSession()
+                Either.Right(Unit)
+            }
+
+            else -> {
+                LogoutContract.call(Unit, NoHeader, NoParams, NoParams).map {
+                    clearSession()
+                }
+            }
         }
 
     /**
-     * Estimates the strength of a password.
+     * Estimates the strength of a password, specifically in [AuthType.Password].
      */
     suspend fun strength(password: String): Either<Issue, Pair<Int, String?>> =
         PasswordStrengthContract.call(password, NoHeader, NoParams, NoParams).map { it.body }

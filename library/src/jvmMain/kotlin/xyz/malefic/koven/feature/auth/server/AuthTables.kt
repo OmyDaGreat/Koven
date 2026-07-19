@@ -15,7 +15,7 @@ import kotlin.uuid.Uuid
  */
 object Users : UuidTable("koven_users") {
     val username = varchar("username", 32).uniqueIndex()
-    val hashedPassword = varchar("hashed_password", 128)
+    val hashedPassword = varchar("hashed_password", 128).nullable()
     val failedAttempts = integer("failed_attempts").default(0)
     val lockUntil = long("lock_until").default(0)
     val createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp)
@@ -37,6 +37,34 @@ class UserEntity(
     var createdAt by Users.createdAt
 
     override val userId: Uuid get() = this@UserEntity.id.value
+}
+
+/**
+ * Default Exposed table for OAuth accounts.
+ */
+object OAuthAccounts : UuidTable("koven_oauth_accounts") {
+    val user = reference("user_id", Users, onDelete = ReferenceOption.CASCADE)
+    val provider = varchar("provider", 32)
+    val providerUserId = varchar("provider_user_id", 128)
+    val createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp)
+
+    init {
+        uniqueIndex(provider, providerUserId)
+    }
+}
+
+/**
+ * Default Exposed entity for OAuth accounts.
+ */
+class OAuthAccountEntity(
+    id: EntityID<Uuid>,
+) : UuidEntity(id) {
+    companion object : UuidEntityClass<OAuthAccountEntity>(OAuthAccounts)
+
+    var user by UserEntity referencedOn OAuthAccounts.user
+    var provider by OAuthAccounts.provider
+    var providerUserId by OAuthAccounts.providerUserId
+    var createdAt by OAuthAccounts.createdAt
 }
 
 /**
