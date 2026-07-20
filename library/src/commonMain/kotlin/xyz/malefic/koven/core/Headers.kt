@@ -159,7 +159,9 @@ object HeadersField : HeaderField<Headers> {
 /**
  * A header for HTTP redirection.
  */
-class Redirect(val location: String) : Header {
+class Redirect(
+    val location: String,
+) : Header {
     override val field: String = Companion.field
     override val values: List<String> = listOf(location)
 

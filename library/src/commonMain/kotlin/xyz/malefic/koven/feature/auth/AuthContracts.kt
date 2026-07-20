@@ -69,7 +69,7 @@ val OAuthLoginContract =
  */
 data class OAuthFinalizeQuery(
     val username: String? = null,
-    val next: String? = null,
+    val next: String? = null, // TODO: Protect against open redirects
     val error: String? = null,
 ) : QueryProvider {
     override fun provideQuery() =

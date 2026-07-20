@@ -33,6 +33,7 @@ import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.AuthType
 import xyz.malefic.koven.feature.auth.LogoutContract
 import xyz.malefic.koven.feature.auth.OAuthFinalizeContract
+import xyz.malefic.koven.feature.auth.OAuthFinalizeQuery
 import xyz.malefic.koven.feature.auth.OAuthLoginContract
 import xyz.malefic.koven.feature.auth.RefreshContract
 import xyz.malefic.koven.server.cookie
@@ -102,8 +103,6 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
                 with(AuthService) { logout() }
             },
             OAuthFinalizeContract.register { _ ->
-                val queryMap = OAuthFinalizeContract.queryParams.associateWith { name -> queries(name).map { v -> v ?: "" } }
-                val query = OAuthFinalizeContract.decodeQuery(queryMap)
                 val baseRedirect = persistence.retrieveOriginalUri(this) ?: Uri.of(auth.clientCallbackPath)
 
                 fun errorRedirect(issue: Issue): ApiResponse<Unit, Redirect> =
@@ -118,12 +117,10 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
 
                 val token = persistence.retrieveToken(this) ?: return@register errorRedirect(AuthIssue.OAuthIssue.TokenExchangeFailed())
 
-                val userInfoResult = fetchUserInfoJson(oauthProvider.userInfoEndpoint, token)
-                if (userInfoResult is Either.Left) return@register errorRedirect(userInfoResult.value)
-                val userInfoJson = (userInfoResult as Either.Right).value
+                val userInfoJson = fetchUserInfoJson(oauthProvider.userInfoEndpoint, token).getOrElse { return@register errorRedirect(it) }
 
                 val (providerUserId, providerUsername) = oauthProvider.parseUserInfo(userInfoJson)
-                val preferredUsername = query.username ?: providerUsername
+                val preferredUsername = contextOf<OAuthFinalizeQuery>().username ?: providerUsername
 
                 val tokensResult =
                     transaction {

@@ -48,6 +48,8 @@ import kotlin.uuid.Uuid
  * - [CookieProvider] or `List<CookieProvider>` for a response with only cookies.
  * - [Unit] for an empty response.
  *
+ * Context parameters in the [handler] can be accessed via [contextOf].
+ *
  * @param filter The filter to apply to the route.
  * @param handler The handler function for the route.
  */
