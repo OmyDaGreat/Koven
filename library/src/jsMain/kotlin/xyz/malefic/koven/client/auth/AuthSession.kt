@@ -18,12 +18,12 @@ import xyz.malefic.koven.core.NoParams
 import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.AuthType
-import xyz.malefic.koven.feature.auth.LoginContract
 import xyz.malefic.koven.feature.auth.LogoutContract
+import xyz.malefic.koven.feature.auth.PasswordLoginContract
+import xyz.malefic.koven.feature.auth.PasswordRegisterContract
 import xyz.malefic.koven.feature.auth.PasswordStrengthContract
 import xyz.malefic.koven.feature.auth.Principal
 import xyz.malefic.koven.feature.auth.RefreshContract
-import xyz.malefic.koven.feature.auth.RegisterContract
 import xyz.malefic.koven.feature.auth.SimplePrincipal
 import xyz.malefic.koven.feature.auth.model.UserRequestModel
 import kotlin.uuid.Uuid
@@ -82,7 +82,7 @@ object AuthSession {
         when (val auth = KovenConfig.auth) {
             is AuthType.Password -> {
                 if (credentials == null) return Either.Left(AuthIssue.InvalidCredentials("Credentials required for password login"))
-                LoginContract.call(credentials, NoHeader, NoParams, NoParams).map {
+                PasswordLoginContract.call(credentials, NoHeader, NoParams, NoParams).map {
                     updateSession(it.body.accessToken, it.body)
                 }
             }
@@ -103,7 +103,7 @@ object AuthSession {
      * Performs a registration request, specifically in [AuthType.Password].
      */
     suspend fun register(credentials: UserRequestModel): Either<Issue, Unit> =
-        RegisterContract.call(credentials, NoHeader, NoParams, NoParams).map {
+        PasswordRegisterContract.call(credentials, NoHeader, NoParams, NoParams).map {
             updateSession(it.body.accessToken, it.body)
         }
 

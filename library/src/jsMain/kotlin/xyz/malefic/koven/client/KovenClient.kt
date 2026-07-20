@@ -124,11 +124,9 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
 
         val responseBytes = Uint8Array(response.arrayBuffer().await()).unsafeCast<ByteArray>()
 
-        if (!response.ok) {
+        if (response.status >= 400) {
             raise(
-                catch({
-                    (responseFormat.serialization ?: KovenConfig.serialization).decodeIssue(responseBytes)
-                })
+                catch({ (responseFormat.serialization ?: KovenConfig.serialization).decodeIssue(responseBytes) })
                     { InternalIssue("Server error (${response.status}): ${responseBytes.decodeToString()}", response.status) },
             )
         }
@@ -144,10 +142,9 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
             if (Res::class == Unit::class) {
                 Unit as Res
             } else {
-                catch({
-                    responseFormat.decode(responseBytes, headersObj.getFirst("Content-Type") ?: responseFormat.contentType)
-                }) { raise(InternalIssue from it) }
+                catch({ responseFormat.decode(responseBytes, headersObj.getFirst("Content-Type") ?: responseFormat.contentType) })
+                { raise(InternalIssue from it) }
             }
 
-        ApiResponse(body, decodeResponseHeaders(headersObj))
+        ApiResponse(response.status, body, decodeResponseHeaders(headersObj))
     }

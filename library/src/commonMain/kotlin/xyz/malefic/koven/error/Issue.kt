@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 abstract class Issue {
     abstract val message: String
-    abstract val status: Short
+    abstract val status: Int
 }
 
 /**
@@ -24,7 +24,7 @@ abstract class Issue {
 @Serializable
 data class InternalIssue(
     override val message: String = "Internal Server Error",
-    override val status: Short = 500,
+    override val status: Int = 500,
 ) : Issue() {
     companion object {
         infix fun from(e: Throwable): InternalIssue {
@@ -40,7 +40,7 @@ data class InternalIssue(
 @Serializable
 data class BadRequestIssue(
     override val message: String = "Bad Request",
-    override val status: Short = 400,
+    override val status: Int = 400,
 ) : Issue()
 
 /**
@@ -51,25 +51,25 @@ sealed class AuthIssue : Issue() {
     @Serializable
     data class Unauthorized(
         override val message: String = "Unauthorized",
-        override val status: Short = 401,
+        override val status: Int = 401,
     ) : AuthIssue()
 
     @Serializable
     data class InvalidCredentials(
         override val message: String = "Invalid username or password",
-        override val status: Short = 401,
+        override val status: Int = 401,
     ) : AuthIssue()
 
     @Serializable
     data class InvalidToken(
         override val message: String = "Invalid or expired token",
-        override val status: Short = 401,
+        override val status: Int = 401,
     ) : AuthIssue()
 
     @Serializable
     data class AccountLocked(
         val unlockAt: Long,
-        override val status: Short = 401,
+        override val status: Int = 401,
     ) : AuthIssue() {
         override val message = "Account locked until $unlockAt"
     }
@@ -77,8 +77,32 @@ sealed class AuthIssue : Issue() {
     @Serializable
     data class MissingToken(
         override val message: String = "Missing authentication token",
-        override val status: Short = 401,
+        override val status: Int = 401,
     ) : AuthIssue()
+
+    /**
+     * Common issues for OAuth flow.
+     */
+    @Serializable
+    sealed class OAuthIssue : AuthIssue() {
+        @Serializable
+        data class TokenExchangeFailed(
+            override val message: String = "Failed to exchange OAuth code for access token",
+            override val status: Int = 401,
+        ) : OAuthIssue()
+
+        @Serializable
+        data class UserInfoFetchFailed(
+            override val message: String = "Failed to fetch user information from OAuth provider",
+            override val status: Int = 401,
+        ) : OAuthIssue()
+
+        @Serializable
+        data class ProviderUserMappingFailed(
+            override val message: String = "Failed to map provider user data to a local user",
+            override val status: Int = 401,
+        ) : OAuthIssue()
+    }
 }
 
 /**
@@ -89,20 +113,20 @@ sealed class UserIssue : Issue() {
     @Serializable
     data class AlreadyExists(
         override val message: String = "User already exists",
-        override val status: Short = 400,
+        override val status: Int = 400,
     ) : UserIssue()
 
     @Serializable
     data class NotFound(
         override val message: String = "User not found",
-        override val status: Short = 404,
+        override val status: Int = 404,
     ) : UserIssue()
 
     @Serializable
     data class InvalidUser(
         val usernameIssues: List<String> = emptyList(),
         val passwordIssues: List<String> = emptyList(),
-        override val status: Short = 400,
+        override val status: Int = 400,
     ) : UserIssue() {
         override val message: String =
             buildList {
@@ -118,6 +142,6 @@ sealed class UserIssue : Issue() {
 @Serializable
 data class RateLimitedIssue(
     override val message: String = "Too many requests",
-    override val status: Short = 429,
+    override val status: Int = 429,
     val retryAfterMs: Long? = null,
 ) : Issue()

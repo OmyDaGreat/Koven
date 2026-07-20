@@ -11,10 +11,18 @@ import xyz.malefic.koven.error.Issue
  * A wrapper for the response body and its header(s).
  */
 data class ApiResponse<Res, ResH : HeaderProvider>(
+    val status: Int = 200,
     val body: Res,
     val headers: ResH,
     val cookies: List<CookieProvider> = emptyList(),
 ) {
+    constructor(body: Res, headers: ResH, cookies: List<CookieProvider> = emptyList()) : this(200, body, headers, cookies)
+
+    /**
+     * Adds a status code to the response.
+     */
+    infix fun with(status: Int) = copy(status = status)
+
     /**
      * Adds a cookie to the response.
      */
@@ -28,7 +36,7 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
     /**
      * Adds multiple cookies to the response.
      */
-    fun with(vararg newCookies: CookieProvider) = with(newCookies.toList())
+    fun with(vararg newCookies: CookieProvider) = copy(cookies = cookies + newCookies)
 
     /**
      * Gets a cookie from the response by its field.
@@ -38,6 +46,11 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
 
     companion object {
         /**
+         * Creates an [ApiResponse] with the given [status].
+         */
+        infix fun <Res> Res.with(status: Int) = ApiResponse(status, this, NoHeader)
+
+        /**
          * Creates an [ApiResponse] with the given [headers].
          */
         infix fun <Res, ResH : HeaderProvider> Res.with(headers: ResH) = ApiResponse(this, headers)
@@ -45,32 +58,62 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
         /**
          * Creates an [ApiResponse] with the given [cookie].
          */
-        infix fun <Res> Res.with(cookie: CookieProvider) = ApiResponse(this, NoHeader).with(cookie)
+        infix fun <Res> Res.with(cookie: CookieProvider) = ApiResponse(this, NoHeader, listOf(cookie))
 
         /**
          * Creates an [ApiResponse] with the given [newCookies].
          */
-        infix fun <Res> Res.with(newCookies: List<CookieProvider>) = ApiResponse(this, NoHeader).with(newCookies)
+        infix fun <Res> Res.with(newCookies: List<CookieProvider>) = ApiResponse(this, NoHeader, newCookies)
 
         /**
          * Creates an [ApiResponse] with the given [newCookies].
          */
-        fun <Res> Res.with(vararg newCookies: CookieProvider) = ApiResponse(this, NoHeader).with(newCookies.toList())
+        fun <Res> Res.with(vararg newCookies: CookieProvider) = ApiResponse(this, NoHeader, newCookies.toList())
+
+        /**
+         * Creates an [ApiResponse] with the given [status].
+         */
+        infix fun <ResH : HeaderProvider> ResH.with(status: Int) = ApiResponse(status, Unit, this)
 
         /**
          * Creates an [ApiResponse] with the given [cookie].
          */
-        infix fun <ResH : HeaderProvider> ResH.with(cookie: CookieProvider) = ApiResponse(Unit, this).with(cookie)
+        infix fun <ResH : HeaderProvider> ResH.with(cookie: CookieProvider) = ApiResponse(Unit, this, listOf(cookie))
 
         /**
          * Creates an [ApiResponse] with the given [newCookies].
          */
-        infix fun <ResH : HeaderProvider> ResH.with(newCookies: List<CookieProvider>) = ApiResponse(Unit, this).with(newCookies)
+        infix fun <ResH : HeaderProvider> ResH.with(newCookies: List<CookieProvider>) = ApiResponse(Unit, this, newCookies)
 
         /**
          * Creates an [ApiResponse] with the given [newCookies].
          */
-        fun <ResH : HeaderProvider> ResH.with(vararg newCookies: CookieProvider) = ApiResponse(Unit, this).with(newCookies.toList())
+        fun <ResH : HeaderProvider> ResH.with(vararg newCookies: CookieProvider) = ApiResponse(Unit, this, newCookies.toList())
+
+        /**
+         * Creates an [ApiResponse] with the given [body].
+         */
+        infix fun <Res> Int.with(body: Res) = ApiResponse(this, body, NoHeader)
+
+        /**
+         * Creates an [ApiResponse] with the given [headers].
+         */
+        infix fun <ResH : HeaderProvider> Int.with(headers: ResH) = ApiResponse(this, Unit, headers)
+
+        /**
+         * Creates an [ApiResponse] with the given [cookie].
+         */
+        infix fun Int.with(cookie: CookieProvider) = ApiResponse(this, Unit, NoHeader, listOf(cookie))
+
+        /**
+         * Creates an [ApiResponse] with the given [newCookies].
+         */
+        infix fun Int.with(newCookies: List<CookieProvider>) = ApiResponse(this, Unit, NoHeader, newCookies)
+
+        /**
+         * Creates an [ApiResponse] with the given [newCookies].
+         */
+        fun Int.with(vararg newCookies: CookieProvider) = ApiResponse(this, Unit, NoHeader, newCookies.toList())
 
         /**
          * Creates a blank [ApiResponse].

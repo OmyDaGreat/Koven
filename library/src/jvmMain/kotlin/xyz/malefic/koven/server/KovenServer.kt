@@ -1,6 +1,8 @@
 package xyz.malefic.koven.server
 
 import arrow.core.raise.Raise
+import org.http4k.core.Filter
+import org.http4k.core.NoOp
 import org.http4k.core.Request
 import org.http4k.core.then
 import org.http4k.filter.ServerFilters
@@ -48,8 +50,9 @@ class KovenServerBuilder(
      */
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.handle(
+        filter: Filter = Filter.NoOp,
         crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Req) -> Any?,
-    ) = add(register(handler))
+    ) = add(register(filter, handler))
 
     /**
      * Adds an [ApiContract] with a multipart request body to the server.
@@ -58,8 +61,9 @@ class KovenServerBuilder(
      */
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.handleMultipart(
+        filter: Filter = Filter.NoOp,
         crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Multipart) -> Any?,
-    ) = add(registerMultipart(handler))
+    ) = add(registerMultipart(filter, handler))
 
     /**
      * Adds a paginated [ApiContract] to the server.
@@ -68,8 +72,9 @@ class KovenServerBuilder(
      */
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.handlePaginated(
+        filter: Filter = Filter.NoOp,
         crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) Request.(Req) -> Any?,
-    ) = add(registerPaginated(handler))
+    ) = add(registerPaginated(filter, handler))
 
     internal fun buildHandler(): RoutingHttpHandler {
         val authHandlerRoutes =

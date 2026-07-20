@@ -5,13 +5,15 @@ import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import arrow.core.raise.either
 import arrow.core.raise.ensure
+import org.http4k.core.Filter
 import org.http4k.core.MemoryBody
 import org.http4k.core.MultipartEntity
+import org.http4k.core.NoOp
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.core.cookie.cookies
 import org.http4k.core.multipartIterator
+import org.http4k.core.then
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.path
@@ -19,7 +21,6 @@ import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiContract
 import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.api.ApiResponse.Companion.with
-import xyz.malefic.koven.core.CookieField
 import xyz.malefic.koven.core.CookieProvider
 import xyz.malefic.koven.core.HeaderProvider
 import xyz.malefic.koven.core.Headers
@@ -38,12 +39,6 @@ import xyz.malefic.koven.feature.pagination.Pagination
 import kotlin.uuid.Uuid
 
 /**
- * Gets a cookie from the [Request] by its [field].
- */
-context(_: Raise<Issue>)
-operator fun <T> Request.get(field: CookieField<T>): T = field.decode(cookies().associate { it.name to it.value })
-
-/**
  * Creates a route for the given [ApiContract].
  *
  * The handler function can return:
@@ -53,17 +48,31 @@ operator fun <T> Request.get(field: CookieField<T>): T = field.decode(cookies().
  * - [CookieProvider] or `List<CookieProvider>` for a response with only cookies.
  * - [Unit] for an empty response.
  *
+ * @param filter The filter to apply to the route.
  * @param handler The handler function for the route.
  */
 @Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.register(
+    filter: Filter = Filter.NoOp,
     crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Req) -> Any?,
 ): RoutingHttpHandler =
-    baseRegister { req, reqH, pathP, queryP ->
+    baseRegister(filter) { req, reqH, pathP, queryP ->
         val principal = authenticate(req)
         val body = decodeBody(req)
 
-        when (val result = handler(this@baseRegister, reqH, pathP, queryP, principal, req, body)) {
+        val result =
+            @Suppress("RedundantWith")
+            with(principal) {
+                with(reqH) {
+                    with(pathP) {
+                        with(queryP) {
+                            req.handler(body)
+                        }
+                    }
+                }
+            }
+
+        when (result) {
             is ApiResponse<*, *> -> {
                 result as ApiResponse<Res, ResH>
             }
@@ -99,13 +108,15 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
  * - [ApiResponse] containing a `List<T>`.
  * - `List<T>` directly.
  *
+ * @param filter The filter to apply to the route.
  * @param handler The handler function for the route.
  */
 @Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
 inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.registerPaginated(
+    filter: Filter = Filter.NoOp,
     crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) Request.(Req) -> Any?,
 ): RoutingHttpHandler =
-    baseRegister { req, reqH, pathP, queryP ->
+    baseRegister(filter) { req, reqH, pathP, queryP ->
         val principal = authenticate(req)
         val page = req.query("page")?.toIntOrNull() ?: 1
         val limit = req.query("limit")?.toIntOrNull() ?: 20
@@ -119,7 +130,19 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
             }
 
         val body = decodeBody(req)
-        val result = handler(this@baseRegister, reqH, pathP, queryP, pagination, principal, req, body)
+        val result =
+            @Suppress("RedundantWith")
+            with(principal) {
+                with(reqH) {
+                    with(pathP) {
+                        with(queryP) {
+                            with(pagination) {
+                                req.handler(body)
+                            }
+                        }
+                    }
+                }
+            }
 
         val (items, resH) =
             when (result) {
@@ -142,12 +165,14 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
 /**
  * Creates a route for the given [ApiContract] with a multipart request body.
  *
+ * @param filter The filter to apply to the route.
  * @param handler The handler function for the route.
  */
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.registerMultipart(
+    filter: Filter = Filter.NoOp,
     crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Multipart) -> Any?,
-): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(handler)
+): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(filter, handler)
 
 @PublishedApi
 @Suppress("RedundantWith")
@@ -217,61 +242,63 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
 @PublishedApi
 @Suppress("ktlint:standard:max-line-length")
 internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.baseRegister(
+    filter: Filter = Filter.NoOp,
     crossinline logic: Raise<Issue>.(req: Request, reqH: ReqH, pathP: PathP, queryP: QueryP) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
-    "/${KovenConfig.apiPrefix}/$path" bind httpMethod.toHttp4k to { req ->
-        val headers = Headers.fromPairs(req.headers)
-        val pathParams = "\\{([^}]+)\\}".toRegex().findAll(path).map { it.groupValues[1] }.associateWith { req.path(it) ?: "" }
-        val queryMap = queryParams.associateWith { req.queries(it).map { v -> v ?: "" } }
+    filter.then(
+        "/${KovenConfig.apiPrefix}/$path" bind httpMethod.toHttp4k to { req ->
+            val headers = Headers.fromPairs(req.headers)
+            val pathParams = "\\{([^}]+)\\}".toRegex().findAll(path).map { it.groupValues[1] }.associateWith { req.path(it) ?: "" }
+            val queryMap = queryParams.associateWith { req.queries(it).map { v -> v ?: "" } }
 
-        val result =
-            either {
-                val missing =
-                    requiredRequestHeaders.filter {
-                        headers[it].let { values -> values == null || values.all { value -> value.isBlank() } }
+            val result =
+                either {
+                    val missing =
+                        requiredRequestHeaders.filter {
+                            headers[it].let { values -> values == null || values.all { value -> value.isBlank() } }
+                        }
+                    ensure(missing.isEmpty()) { BadRequestIssue("Missing required header(s): ${missing.joinToString { it.field }}") }
+
+                    catch({ logic(this, req, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(queryMap)) }) {
+                        raise(InternalIssue from it)
                     }
-                ensure(missing.isEmpty()) { BadRequestIssue("Missing required header(s): ${missing.joinToString { it.field }}") }
-
-                catch({ logic(this, req, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(queryMap)) }) {
-                    raise(InternalIssue from it)
                 }
-            }
 
-        when (result) {
-            is Either.Left -> {
-                val issue = result.value
-                val serialization = responseFormat.serialization ?: KovenConfig.serialization
-                val body = serialization.encodeIssue(issue)
-                Response(Status.fromCode(issue.status.toInt()) ?: Status.INTERNAL_SERVER_ERROR)
-                    .body(MemoryBody(body))
-                    .header("Content-Type", serialization.contentType)
-            }
+            when (result) {
+                is Either.Left -> {
+                    val issue = result.value
+                    val serialization = responseFormat.serialization ?: KovenConfig.serialization
+                    val body = serialization.encodeIssue(issue)
+                    Response(Status.fromCode(issue.status) ?: Status.INTERNAL_SERVER_ERROR)
+                        .body(MemoryBody(body))
+                        .header("Content-Type", serialization.contentType)
+                }
 
-            is Either.Right -> {
-                val (res, resH, cookies) = result.value
-                var response =
-                    when {
-                        Res::class == Unit::class -> {
-                            Response(Status.OK)
+                is Either.Right -> {
+                    val (status, res, resH, cookies) = result.value
+                    var response =
+                        when {
+                            Res::class == Unit::class -> {
+                                Response(Status.fromCode(status) ?: Status.INTERNAL_SERVER_ERROR)
+                            }
+
+                            else -> {
+                                Response(Status.fromCode(status) ?: Status.INTERNAL_SERVER_ERROR)
+                                    .body(MemoryBody(responseFormat.encode(res)))
+                                    .header("Content-Type", responseFormat.contentType)
+                            }
                         }
 
-                        else -> {
-                            Response(Status.OK)
-                                .body(MemoryBody(responseFormat.encode(res)))
-                                .header("Content-Type", responseFormat.contentType)
-                        }
+                    Headers.Builder().apply { add(resH) }.build().forEach { (k, v) ->
+                        v.forEach { response = response.header(k, it) }
                     }
 
-                Headers.Builder().apply { add(resH) }.build().forEach { (k, v) ->
-                    v.forEach { response = response.header(k, it) }
-                }
+                    cookies.flatMap { it.provide() }.forEach { cookie ->
+                        response = response.cookie(cookie)
+                    }
 
-                cookies.flatMap { it.provide() }.forEach { cookie ->
-                    response =
-                        response.cookie(cookie)
+                    response
                 }
-
-                response
             }
-        }
-    }
+        },
+    )

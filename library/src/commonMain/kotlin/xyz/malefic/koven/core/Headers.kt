@@ -145,6 +145,34 @@ object NoHeader : HeaderProvider, HeaderField<NoHeader> {
 }
 
 /**
+ * A header field that decodes all headers into a [Headers] object.
+ */
+object HeadersField : HeaderField<Headers> {
+    override val field: String = "*"
+
+    context(_: Raise<Issue>)
+    override fun decode(headers: Headers): Headers = headers
+
+    override fun flatten(): List<HeaderField<*>> = emptyList()
+}
+
+/**
+ * A header for HTTP redirection.
+ */
+class Redirect(val location: String) : Header {
+    override val field: String = Companion.field
+    override val values: List<String> = listOf(location)
+
+    companion object : HeaderField<Redirect> {
+        override val field: String = "Location"
+
+        context(_: Raise<Issue>)
+        override fun decode(headers: Headers): Redirect =
+            Redirect(ensureNotNull(headers.getFirst(field)) { BadRequestIssue("Missing Location header") })
+    }
+}
+
+/**
  * Interface for header implementations. The companion object of this interface is used to create a [HeaderField]. You can check out an example with [xyz.malefic.koven.feature.auth.BearerAuth].
  */
 interface Header : HeaderProvider {
