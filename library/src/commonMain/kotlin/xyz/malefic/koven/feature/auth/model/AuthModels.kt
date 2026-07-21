@@ -11,6 +11,7 @@ import kotlin.uuid.Uuid
 @Serializable
 data class UserRequestModel(
     val username: String,
+    val email: String,
     val password: String,
 )
 

@@ -51,7 +51,7 @@ class KovenServerBuilder(
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.handle(
         filter: Filter = Filter.NoOp,
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Req) -> Any?,
+        crossinline handler: context(Raise<Issue>, ReqH, Principal) Request.(Req, PathP, QueryP) -> Any?,
     ) = add(register(filter, handler))
 
     /**
@@ -62,7 +62,7 @@ class KovenServerBuilder(
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.handleMultipart(
         filter: Filter = Filter.NoOp,
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Multipart) -> Any?,
+        crossinline handler: context(Raise<Issue>, ReqH, Principal) Request.(Multipart, PathP, QueryP) -> Any?,
     ) = add(registerMultipart(filter, handler))
 
     /**
@@ -73,7 +73,7 @@ class KovenServerBuilder(
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.handlePaginated(
         filter: Filter = Filter.NoOp,
-        crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) Request.(Req) -> Any?,
+        crossinline handler: context(Raise<Issue>, ReqH, Principal) Request.(Req, PathP, QueryP, Pagination) -> Any?,
     ) = add(registerPaginated(filter, handler))
 
     internal fun buildHandler(): RoutingHttpHandler {
@@ -114,7 +114,7 @@ class KovenServerBuilder(
  * ```
  * KovenServer.start {
  *     config.port = 8081
- *     PingContract.handle { "Pong" }
+ *     PingContract.handle { _, _, _ -> "Pong" }
  * }.block()
  * ```
  */

@@ -160,19 +160,31 @@ object AuthService {
      */
     context(_: Raise<Issue>)
     fun authenticate(request: Request): Principal {
-        val token = decode(Headers.fromPairs(request.headers)).token
-        val userId = verifyToken(token)
+        val headers = Headers.fromPairs(request.headers)
+        val token = either { decode(headers).token }.getOrNull()
 
-        return transaction {
-            ensureNotNull(UserEntity.findById(userId)) { AuthIssue.InvalidToken("User not found") }
+        if (token != null) {
+            val userId = verifyToken(token)
+
+            return transaction {
+                ensureNotNull(UserEntity.findById(userId)) { AuthIssue.InvalidToken("User not found") }
+            }
         }
+
+        val refreshToken = either { request[RefreshTokenCookie] }.getOrNull()
+
+        if (refreshToken != null) {
+            return verifyRefreshToken(refreshToken)
+        }
+
+        raise(AuthIssue.MissingToken())
     }
 
     /**
-     * Shared logic to refresh a token pair using a refresh token.
+     * Verifies the given [refreshToken] and returns the associated [UserEntity] if successful.
      */
-    context(_: Raise<Issue>, auth: AuthType)
-    fun refreshTokens(refreshToken: String): TokenModel =
+    context(_: Raise<Issue>)
+    fun verifyRefreshToken(refreshToken: String): UserEntity =
         transaction {
             val parts = refreshToken.split(":")
             ensure(parts.size == 2) { BadRequestIssue("Invalid refresh token format") }
@@ -184,12 +196,26 @@ object AuthService {
             val now = System.currentTimeMillis()
 
             if ((token.expiresAt < now) || (token.secretHash != hash(secret)) || (token.revokedAt != null)) {
-                token.revokedAt = now
+                if (token.revokedAt == null) token.revokedAt = now
                 raise(AuthIssue.InvalidToken("Refresh token expired, invalid, or already revoked"))
             }
 
-            token.revokedAt = now
-            token.user.issueTokenPair()
+            token.user
+        }
+
+    /**
+     * Shared logic to refresh a token pair using a refresh token.
+     */
+    context(_: Raise<Issue>, auth: AuthType)
+    fun refreshTokens(refreshToken: String): TokenModel =
+        transaction {
+            val user = verifyRefreshToken(refreshToken)
+            val parts = refreshToken.split(":")
+            val id = Uuid.parse(parts[0])
+            val token = AuthTokenEntity.findById(id)!!
+
+            token.revokedAt = System.currentTimeMillis()
+            user.issueTokenPair()
         }
 
     /**
@@ -231,7 +257,9 @@ object AuthService {
      * @param provider The name of the OAuth provider.
      * @param providerUserId The unique ID from the provider.
      * @param preferredUsername The username the user wants to use.
+     * @param email The email address of the user.
      * @param forceUnique Whether to append a random suffix if the username is taken.
+     * @param currentPrincipal The currently authenticated principal, if any.
      *
      * @return The [UserEntity] for the user.
      */
@@ -240,25 +268,41 @@ object AuthService {
         provider: String,
         providerUserId: String,
         preferredUsername: String,
+        email: String,
         forceUnique: Boolean = true,
+        currentPrincipal: Principal? = null,
     ): UserEntity {
-        // Double check if account already exists to prevent duplicates
         findOAuthUser(provider, providerUserId)?.let { return it }
 
-        var username = preferredUsername
-        val existingUser = UserEntity.find { Users.username eq username }.firstOrNull()
+        val userByEmail = UserEntity.find { Users.email eq email }.firstOrNull()
 
         val user =
-            if (existingUser != null) {
-                if (forceUnique) {
-                    // Generate a unique username by appending a short random string
-                    username = "${preferredUsername}_${generateSecret(4).take(6)}"
-                    UserEntity.new { this.username = username }
+            if (userByEmail != null) {
+                if (currentPrincipal != null && currentPrincipal.userId == userByEmail.id.value) {
+                    userByEmail
                 } else {
-                    raise(UserIssue.AlreadyExists())
+                    raise(AuthIssue.AccountLinkingRequired(email))
                 }
             } else {
-                UserEntity.new { this.username = username }
+                var username = preferredUsername
+                val existingUsernameUser = UserEntity.find { Users.username eq username }.firstOrNull()
+
+                if (existingUsernameUser != null) {
+                    if (forceUnique) {
+                        username = "${preferredUsername}_${generateSecret(4).take(6)}"
+                        UserEntity.new {
+                            this.username = username
+                            this.email = email
+                        }
+                    } else {
+                        raise(UserIssue.AlreadyExists())
+                    }
+                } else {
+                    UserEntity.new {
+                        this.username = username
+                        this.email = email
+                    }
+                }
             }
 
         OAuthAccountEntity.new {

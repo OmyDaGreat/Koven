@@ -26,16 +26,23 @@ interface OAuthProvider {
     val usernamePath: List<String>
 
     /**
-     * Parses the user info JSON from the provider and returns a pair of (providerUserId, username).
+     * The path to the user's email in the user info JSON.
+     */
+    val emailPath: List<String>
+
+    /**
+     * Parses the user info JSON from the provider and returns a triple of (providerUserId, username, email).
      *
      * Can be overridden to provide custom parsing logic.
      */
-    fun parseUserInfo(json: String): Pair<String, String> {
+    fun parseUserInfo(json: String): Triple<String, String, String> {
         val element = OAuthProvider.json.parseToJsonElement(json)
         val id = element.findPath(idPath)?.jsonPrimitive?.content ?: error("ID not found at path $idPath in $json")
         val username =
             element.findPath(usernamePath)?.jsonPrimitive?.content ?: error("Username not found at path $usernamePath in $json")
-        return id to username
+        val email =
+            element.findPath(emailPath)?.jsonPrimitive?.content ?: error("Email not found at path $emailPath in $json")
+        return Triple(id, username, email)
     }
 
     /**
@@ -48,6 +55,7 @@ interface OAuthProvider {
         override val userInfoEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo"
         override val idPath = listOf("sub")
         override val usernamePath = listOf("name")
+        override val emailPath = listOf("email")
     }
 
     /**
@@ -61,6 +69,7 @@ interface OAuthProvider {
         override val defaultScopes = listOf("read:user", "user:email")
         override val idPath = listOf("id")
         override val usernamePath = listOf("login")
+        override val emailPath = listOf("email")
     }
 
     /**
@@ -75,6 +84,7 @@ interface OAuthProvider {
         override val userInfoEndpoint = "https://graph.microsoft.com/v1.0/me"
         override val idPath = listOf("id")
         override val usernamePath = listOf("displayName")
+        override val emailPath = listOf("mail")
     }
 
     /**
@@ -87,6 +97,7 @@ interface OAuthProvider {
         override val userInfoEndpoint: String?,
         override val idPath: List<String>,
         override val usernamePath: List<String>,
+        override val emailPath: List<String>,
         override val defaultScopes: List<String> = listOf("openid", "profile", "email"),
     ) : OAuthProvider
 

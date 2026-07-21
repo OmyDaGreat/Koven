@@ -38,17 +38,24 @@ sealed interface AuthType {
     ) : AuthType
 
     /**
-     * Delegated to [OAuthProvider] with standard OAuth interceptors.
+     * Configuration for an OAuth provider.
      */
-    data class OAuth(
-        val provider: OAuthProvider, // TODO: Support multiple providers at once
+    data class OAuthConfig(
+        val provider: OAuthProvider,
         val clientId: String,
         val clientSecret: String,
         val redirectUri: String,
+        val scopes: List<String> = provider.defaultScopes,
+    )
+
+    /**
+     * Delegated to [OAuthProvider] with standard OAuth interceptors. Supports multiple providers.
+     */
+    data class OAuth(
+        val providers: Map<String, OAuthConfig>,
         val clientCallbackPath: String,
         override val cookieDomain: String? = null,
         override val useSecureCookies: Boolean = true,
-        val scopes: List<String> = listOf("openid", "profile", "email"),
     ) : AuthType
 
     // TODO: Support combining the two auth types (user can choose) since AuthService already commonizes much of the code

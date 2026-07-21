@@ -3,6 +3,7 @@ package xyz.malefic.koven.server
 import arrow.core.Either
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
+import arrow.core.raise.context.raise
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import org.http4k.core.Filter
@@ -56,22 +57,15 @@ import kotlin.uuid.Uuid
 @Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
 inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.register(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Req) -> Any?,
+    crossinline handler: context(Raise<Issue>, ReqH, Principal) Request.(Req, PathP, QueryP) -> Any?,
 ): RoutingHttpHandler =
     baseRegister(filter) { req, reqH, pathP, queryP ->
         val principal = authenticate(req)
         val body = decodeBody(req)
 
         val result =
-            @Suppress("RedundantWith")
-            with(principal) {
-                with(reqH) {
-                    with(pathP) {
-                        with(queryP) {
-                            req.handler(body)
-                        }
-                    }
-                }
+            context(principal, reqH) {
+                req.handler(body, pathP, queryP)
             }
 
         when (result) {
@@ -116,7 +110,7 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
 @Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
 inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.registerPaginated(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Pagination, Principal) Request.(Req) -> Any?,
+    crossinline handler: context(Raise<Issue>, ReqH, Principal) Request.(Req, PathP, QueryP, Pagination) -> Any?,
 ): RoutingHttpHandler =
     baseRegister(filter) { req, reqH, pathP, queryP ->
         val principal = authenticate(req)
@@ -133,17 +127,8 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
 
         val body = decodeBody(req)
         val result =
-            @Suppress("RedundantWith")
-            with(principal) {
-                with(reqH) {
-                    with(pathP) {
-                        with(queryP) {
-                            with(pagination) {
-                                req.handler(body)
-                            }
-                        }
-                    }
-                }
+            context(principal, reqH) {
+                req.handler(body, pathP, queryP, pagination)
             }
 
         val (items, resH) =
@@ -173,7 +158,7 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.registerMultipart(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, PathP, QueryP, Principal) Request.(Multipart) -> Any?,
+    crossinline handler: context(Raise<Issue>, ReqH, Principal) Request.(Multipart, PathP, QueryP) -> Any?,
 ): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(filter, handler)
 
 @PublishedApi
@@ -202,42 +187,40 @@ context(r: Raise<Issue>)
 internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.decodeBody(
     req: Request,
 ): Req =
-    with(r) {
-        when (Req::class) {
-            Unit::class -> {
-                Unit as Req
-            }
+    when (Req::class) {
+        Unit::class -> {
+            Unit as Req
+        }
 
-            Multipart::class -> {
-                catch({
-                    val fields = mutableMapOf<String, String>()
-                    val files = mutableMapOf<String, Multipart.File>()
+        Multipart::class -> {
+            catch({
+                val fields = mutableMapOf<String, String>()
+                val files = mutableMapOf<String, Multipart.File>()
 
-                    req.multipartIterator().forEach { part ->
-                        when (part) {
-                            is MultipartEntity.Field -> {
-                                fields[part.name] = part.value
-                            }
+                req.multipartIterator().forEach { part ->
+                    when (part) {
+                        is MultipartEntity.Field -> {
+                            fields[part.name] = part.value
+                        }
 
-                            is MultipartEntity.File -> {
-                                files[part.name] =
-                                    Multipart.File(
-                                        part.file.filename,
-                                        part.file.contentType.value,
-                                        part.file.content.readAllBytes(),
-                                    )
-                            }
+                        is MultipartEntity.File -> {
+                            files[part.name] =
+                                Multipart.File(
+                                    part.file.filename,
+                                    part.file.contentType.value,
+                                    part.file.content.readAllBytes(),
+                                )
                         }
                     }
-                    Multipart(fields, files) as Req
-                }) { raise(BadRequestIssue("Invalid multipart request: ${it.message}")) }
-            }
+                }
+                Multipart(fields, files) as Req
+            }) { raise(BadRequestIssue("Invalid multipart request: ${it.message}")) }
+        }
 
-            else -> {
-                catch({
-                    requestFormat.decode(req.body.payload.array(), req.header("Content-Type") ?: requestFormat.contentType)
-                }) { raise(BadRequestIssue("Invalid body: ${it.message}")) }
-            }
+        else -> {
+            catch({
+                requestFormat.decode(req.body.payload.array(), req.header("Content-Type") ?: requestFormat.contentType)
+            }) { raise(BadRequestIssue("Invalid body: ${it.message}")) }
         }
     }
 

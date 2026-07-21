@@ -80,6 +80,13 @@ sealed class AuthIssue : Issue() {
         override val status: Int = 401,
     ) : AuthIssue()
 
+    @Serializable
+    data class AccountLinkingRequired(
+        val email: String,
+        override val message: String = "An account with this email ($email) already exists. Please log in to link this provider.",
+        override val status: Int = 409,
+    ) : AuthIssue()
+
     /**
      * Common issues for OAuth flow.
      */

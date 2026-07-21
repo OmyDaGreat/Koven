@@ -88,7 +88,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
      */
     fun <NewQueryP : QueryProvider> query(
         decoder: QueryField<NewQueryP>,
-        vararg params: String,
+        vararg params: String, // TODO: Add query flattening like w/ headers
     ): ApiContractBuilder<Req, Res, ReqH, ResH, PathP, NewQueryP> = copy(queryDecoder = decoder, queryParams = params.toList())
 
     @Suppress("UNCHECKED_CAST")

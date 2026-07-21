@@ -3,6 +3,7 @@ package xyz.malefic.koven.feature.auth.server
 import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.raise.Raise
+import arrow.core.raise.context.raise
 import arrow.core.raise.either
 import org.http4k.client.JettyClient
 import org.http4k.core.Credentials
@@ -29,13 +30,18 @@ import xyz.malefic.koven.api.ApiResponse.Companion.with
 import xyz.malefic.koven.core.CookieField
 import xyz.malefic.koven.core.Redirect
 import xyz.malefic.koven.error.AuthIssue
+import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.AuthType
 import xyz.malefic.koven.feature.auth.LogoutContract
 import xyz.malefic.koven.feature.auth.OAuthFinalizeContract
-import xyz.malefic.koven.feature.auth.OAuthFinalizeQuery
+import xyz.malefic.koven.feature.auth.OAuthLinkContract
 import xyz.malefic.koven.feature.auth.OAuthLoginContract
 import xyz.malefic.koven.feature.auth.RefreshContract
+import xyz.malefic.koven.feature.auth.server.AuthService.issueTokenPair
+import xyz.malefic.koven.feature.auth.server.AuthService.linkOrCreateUser
+import xyz.malefic.koven.feature.auth.server.AuthService.logout
+import xyz.malefic.koven.feature.auth.server.AuthService.refresh
 import xyz.malefic.koven.server.cookie
 import xyz.malefic.koven.server.get
 import xyz.malefic.koven.server.register
@@ -47,62 +53,82 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
     val serverClient = JettyClient()
     private const val OAUTH_FINALIZE_PATH = "auth/oauth/finalize"
 
-    private val CsrfCookie = oauthCookie("csrf")
-    private val NonceCookie = oauthCookie("nonce")
-    private val OrigUriCookie = oauthCookie("orig")
-    private val PkceVerifierCookie = oauthCookie("pkce_v")
-    private val PkceChallengeCookie = oauthCookie("pkce_c")
-    private val OAuthTokenCookie = oauthCookie("token")
+    private object Cookies {
+        val Csrf = oauthCookie("csrf")
+        val Nonce = oauthCookie("nonce")
+        val OrigUri = oauthCookie("orig")
+        val PkceVerifier = oauthCookie("pkce_v")
+        val PkceChallenge = oauthCookie("pkce_c")
+        val Token = oauthCookie("token")
+        val Provider = oauthCookie("provider")
+        val Link = oauthCookie("link")
 
-    private fun oauthCookie(name: String) =
-        object : CookieField<String> {
-            override val name = "koven_oauth_$name"
+        private fun oauthCookie(name: String) =
+            object : CookieField<String> {
+                override val name = "koven_oauth_$name"
 
-            override fun secure() = KovenConfig.auth.useSecureCookies
+                override fun secure() = KovenConfig.auth.useSecureCookies
 
-            override fun isHttpOnly() = true
+                override fun isHttpOnly() = true
 
-            override fun path() = "/"
+                override fun path() = "/"
 
-            context(_: Raise<Issue>)
-            override fun decode(cookies: Map<String, String>) = cookies[this.name] ?: ""
-        }
+                context(_: Raise<Issue>)
+                override fun decode(cookies: Map<String, String>) = cookies[this.name] ?: ""
+            }
+    }
 
     context(auth: AuthType.OAuth)
     override fun authRoutes(): RoutingHttpHandler {
-        val oauthProvider = auth.provider
-        val authUri = Uri.of(oauthProvider.authEndpoint)
+        val providers = auth.providers
         val finalizePath = "/${KovenConfig.apiPrefix}/$OAUTH_FINALIZE_PATH"
-
-        val providerConfig =
-            OAuthProviderConfig(
-                authBase = authUri.copy(path = ""),
-                authPath = authUri.path,
-                tokenPath = oauthProvider.tokenEndpoint,
-                credentials = Credentials(auth.clientId, auth.clientSecret),
-            )
 
         val persistence = KovenOAuthPersistence(auth.useSecureCookies, auth.clientCallbackPath)
 
-        val oauth =
-            OAuthProvider(
-                providerConfig = providerConfig,
-                client = serverClient,
-                callbackUri = Uri.of(auth.redirectUri),
-                scopes = auth.scopes,
-                oAuthPersistence = persistence,
-            ) { req -> Uri.of(req.query("next") ?: finalizePath) }
+        val oauthFilters =
+            providers.mapValues { (_, config) ->
+                val oauthProvider = config.provider
+                val authUri = Uri.of(oauthProvider.authEndpoint)
+
+                val providerConfig =
+                    OAuthProviderConfig(
+                        authBase = authUri.copy(path = ""),
+                        authPath = authUri.path,
+                        tokenPath = oauthProvider.tokenEndpoint,
+                        credentials = Credentials(config.clientId, config.clientSecret),
+                    )
+
+                OAuthProvider(
+                    providerConfig = providerConfig,
+                    client = serverClient,
+                    callbackUri = Uri.of(config.redirectUri),
+                    scopes = config.scopes,
+                    oAuthPersistence = persistence,
+                ) { req -> Uri.of(req.query("next") ?: finalizePath) }
+            }
 
         return routes(
-            OAuthLoginContract.register(oauth.authFilter) {},
-            oauth.callbackEndpoint,
-            RefreshContract.register { _ ->
-                with(AuthService) { refresh() }
+            OAuthLoginContract.register { _, path, _ ->
+                val providerName = path.provider
+                val oauth = oauthFilters[providerName] ?: raise(BadRequestIssue("Unknown provider: $providerName"))
+                oauth.authFilter { Response(Status.OK) }(this).cookie(Cookies.Provider create providerName)
             },
-            LogoutContract.register { _ ->
-                with(AuthService) { logout() }
+            OAuthLinkContract.register { _, path, _ ->
+                val providerName = path.provider
+                val oauth = oauthFilters[providerName] ?: raise(BadRequestIssue("Unknown provider: $providerName"))
+                oauth
+                    .authFilter { Response(Status.OK) }(this)
+                    .cookie(Cookies.Provider create providerName)
+                    .cookie(Cookies.Link create "true")
             },
-            OAuthFinalizeContract.register { _ ->
+            routes(oauthFilters.values.map { it.callbackEndpoint }),
+            RefreshContract.register { _, _, _ ->
+                refresh()
+            },
+            LogoutContract.register { _, _, _ ->
+                logout()
+            },
+            OAuthFinalizeContract.register { _, _, query ->
                 val baseRedirect = persistence.retrieveOriginalUri(this) ?: Uri.of(auth.clientCallbackPath)
 
                 fun errorRedirect(issue: Issue): ApiResponse<Unit, Redirect> =
@@ -115,42 +141,44 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
                                 .toString(),
                         )
 
-                val token = persistence.retrieveToken(this) ?: return@register errorRedirect(AuthIssue.OAuthIssue.TokenExchangeFailed())
+                val result =
+                    either {
+                        val providerName = this@register[Cookies.Provider]
+                        val isLinking = this@register[Cookies.Link] == "true"
+                        val oauthProvider =
+                            auth.providers[providerName]?.provider
+                                ?: raise(BadRequestIssue("Unknown provider: $providerName"))
 
-                val userInfoJson = fetchUserInfoJson(oauthProvider.userInfoEndpoint, token).getOrElse { return@register errorRedirect(it) }
+                        val token = persistence.retrieveToken(this@register) ?: raise(AuthIssue.OAuthIssue.TokenExchangeFailed())
+                        val userInfoJson = fetchUserInfoJson(oauthProvider.userInfoEndpoint, token).bind()
+                        val (providerUserId, providerUsername, email) = oauthProvider.parseUserInfo(userInfoJson)
 
-                val (providerUserId, providerUsername) = oauthProvider.parseUserInfo(userInfoJson)
-                val preferredUsername = contextOf<OAuthFinalizeQuery>().username ?: providerUsername
+                        val preferredUsername = query.username ?: providerUsername
+                        val currentPrincipal = if (isLinking) either { authenticate(this@register) }.getOrNull() else null
 
-                val tokensResult =
-                    transaction {
-                        either {
-                            val user =
-                                with(AuthService) {
-                                    findOAuthUser(oauthProvider.name, providerUserId)
-                                        ?: linkOrCreateUser(
-                                            oauthProvider.name,
-                                            providerUserId,
-                                            preferredUsername,
-                                        )
-                                }
-
-                            with(AuthService) {
-                                with(auth as AuthType) {
-                                    user.issueTokenPair()
-                                }
+                        val tokens =
+                            transaction {
+                                linkOrCreateUser(
+                                    oauthProvider.name,
+                                    providerUserId,
+                                    preferredUsername,
+                                    email,
+                                    currentPrincipal = currentPrincipal,
+                                ).issueTokenPair()
                             }
-                        }
+
+                        tokens
                     }
 
-                val tokens = tokensResult.getOrElse { return@register errorRedirect(it) }
-
+                val tokens = result.getOrElse { return@register errorRedirect(it) }
                 val redirectUri = baseRedirect.query("auth_success", "true")
 
                 302
                     .with(Redirect(redirectUri.toString()))
                     .with(AuthService.RefreshTokenCookie create tokens.refreshToken)
-                    .with(OAuthTokenCookie.clear())
+                    .with(Cookies.Token.clear())
+                    .with(Cookies.Provider.clear())
+                    .with(Cookies.Link.clear())
             },
         )
     }
@@ -175,36 +203,36 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
         override fun assignCsrf(
             redirect: Response,
             csrf: CrossSiteRequestForgeryToken,
-        ): Response = redirect.cookie(CsrfCookie create csrf.value)
+        ): Response = redirect.cookie(Cookies.Csrf create csrf.value)
 
         override fun retrieveCsrf(request: Request): CrossSiteRequestForgeryToken? =
-            either { request[CsrfCookie] }.getOrNull()?.let { CrossSiteRequestForgeryToken(it) }
+            either { request[Cookies.Csrf] }.getOrNull()?.let { CrossSiteRequestForgeryToken(it) }
 
         override fun assignNonce(
             redirect: Response,
             nonce: Nonce,
-        ): Response = redirect.cookie(NonceCookie create nonce.value)
+        ): Response = redirect.cookie(Cookies.Nonce create nonce.value)
 
-        override fun retrieveNonce(request: Request): Nonce? = either { request[NonceCookie] }.getOrNull()?.let { Nonce(it) }
+        override fun retrieveNonce(request: Request): Nonce? = either { request[Cookies.Nonce] }.getOrNull()?.let { Nonce(it) }
 
         override fun assignOriginalUri(
             redirect: Response,
             originalUri: Uri,
-        ): Response = redirect.cookie(OrigUriCookie create originalUri.toString())
+        ): Response = redirect.cookie(Cookies.OrigUri create originalUri.toString())
 
-        override fun retrieveOriginalUri(request: Request): Uri? = either { request[OrigUriCookie] }.getOrNull()?.let { Uri.of(it) }
+        override fun retrieveOriginalUri(request: Request): Uri? = either { request[Cookies.OrigUri] }.getOrNull()?.let { Uri.of(it) }
 
         override fun assignPkce(
             redirect: Response,
             pkce: PkceChallengeAndVerifier,
         ): Response =
             redirect
-                .cookie(PkceVerifierCookie create pkce.verifier)
-                .cookie(PkceChallengeCookie create pkce.challenge)
+                .cookie(Cookies.PkceVerifier create pkce.verifier)
+                .cookie(Cookies.PkceChallenge create pkce.challenge)
 
         override fun retrievePkce(request: Request): PkceChallengeAndVerifier? {
-            val v = either { request[PkceVerifierCookie] }.getOrNull() ?: return null
-            val c = either { request[PkceChallengeCookie] }.getOrNull() ?: return null
+            val v = either { request[Cookies.PkceVerifier] }.getOrNull() ?: return null
+            val c = either { request[Cookies.PkceChallenge] }.getOrNull() ?: return null
             return PkceChallengeAndVerifier(c, v)
         }
 
@@ -215,15 +243,14 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
             idToken: IdToken?,
         ): Response =
             redirect
-                .cookie(OAuthTokenCookie create accessToken.value)
-                .cookie(CsrfCookie.clear())
-                .cookie(NonceCookie.clear())
-                .cookie(OrigUriCookie.clear())
-                .cookie(PkceVerifierCookie.clear())
-                .cookie(PkceChallengeCookie.clear())
+                .cookie(Cookies.Token create accessToken.value)
+                .cookie(Cookies.Csrf.clear())
+                .cookie(Cookies.Nonce.clear())
+                .cookie(Cookies.OrigUri.clear())
+                .cookie(Cookies.PkceVerifier.clear())
+                .cookie(Cookies.PkceChallenge.clear())
 
-        override fun retrieveToken(request: Request): AccessToken? =
-            either { request[OAuthTokenCookie] }.getOrNull()?.let { AccessToken(it) }
+        override fun retrieveToken(request: Request): AccessToken? = either { request[Cookies.Token] }.getOrNull()?.let { AccessToken(it) }
 
         override fun authFailureResponse(reason: OAuthCallbackError): Response {
             val uri =
@@ -234,11 +261,11 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
                     .query("reason", reason.toString())
             return Response(Status.FOUND)
                 .header("Location", uri.toString())
-                .cookie(CsrfCookie.clear())
-                .cookie(NonceCookie.clear())
-                .cookie(OrigUriCookie.clear())
-                .cookie(PkceVerifierCookie.clear())
-                .cookie(PkceChallengeCookie.clear())
+                .cookie(Cookies.Csrf.clear())
+                .cookie(Cookies.Nonce.clear())
+                .cookie(Cookies.OrigUri.clear())
+                .cookie(Cookies.PkceVerifier.clear())
+                .cookie(Cookies.PkceChallenge.clear())
         }
     }
 }

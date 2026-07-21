@@ -15,6 +15,7 @@ import kotlin.uuid.Uuid
  */
 object Users : UuidTable("koven_users") {
     val username = varchar("username", 32).uniqueIndex()
+    val email = varchar("email", 128).uniqueIndex()
     val hashedPassword = varchar("hashed_password", 128).nullable()
     val failedAttempts = integer("failed_attempts").default(0)
     val lockUntil = long("lock_until").default(0)
@@ -31,6 +32,7 @@ class UserEntity(
     companion object : UuidEntityClass<UserEntity>(Users)
 
     override var username by Users.username
+    var email by Users.email
     var hashedPassword by Users.hashedPassword
     var failedAttempts by Users.failedAttempts
     var lockUntil by Users.lockUntil

@@ -16,6 +16,7 @@ import xyz.malefic.koven.client.call
 import xyz.malefic.koven.core.NoHeader
 import xyz.malefic.koven.core.NoParams
 import xyz.malefic.koven.error.AuthIssue
+import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.AuthType
 import xyz.malefic.koven.feature.auth.LogoutContract
@@ -76,9 +77,15 @@ object AuthSession {
      *
      * If the current [KovenConfig.auth] is [AuthType.Password], [credentials] must be provided.
      * If it is [AuthType.OAuth], the browser will be redirected to the provider's login page.
+     *
+     * @param credentials Credentials for password login.
+     * @param provider The OAuth provider name (if multiple are configured).
      */
     context(ctx: PageContext)
-    suspend fun login(credentials: UserRequestModel? = null): Either<Issue, Unit> =
+    suspend fun login(
+        credentials: UserRequestModel? = null,
+        provider: String? = null,
+    ): Either<Issue, Unit> =
         when (val auth = KovenConfig.auth) {
             is AuthType.Password -> {
                 if (credentials == null) return Either.Left(AuthIssue.InvalidCredentials("Credentials required for password login"))
@@ -88,14 +95,34 @@ object AuthSession {
             }
 
             is AuthType.OAuth -> {
-                val provider = auth.provider.name.lowercase()
+                val selectedProvider =
+                    provider ?: auth.providers.keys.firstOrNull()
+                        ?: return Either.Left(AuthIssue.Unauthorized("No OAuth providers configured"))
                 val next = window.location.href
-                ctx.router.navigateTo("/${KovenConfig.apiPrefix}/auth/login/$provider?next=$next")
+                ctx.router.navigateTo("/${KovenConfig.apiPrefix}/auth/login/${selectedProvider.lowercase()}?next=$next")
                 Either.Right(Unit)
             }
 
             else -> {
                 Either.Left(AuthIssue.Unauthorized("Authentication is disabled"))
+            }
+        }
+
+    /**
+     * Initiates the linking of an OAuth provider to the current account.
+     */
+    context(ctx: PageContext)
+    fun link(provider: String): Either<Issue, Unit> =
+        when (val auth = KovenConfig.auth) {
+            is AuthType.OAuth -> {
+                if (!auth.providers.containsKey(provider)) return Either.Left(BadRequestIssue("Unknown provider: $provider"))
+                val next = window.location.href
+                ctx.router.navigateTo("/${KovenConfig.apiPrefix}/auth/link/${provider.lowercase()}?next=$next")
+                Either.Right(Unit)
+            }
+
+            else -> {
+                Either.Left(AuthIssue.Unauthorized("OAuth linking is not supported for the current auth type"))
             }
         }
 

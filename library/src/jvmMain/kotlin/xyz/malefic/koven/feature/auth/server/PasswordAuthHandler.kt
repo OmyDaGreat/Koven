@@ -11,6 +11,7 @@ import me.gosimple.nbvcxz.resources.ConfigurationBuilder
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.routes
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.or
 import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.koven.api.ApiResponse.Companion.with
@@ -25,6 +26,7 @@ import xyz.malefic.koven.feature.auth.PasswordStrengthContract
 import xyz.malefic.koven.feature.auth.RefreshContract
 import xyz.malefic.koven.feature.auth.model.TokenModel
 import xyz.malefic.koven.feature.auth.model.UserRequestModel
+import xyz.malefic.koven.feature.auth.server.AuthService.issueTokenPair
 import xyz.malefic.koven.server.register
 import java.security.SecureRandom
 
@@ -43,21 +45,21 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
     context(auth: AuthType.Password)
     override fun authRoutes(): RoutingHttpHandler =
         routes(
-            PasswordStrengthContract.register { string ->
+            PasswordStrengthContract.register { string, _, _ ->
                 string.strength()
             },
-            PasswordLoginContract.register { body ->
+            PasswordLoginContract.register { body, _, _ ->
                 val tokens = getTokensFromLogin(body)
                 tokens.response with (AuthService.RefreshTokenCookie create tokens.refreshToken)
             },
-            PasswordRegisterContract.register { body ->
+            PasswordRegisterContract.register { body, _, _ ->
                 val tokens = body.register()
                 tokens.response with (AuthService.RefreshTokenCookie create tokens.refreshToken)
             },
-            RefreshContract.register { _ ->
+            RefreshContract.register { _, _, _ ->
                 with(AuthService) { refresh() }
             },
-            LogoutContract.register { _ ->
+            LogoutContract.register { _, _, _ ->
                 with(AuthService) { logout() }
             },
         )
@@ -68,12 +70,6 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
         pw: String,
         hash: String,
     ) = verifier.verify(pw.toCharArray(), hash).verified
-
-    context(auth: AuthType.Password)
-    private fun UserEntity.createAccessToken(): String = with(AuthService) { createAccessToken() }
-
-    context(_: JdbcTransaction, auth: AuthType.Password)
-    private fun UserEntity.issueTokenPair(): TokenModel = with(AuthService) { issueTokenPair() }
 
     context(_: Raise<Issue>, auth: AuthType.Password)
     fun getTokensFromLogin(user: UserRequestModel): TokenModel =
@@ -107,10 +103,11 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
                     userValidation.errors.messagesAtPath(UserRequestModel::password),
                 )
             }
-            ensure(UserEntity.find { Users.username eq username }.empty()) { UserIssue.AlreadyExists() }
+            ensure(UserEntity.find { (Users.username eq username) or (Users.email eq email) }.empty()) { UserIssue.AlreadyExists() }
             UserEntity
                 .new {
                     username = this@register.username
+                    this.email = this@register.email
                     hashedPassword = hashPassword(password)
                 }.issueTokenPair()
         }

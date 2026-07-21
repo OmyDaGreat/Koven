@@ -65,6 +65,16 @@ val OAuthLoginContract =
         .build()
 
 /**
+ * A contract for linking an OAuth provider to an existing account.
+ */
+val OAuthLinkContract =
+    apiContract<Unit, Unit>("auth/link/{provider}")
+        .method(GET)
+        .path(OAuthLoginPath)
+        .protected()
+        .build()
+
+/**
  * Query parameters for OAuth finalization.
  */
 data class OAuthFinalizeQuery(
