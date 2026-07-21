@@ -258,7 +258,6 @@ object AuthService {
      * @param providerUserId The unique ID from the provider.
      * @param preferredUsername The username the user wants to use.
      * @param email The email address of the user.
-     * @param forceUnique Whether to append a random suffix if the username is taken.
      * @param currentPrincipal The currently authenticated principal, if any.
      *
      * @return The [UserEntity] for the user.
@@ -269,7 +268,6 @@ object AuthService {
         providerUserId: String,
         preferredUsername: String,
         email: String,
-        forceUnique: Boolean = true,
         currentPrincipal: Principal? = null,
     ): UserEntity {
         findOAuthUser(provider, providerUserId)?.let { return it }
@@ -278,30 +276,19 @@ object AuthService {
 
         val user =
             if (userByEmail != null) {
-                if (currentPrincipal != null && currentPrincipal.userId == userByEmail.id.value) {
-                    userByEmail
-                } else {
+                if (currentPrincipal == null || currentPrincipal.userId != userByEmail.id.value) {
                     raise(AuthIssue.AccountLinkingRequired(email))
                 }
+                userByEmail
             } else {
-                var username = preferredUsername
-                val existingUsernameUser = UserEntity.find { Users.username eq username }.firstOrNull()
+                val existingUsernameUser = UserEntity.find { Users.username eq preferredUsername }.firstOrNull()
 
                 if (existingUsernameUser != null) {
-                    if (forceUnique) {
-                        username = "${preferredUsername}_${generateSecret(4).take(6)}"
-                        UserEntity.new {
-                            this.username = username
-                            this.email = email
-                        }
-                    } else {
-                        raise(UserIssue.AlreadyExists())
-                    }
-                } else {
-                    UserEntity.new {
-                        this.username = username
-                        this.email = email
-                    }
+                    raise(UserIssue.AlreadyExists())
+                }
+                UserEntity.new {
+                    this.username = preferredUsername
+                    this.email = email
                 }
             }
 

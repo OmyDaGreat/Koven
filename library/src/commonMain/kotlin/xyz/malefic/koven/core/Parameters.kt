@@ -13,7 +13,7 @@ interface PathProvider {
 /**
  * Interface for decoding path parameters on the server.
  */
-interface PathField<out T> {
+interface PathField<out T> { // TODO: Add query flattening like w/ headers
     context(raise: Raise<Issue>)
     fun decodePath(params: Map<String, String>): T
 }
@@ -28,7 +28,7 @@ interface QueryProvider {
 /**
  * Interface for decoding query parameters on the server.
  */
-interface QueryField<out T> {
+interface QueryField<out T> { // TODO: Add query flattening like w/ headers
     context(raise: Raise<Issue>)
     fun decodeQuery(params: Map<String, List<String>>): T
 }

@@ -81,12 +81,14 @@ data class OAuthFinalizeQuery(
     val username: String? = null,
     val next: String? = null, // TODO: Protect against open redirects
     val error: String? = null,
+    val provider: String? = null,
 ) : QueryProvider {
     override fun provideQuery() =
         buildMap {
             username?.let { put("username", listOf(it)) }
             next?.let { put("next", listOf(it)) }
             error?.let { put("error", listOf(it)) }
+            provider?.let { put("provider", listOf(it)) }
         }
 
     companion object : QueryField<OAuthFinalizeQuery> {
@@ -96,6 +98,7 @@ data class OAuthFinalizeQuery(
                 username = params["username"]?.firstOrNull(),
                 next = params["next"]?.firstOrNull(),
                 error = params["error"]?.firstOrNull(),
+                provider = params["provider"]?.firstOrNull(),
             )
     }
 }
@@ -106,6 +109,6 @@ data class OAuthFinalizeQuery(
 val OAuthFinalizeContract =
     apiContract<Unit, Unit>("auth/oauth/finalize")
         .method(GET)
-        .query(OAuthFinalizeQuery, "username", "next", "error")
+        .query(OAuthFinalizeQuery, "username", "next", "error", "provider")
         .responseHeaders(Redirect)
         .build()

@@ -12,7 +12,6 @@ import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.routes
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.or
-import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.koven.api.ApiResponse.Companion.with
 import xyz.malefic.koven.error.AuthIssue

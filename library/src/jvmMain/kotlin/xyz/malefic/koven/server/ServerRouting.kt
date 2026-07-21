@@ -1,6 +1,5 @@
 package xyz.malefic.koven.server
 
-import arrow.core.Either
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import arrow.core.raise.context.raise
@@ -162,15 +161,14 @@ inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : P
 ): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(filter, handler)
 
 @PublishedApi
-@Suppress("RedundantWith")
 context(_: Raise<Issue>)
 internal fun ApiContract<*, *, *, *, *, *>.authenticate(req: Request): Principal {
     if (!isProtected || KovenConfig.auth == AuthType.NoAuth) return anonymousPrincipal
 
     return when (val auth = KovenConfig.auth) {
         is AuthType.NoAuth -> anonymousPrincipal
-        is AuthType.Password -> with(PasswordAuthHandler) { with(auth) { authenticate(req) } }
-        is AuthType.OAuth -> with(OAuthHandler) { with(auth) { authenticate(req) } }
+        is AuthType.Password -> context(auth) { PasswordAuthHandler.authenticate(req) }
+        is AuthType.OAuth -> context(auth) { OAuthHandler.authenticate(req) }
     }
 }
 
@@ -218,9 +216,8 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
         }
 
         else -> {
-            catch({
-                requestFormat.decode(req.body.payload.array(), req.header("Content-Type") ?: requestFormat.contentType)
-            }) { raise(BadRequestIssue("Invalid body: ${it.message}")) }
+            catch({ requestFormat.decode(req.body.payload.array(), req.header("Content-Type") ?: requestFormat.contentType) })
+            { raise(BadRequestIssue("Invalid body: ${it.message}")) }
         }
     }
 
@@ -244,23 +241,20 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
                         }
                     ensure(missing.isEmpty()) { BadRequestIssue("Missing required header(s): ${missing.joinToString { it.field }}") }
 
-                    catch({ logic(this, req, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(queryMap)) }) {
-                        raise(InternalIssue from it)
-                    }
+                    catch({ logic(this, req, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(queryMap)) })
+                    { raise(InternalIssue from it) }
                 }
 
-            when (result) {
-                is Either.Left -> {
-                    val issue = result.value
+            result.fold(
+                { issue ->
                     val serialization = responseFormat.serialization ?: KovenConfig.serialization
                     val body = serialization.encodeIssue(issue)
                     Response(Status.fromCode(issue.status) ?: Status.INTERNAL_SERVER_ERROR)
                         .body(MemoryBody(body))
                         .header("Content-Type", serialization.contentType)
-                }
-
-                is Either.Right -> {
-                    val (status, res, resH, cookies) = result.value
+                },
+                { response ->
+                    val (status, res, resH, cookies) = response
                     var response =
                         when {
                             Res::class == Unit::class -> {
@@ -283,7 +277,7 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
                     }
 
                     response
-                }
-            }
+                },
+            )
         },
     )

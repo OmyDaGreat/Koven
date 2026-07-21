@@ -4,6 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import arrow.core.Either
+import arrow.core.raise.context.bind
+import arrow.core.raise.context.either
+import arrow.core.raise.context.ensure
+import arrow.core.raise.context.raise
 import com.varabyte.kobweb.core.PageContext
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
@@ -76,35 +80,38 @@ object AuthSession {
      * Performs a login request.
      *
      * If the current [KovenConfig.auth] is [AuthType.Password], [credentials] must be provided.
-     * If it is [AuthType.OAuth], the browser will be redirected to the provider's login page.
+     *
+     * If it is [AuthType.OAuth] and multiple providers are configured, [provider] should be provided.
      *
      * @param credentials Credentials for password login.
-     * @param provider The OAuth provider name (if multiple are configured).
+     * @param provider The OAuth provider name. Defaults to the first configured provider.
      */
     context(ctx: PageContext)
     suspend fun login(
         credentials: UserRequestModel? = null,
         provider: String? = null,
     ): Either<Issue, Unit> =
-        when (val auth = KovenConfig.auth) {
-            is AuthType.Password -> {
-                if (credentials == null) return Either.Left(AuthIssue.InvalidCredentials("Credentials required for password login"))
-                PasswordLoginContract.call(credentials, NoHeader, NoParams, NoParams).map {
-                    updateSession(it.body.accessToken, it.body)
+        either {
+            when (val auth = KovenConfig.auth) {
+                is AuthType.Password -> {
+                    if (credentials == null) raise(AuthIssue.InvalidCredentials("Credentials required for password login"))
+                    PasswordLoginContract
+                        .call(credentials, NoHeader, NoParams, NoParams)
+                        .map {
+                            updateSession(it.body.accessToken, it.body)
+                        }.bind()
                 }
-            }
 
-            is AuthType.OAuth -> {
-                val selectedProvider =
-                    provider ?: auth.providers.keys.firstOrNull()
-                        ?: return Either.Left(AuthIssue.Unauthorized("No OAuth providers configured"))
-                val next = window.location.href
-                ctx.router.navigateTo("/${KovenConfig.apiPrefix}/auth/login/${selectedProvider.lowercase()}?next=$next")
-                Either.Right(Unit)
-            }
+                is AuthType.OAuth -> {
+                    val selectedProvider =
+                        provider ?: auth.providers.keys.firstOrNull() ?: raise(AuthIssue.Unauthorized("No OAuth providers configured"))
+                    val next = window.location.href
+                    ctx.router.navigateTo("/${KovenConfig.apiPrefix}/auth/login/${selectedProvider.lowercase()}?next=$next")
+                }
 
-            else -> {
-                Either.Left(AuthIssue.Unauthorized("Authentication is disabled"))
+                else -> {
+                    raise(AuthIssue.Unauthorized("Authentication is disabled"))
+                }
             }
         }
 
@@ -113,16 +120,17 @@ object AuthSession {
      */
     context(ctx: PageContext)
     fun link(provider: String): Either<Issue, Unit> =
-        when (val auth = KovenConfig.auth) {
-            is AuthType.OAuth -> {
-                if (!auth.providers.containsKey(provider)) return Either.Left(BadRequestIssue("Unknown provider: $provider"))
-                val next = window.location.href
-                ctx.router.navigateTo("/${KovenConfig.apiPrefix}/auth/link/${provider.lowercase()}?next=$next")
-                Either.Right(Unit)
-            }
+        either {
+            when (val auth = KovenConfig.auth) {
+                is AuthType.OAuth -> {
+                    ensure(auth.providers.containsKey(provider)) { BadRequestIssue("Unknown provider: $provider") }
+                    val next = window.location.href
+                    ctx.router.navigateTo("/${KovenConfig.apiPrefix}/auth/link/${provider.lowercase()}?next=$next")
+                }
 
-            else -> {
-                Either.Left(AuthIssue.Unauthorized("OAuth linking is not supported for the current auth type"))
+                else -> {
+                    raise(AuthIssue.Unauthorized("OAuth linking is not supported for the current auth type"))
+                }
             }
         }
 
@@ -146,16 +154,10 @@ object AuthSession {
      * Performs a logout request.
      */
     suspend fun logout(): Either<Issue, Unit> =
-        when (KovenConfig.auth) {
-            is AuthType.NoAuth -> {
-                clearSession()
-                Either.Right(Unit)
-            }
-
-            else -> {
-                LogoutContract.call(Unit, NoHeader, NoParams, NoParams).map {
-                    clearSession()
-                }
+        either {
+            when (KovenConfig.auth) {
+                is AuthType.NoAuth -> clearSession()
+                else -> LogoutContract.call(Unit, NoHeader, NoParams, NoParams).map { clearSession() }.bind()
             }
         }
 
