@@ -107,24 +107,24 @@
   <div class="breadcrumbs"><a href="../../../../index.html">library</a><span class="delimiter">/</span><a href="../../index.html">xyz.malefic.koven.feature.auth</a><span class="delimiter">/</span><a href="../index.html">AuthType</a><span class="delimiter">/</span><span class="current">OAuth</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>OAuth</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">OAuth</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>provider<span class="token operator">: </span><a href="../../-o-auth-provider/index.html">OAuthProvider</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>clientId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>clientSecret<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>redirectUri<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>clientCallbackPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>cookieDomain<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>useSecureCookies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>scopes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>listOf(&quot;openid&quot;, &quot;profile&quot;, &quot;email&quot;)</span></span><span class="token punctuation">)</span> : <a href="../index.html">AuthType</a></div><p class="paragraph">Delegated to <a href="../../-o-auth-provider/index.html">OAuthProvider</a> with standard OAuth interceptors.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">OAuth</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>providers<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="../-o-auth-config/index.html">AuthType.OAuthConfig</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>clientCallbackPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>cookieDomain<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>useSecureCookies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span> : <a href="../index.html">AuthType</a></div><p class="paragraph">Delegated to <a href="../../-o-auth-provider/index.html">OAuthProvider</a> with standard OAuth interceptors. Supports multiple providers.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="tableheader">Constructors</h2>
-        <div class="table"><a data-name="-441799794%2FConstructors%2F-654899660" anchor-label="OAuth" id="-441799794%2FConstructors%2F-654899660" data-filterable-set=":library/commonMain"></a>
+        <div class="table"><a data-name="1070823831%2FConstructors%2F-654899660" anchor-label="OAuth" id="1070823831%2FConstructors%2F-654899660" data-filterable-set=":library/commonMain"></a>
           <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-o-auth.html"><span><span>OAuth</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-441799794%2FConstructors%2F-654899660"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1070823831%2FConstructors%2F-654899660"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">provider<span class="token operator">: </span><a href="../../-o-auth-provider/index.html">OAuthProvider</a><span class="token punctuation">, </span></span><span class="parameter ">clientId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">clientSecret<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">redirectUri<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">clientCallbackPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cookieDomain<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">useSecureCookies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">scopes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>listOf(&quot;openid&quot;, &quot;profile&quot;, &quot;email&quot;)</span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">providers<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="../-o-auth-config/index.html">AuthType.OAuthConfig</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">clientCallbackPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cookieDomain<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">useSecureCookies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -159,36 +159,6 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="client-callback-path.html">clientCallbackPath</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1334629663%2FProperties%2F-654899660" anchor-label="clientId" id="1334629663%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
-          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="client-id.html"><span>client</span><wbr></wbr><span><span>Id</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1334629663%2FProperties%2F-654899660"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="client-id.html">clientId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1591361878%2FProperties%2F-654899660" anchor-label="clientSecret" id="-1591361878%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
-          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="client-secret.html"><span>client</span><wbr></wbr><span><span>Secret</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1591361878%2FProperties%2F-654899660"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="client-secret.html">clientSecret</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
@@ -238,32 +208,17 @@
               </div>
             </div>
           </div>
-<a data-name="-256939052%2FProperties%2F-654899660" anchor-label="provider" id="-256939052%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
+<a data-name="-2103888525%2FProperties%2F-654899660" anchor-label="providers" id="-2103888525%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="provider.html"><span><span>provider</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-256939052%2FProperties%2F-654899660"></span>
+                  <div><a href="providers.html"><span><span>providers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2103888525%2FProperties%2F-654899660"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="provider.html">provider</a><span class="token operator">: </span><a href="../../-o-auth-provider/index.html">OAuthProvider</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1128629221%2FProperties%2F-654899660" anchor-label="redirectUri" id="1128629221%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
-          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="redirect-uri.html"><span>redirect</span><wbr></wbr><span><span>Uri</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1128629221%2FProperties%2F-654899660"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="redirect-uri.html">redirectUri</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="providers.html">providers</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="../-o-auth-config/index.html">AuthType.OAuthConfig</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -279,21 +234,6 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="../refresh-token-ttl.html">refreshTokenTtl</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-duration/index.html">Duration</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1781645594%2FProperties%2F-654899660" anchor-label="scopes" id="-1781645594%2FProperties%2F-654899660" data-filterable-set=":library/commonMain"></a>
-          <div class="table-row table-row_content" data-filterable-current=":library/commonMain" data-filterable-set=":library/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="scopes.html"><span><span>scopes</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1781645594%2FProperties%2F-654899660"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="scopes.html">scopes</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
