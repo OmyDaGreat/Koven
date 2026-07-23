@@ -246,7 +246,8 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
 
                     val reqCookies = req.cookies().associate { it.name to it.value }
                     val missingCookies = requiredCookies.filter { reqCookies[it.name] == null }
-                    ensure(missingCookies.isEmpty()) { BadRequestIssue("Missing required cookie(s): ${missingCookies.joinToString { it.name }}") }
+                    ensure(missingCookies.isEmpty())
+                    { BadRequestIssue("Missing required cookie(s): ${missingCookies.joinToString { it.name }}") }
 
                     catch({ logic(this, req, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(QueryParams(queryMap))) })
                     { raise(InternalIssue from it) }

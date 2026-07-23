@@ -13,6 +13,7 @@ interface KovenProvider
  * Base interface for all field decoders.
  */
 interface KovenField { // TODO: Support optionality natively
+
     /**
      * The field name(s) for this field.
      */

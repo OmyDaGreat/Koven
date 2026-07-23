@@ -261,8 +261,7 @@ class HeaderPairField<A, B>(
 /**
  * Creates a pair of header fields as [HeaderPairField].
  */
-infix fun <A, B> HeaderField<A>.and(other: HeaderField<B>): HeaderPairField<A, B> =
-    HeaderPairField(this, other)
+infix fun <A, B> HeaderField<A>.and(other: HeaderField<B>): HeaderPairField<A, B> = HeaderPairField(this, other)
 
 /**
  * Creates a pair of header fields as [HeaderPairField], optimizing for [Empty] on the left.
