@@ -109,7 +109,7 @@ interface HeaderProvider : KovenProvider {
 /**
  * Interface for header fields.
  */
-interface HeaderField<out T> : KovenField {
+interface HeaderField<out T> : KovenField<T> {
     val field: String
 
     /**
@@ -241,12 +241,35 @@ infix fun <B : HeaderProvider> Empty.and(other: B): B = other
 infix fun <A : HeaderProvider> A.and(other: Empty): A = this
 
 /**
+ * A header field that is optional.
+ */
+class OptionalHeaderField<out T>(
+    val inner: HeaderField<T>,
+) : HeaderField<T?> {
+    override val field: String get() = inner.field
+    override val fields: List<String> get() = inner.fields
+
+    override fun flatten(): List<HeaderField<*>> = inner.flatten()
+
+    context(_: Raise<Issue>)
+    override fun decode(headers: Headers): T? {
+        if (fields.none { headers.containsKey(it) }) return null
+        return inner.decode(headers)
+    }
+}
+
+/**
+ * Marks a header field as optional.
+ */
+fun <T> HeaderField<T>.optional(): HeaderField<T?> = OptionalHeaderField(this)
+
+/**
  * A header field that combines two other header fields. Used to decode [KovenPair].
  */
 class HeaderPairField<A, B>(
     override val fieldA: HeaderField<A>,
     override val fieldB: HeaderField<B>,
-) : KovenPairField(fieldA, fieldB),
+) : KovenPairField<A, B>(fieldA, fieldB),
     HeaderField<KovenPair<A, B>> {
     override val field: String = "${fieldA.field}, ${fieldB.field}"
     override val fields: List<String> get() = super.fields

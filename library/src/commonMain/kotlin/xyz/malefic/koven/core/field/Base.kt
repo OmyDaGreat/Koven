@@ -12,8 +12,7 @@ interface KovenProvider
 /**
  * Base interface for all field decoders.
  */
-interface KovenField { // TODO: Support optionality natively
-
+interface KovenField<out T> {
     /**
      * The field name(s) for this field.
      */
@@ -22,7 +21,7 @@ interface KovenField { // TODO: Support optionality natively
     /**
      * Flattens the field into its constituent fields.
      */
-    fun flatten(): List<KovenField>
+    fun flatten(): List<KovenField<*>>
 }
 
 /**
@@ -50,13 +49,13 @@ data class KovenPair<out A, out B>(
 /**
  * Base calass for composite fields that handles fields aggregation and flattening.
  */
-abstract class KovenPairField(
-    open val fieldA: KovenField,
-    open val fieldB: KovenField,
-) : KovenField {
+abstract class KovenPairField<out A, out B>(
+    open val fieldA: KovenField<A>,
+    open val fieldB: KovenField<B>,
+) : KovenField<KovenPair<A, B>> {
     override val fields: List<String> get() = fieldA.fields + fieldB.fields
 
-    override fun flatten(): List<KovenField> = fieldA.flatten() + fieldB.flatten()
+    override fun flatten(): List<KovenField<*>> = fieldA.flatten() + fieldB.flatten()
 }
 
 /**
@@ -81,7 +80,7 @@ object Empty :
     context(_: Raise<Issue>)
     override fun decode(headers: Headers): Empty = this
 
-    override fun flatten(): List<Empty> = emptyList()
+    override fun flatten(): List<Nothing> = emptyList()
 
     override fun providePath(): Map<String, String> = emptyMap()
 

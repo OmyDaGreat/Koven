@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import org.w3c.dom.url.URLSearchParams
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.client.call
-import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
@@ -95,7 +94,7 @@ object AuthSession {
                 is AuthType.Password -> {
                     if (credentials == null) raise(AuthIssue.InvalidCredentials("Credentials required for password login"))
                     PasswordLoginContract
-                        .call(credentials, Empty, Empty, Empty)
+                        .call(credentials)
                         .map {
                             updateSession(it.body.accessToken, it.body)
                         }.bind()
@@ -137,7 +136,7 @@ object AuthSession {
      * Performs a registration request, specifically in [AuthType.Password].
      */
     suspend fun register(credentials: UserRequestModel): Either<Issue, Unit> =
-        PasswordRegisterContract.call(credentials, Empty, Empty, Empty).map {
+        PasswordRegisterContract.call(credentials).map {
             updateSession(it.body.accessToken, it.body)
         }
 
@@ -145,7 +144,7 @@ object AuthSession {
      * Performs a token refresh request, specifically in [AuthType.Password].
      */
     suspend fun refresh(): Either<Issue, Unit> =
-        RefreshContract.call(Unit, Empty, Empty, Empty).map {
+        RefreshContract.call().map {
             updateSession(it.body.accessToken, it.body)
         }
 
@@ -156,15 +155,14 @@ object AuthSession {
         either {
             when (KovenConfig.auth) {
                 is AuthType.NoAuth -> clearSession()
-                else -> LogoutContract.call(Unit, Empty, Empty, Empty).map { clearSession() }.bind()
+                else -> LogoutContract.call().map { clearSession() }.bind()
             }
         }
 
     /**
      * Estimates the strength of a password, specifically in [AuthType.Password].
      */
-    suspend fun strength(password: String): Either<Issue, Pair<Int, String?>> =
-        PasswordStrengthContract.call(password, Empty, Empty, Empty).map { it.body }
+    suspend fun strength(password: String): Either<Issue, Pair<Int, String?>> = PasswordStrengthContract.call(password).map { it.body }
 
     /**
      * Updates the session with new authentication data.

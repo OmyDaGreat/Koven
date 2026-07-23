@@ -4,7 +4,6 @@ import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import arrow.core.raise.context.raise
 import arrow.core.raise.either
-import arrow.core.raise.ensure
 import org.http4k.core.Filter
 import org.http4k.core.MemoryBody
 import org.http4k.core.MultipartEntity
@@ -12,7 +11,6 @@ import org.http4k.core.NoOp
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.core.cookie.cookie
 import org.http4k.core.cookie.cookies
 import org.http4k.core.multipartIterator
 import org.http4k.core.then
@@ -24,6 +22,7 @@ import xyz.malefic.koven.api.ApiContract
 import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.api.ApiResponse.Companion.with
 import xyz.malefic.koven.core.field.CookieProvider
+import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.core.field.HeaderProvider
 import xyz.malefic.koven.core.field.Headers
 import xyz.malefic.koven.core.field.PathProvider
@@ -57,16 +56,16 @@ import kotlin.uuid.Uuid
  * @param handler The handler function for the route.
  */
 @Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
-inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.register(
+inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.register(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, Principal) Request.(Req, PathP, QueryP) -> Any?,
+    crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req, PathP, QueryP) -> Any?,
 ): RoutingHttpHandler =
-    baseRegister(filter) { req, reqH, pathP, queryP ->
+    baseRegister(filter) { req, reqH, pathP, queryP, cookieP ->
         val principal = authenticate(req)
         val body = decodeBody(req)
 
         val result =
-            context(principal, reqH) {
+            context(principal, reqH, cookieP) {
                 req.handler(body, pathP, queryP)
             }
 
@@ -98,6 +97,16 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
     }
 
 /**
+ * Simplifies registration for [ApiContract] types with no path or query parameters.
+ */
+@JvmName("registerSimple")
+@Suppress("ktlint:standard:max-line-length")
+inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, CookieP : CookieProvider> ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.register(
+    filter: Filter = Filter.NoOp,
+    crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req) -> Any?,
+): RoutingHttpHandler = register(filter) { req, _, _ -> handler(this, req) }
+
+/**
  * Creates a route for the given [ApiContract] that returns a paginated response with a [Pagination] context.
  *
  * The route will automatically handle `page` and `limit` query parameters to slice the list. If the [Pagination.totalItems] value provided in context is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
@@ -110,11 +119,11 @@ inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvid
  * @param handler The handler function for the route.
  */
 @Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
-inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP>.registerPaginated(
+inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP, CookieP>.registerPaginated(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, Principal) Request.(Req, PathP, QueryP, Pagination) -> Any?,
+    crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req, PathP, QueryP, Pagination) -> Any?,
 ): RoutingHttpHandler =
-    baseRegister(filter) { req, reqH, pathP, queryP ->
+    baseRegister(filter) { req, reqH, pathP, queryP, cookieP ->
         val principal = authenticate(req)
         val page = req.query("page")?.toIntOrNull() ?: 1
         val limit = req.query("limit")?.toIntOrNull() ?: 20
@@ -129,7 +138,7 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
 
         val body = decodeBody(req)
         val result =
-            context(principal, reqH) {
+            context(principal, reqH, cookieP) {
                 req.handler(body, pathP, queryP, pagination)
             }
 
@@ -158,14 +167,14 @@ inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider
  * @param handler The handler function for the route.
  */
 @Suppress("ktlint:standard:max-line-length")
-inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP>.registerMultipart(
+inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.registerMultipart(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, Principal) Request.(Multipart, PathP, QueryP) -> Any?,
-): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP>(filter, handler)
+    crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Multipart, PathP, QueryP) -> Any?,
+): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>(filter, handler)
 
 @PublishedApi
 context(_: Raise<Issue>)
-internal fun ApiContract<*, *, *, *, *, *>.authenticate(req: Request): Principal {
+internal fun ApiContract<*, *, *, *, *, *, *>.authenticate(req: Request): Principal {
     if (!isProtected || KovenConfig.auth == AuthType.NoAuth) return anonymousPrincipal
 
     return when (val auth = KovenConfig.auth) {
@@ -185,7 +194,7 @@ internal val anonymousPrincipal =
 @PublishedApi
 @Suppress("ktlint:standard:max-line-length")
 context(r: Raise<Issue>)
-internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.decodeBody(
+internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.decodeBody(
     req: Request,
 ): Req =
     when (Req::class) {
@@ -226,30 +235,26 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
 
 @PublishedApi
 @Suppress("ktlint:standard:max-line-length")
-internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.baseRegister(
+internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.baseRegister(
     filter: Filter = Filter.NoOp,
-    crossinline logic: Raise<Issue>.(req: Request, reqH: ReqH, pathP: PathP, queryP: QueryP) -> ApiResponse<Res, ResH>,
+    crossinline logic: Raise<Issue>.(req: Request, reqH: ReqH, pathP: PathP, queryP: QueryP, cookieP: CookieP) -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
     filter.then(
         "/${KovenConfig.apiPrefix}/$path" bind httpMethod.toHttp4k to { req ->
             val headers = Headers.fromPairs(req.headers)
             val pathParams = "\\{([^}]+)\\}".toRegex().findAll(path).map { it.groupValues[1] }.associateWith { req.path(it) ?: "" }
-            val queryMap = queryParams.associateWith { req.queries(it).map { v -> v ?: "" } }
+            val queryMap = queryDecoder.fields.associateWith { req.queries(it).map { v -> v ?: "" } }
 
             val result =
                 either {
-                    val missing =
-                        requiredRequestHeaders.filter {
-                            headers[it].let { values -> values == null || values.all { value -> value.isBlank() } }
-                        }
-                    ensure(missing.isEmpty()) { BadRequestIssue("Missing required header(s): ${missing.joinToString { it.field }}") }
-
                     val reqCookies = req.cookies().associate { it.name to it.value }
-                    val missingCookies = requiredCookies.filter { reqCookies[it.name] == null }
-                    ensure(missingCookies.isEmpty())
-                    { BadRequestIssue("Missing required cookie(s): ${missingCookies.joinToString { it.name }}") }
 
-                    catch({ logic(this, req, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(QueryParams(queryMap))) })
+                    val reqH = decodeRequestHeaders(headers)
+                    val pathP = decodePath(pathParams)
+                    val queryP = decodeQuery(QueryParams(queryMap))
+                    val cookieP = decodeCookies(reqCookies)
+
+                    catch({ logic(this, req, reqH, pathP, queryP, cookieP) })
                     { raise(InternalIssue from it) }
                 }
 
@@ -281,24 +286,7 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
                     }
 
                     cookies.flatMap { it.provide() }.forEach { cookie ->
-                        response =
-                            response.cookie(
-                                org.http4k.core.cookie.Cookie(
-                                    cookie.name,
-                                    cookie.value,
-                                    maxAge = cookie.maxAge,
-                                    path = cookie.path,
-                                    domain = cookie.domain,
-                                    secure = cookie.secure,
-                                    httpOnly = cookie.httpOnly,
-                                    sameSite =
-                                        when (cookie.sameSite) {
-                                            xyz.malefic.koven.core.field.SameSite.Strict -> org.http4k.core.cookie.SameSite.Strict
-                                            xyz.malefic.koven.core.field.SameSite.Lax -> org.http4k.core.cookie.SameSite.Lax
-                                            xyz.malefic.koven.core.field.SameSite.None -> org.http4k.core.cookie.SameSite.None
-                                        },
-                                ),
-                            )
+                        response = response.cookie(cookie)
                     }
 
                     response

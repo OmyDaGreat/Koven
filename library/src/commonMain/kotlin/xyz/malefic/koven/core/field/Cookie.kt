@@ -34,7 +34,7 @@ interface CookieProvider {
 /**
  * Interface for cookie fields, allowing type-safe retrieval and definition.
  */
-interface CookieField<out T> : KovenField {
+interface CookieField<out T> : KovenField<T> {
     val name: String
 
     override val fields: List<String> get() = listOf(name)
@@ -138,12 +138,46 @@ infix fun <B : CookieProvider> Empty.and(other: B): B = other
 infix fun <A : CookieProvider> A.and(other: Empty): A = this
 
 /**
+ * A cookie field that is optional.
+ */
+class OptionalCookieField<out T>(
+    val inner: CookieField<T>,
+) : CookieField<T?> {
+    override val name: String get() = inner.name
+
+    override fun flatten(): List<CookieField<*>> = inner.flatten()
+
+    override fun maxAge(): Long? = inner.maxAge()
+
+    override fun path(): String? = inner.path()
+
+    override fun domain(): String? = inner.domain()
+
+    override fun secure(): Boolean = inner.secure()
+
+    override fun isHttpOnly(): Boolean = inner.isHttpOnly()
+
+    override fun sameSite(): SameSite = inner.sameSite()
+
+    context(_: Raise<Issue>)
+    override fun decode(cookies: Map<String, String>): T? {
+        if (!cookies.containsKey(name)) return null
+        return inner.decode(cookies)
+    }
+}
+
+/**
+ * Marks a cookie field as optional.
+ */
+fun <T> CookieField<T>.optional(): CookieField<T?> = OptionalCookieField(this)
+
+/**
  * A cookie field that combines two other cookie fields.
  */
 class CookiePairField<out A, out B>(
     override val fieldA: CookieField<A>,
     override val fieldB: CookieField<B>,
-) : KovenPairField(fieldA, fieldB),
+) : KovenPairField<A, B>(fieldA, fieldB),
     CookieField<KovenPair<A, B>> {
     override val name: String = "${fieldA.name}, ${fieldB.name}"
     override val fields: List<String> get() = super<KovenPairField>.fields

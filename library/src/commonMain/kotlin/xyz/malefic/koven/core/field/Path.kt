@@ -17,7 +17,7 @@ interface PathProvider : KovenProvider {
 /**
  * Interface for decoding path parameters on the server.
  */
-interface PathField<out T> : KovenField {
+interface PathField<out T> : KovenField<T> {
     context(_: Raise<Issue>)
     fun decodePath(params: Map<String, String>): T
 
@@ -99,12 +99,34 @@ infix fun <B : PathProvider> Empty.and(other: B): B = other
 infix fun <A : PathProvider> A.and(other: Empty): A = this
 
 /**
+ * A path field that is optional.
+ */
+class OptionalPathField<out T>(
+    val inner: PathField<T>,
+) : PathField<T?> {
+    override val fields: List<String> get() = inner.fields
+
+    override fun flatten(): List<PathField<*>> = inner.flatten()
+
+    context(_: Raise<Issue>)
+    override fun decodePath(params: Map<String, String>): T? {
+        if (fields.none { params.containsKey(it) }) return null
+        return inner.decodePath(params)
+    }
+}
+
+/**
+ * Marks a path field as optional.
+ */
+fun <T> PathField<T>.optional(): PathField<T?> = OptionalPathField(this)
+
+/**
  * A path field that combines two other path fields.
  */
 class PathPairField<out A, out B>(
     override val fieldA: PathField<A>,
     override val fieldB: PathField<B>,
-) : KovenPairField(fieldA, fieldB),
+) : KovenPairField<A, B>(fieldA, fieldB),
     PathField<KovenPair<A, B>> {
     override val fields: List<String> get() = super<KovenPairField>.fields
 

@@ -58,5 +58,7 @@ sealed interface AuthType {
         override val useSecureCookies: Boolean = true,
     ) : AuthType
 
-    // TODO: Support combining the two auth types (user can choose) since AuthService already commonizes much of the code
+    // TODO: Support combining multiple auth types (user can choose) since AuthService already commonizes much of the code
+
+    // TODO: Add Api Key authentication
 }

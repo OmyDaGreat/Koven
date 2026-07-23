@@ -121,10 +121,10 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
                 oauth.authFilter { Response(Status.OK) }(this).cookie(ScopedCookies(providerName).link create "true")
             },
             routes(oauthFilters.values.map { it.callbackEndpoint }),
-            RefreshContract.register { _, _, _ ->
+            RefreshContract.register {
                 refresh()
             },
-            LogoutContract.register { _, _, _ ->
+            LogoutContract.register {
                 logout()
             },
             OAuthFinalizeContract.register { _, _, query ->

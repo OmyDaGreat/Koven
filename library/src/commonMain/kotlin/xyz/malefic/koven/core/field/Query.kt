@@ -87,7 +87,7 @@ interface QueryProvider : KovenProvider {
 /**
  * Interface for decoding query parameters on the server.
  */
-interface QueryField<out T> : KovenField {
+interface QueryField<out T> : KovenField<T> {
     /**
      * The field names for this query parameter.
      */
@@ -200,12 +200,34 @@ infix fun <B : QueryProvider> Empty.and(other: B): B = other
 infix fun <A : QueryProvider> A.and(other: Empty): A = this
 
 /**
+ * A query field that is optional.
+ */
+class OptionalQueryField<out T>(
+    val inner: QueryField<T>,
+) : QueryField<T?> {
+    override val fields: List<String> get() = inner.fields
+
+    override fun flatten(): List<QueryField<*>> = inner.flatten()
+
+    context(_: Raise<Issue>)
+    override fun decodeQuery(params: QueryParams): T? {
+        if (fields.none { params.containsKey(it) }) return null
+        return inner.decodeQuery(params)
+    }
+}
+
+/**
+ * Marks a query field as optional.
+ */
+fun <T> QueryField<T>.optional(): QueryField<T?> = OptionalQueryField(this)
+
+/**
  * A query field that combines two other query fields.
  */
 class QueryPairField<out A, out B>(
     override val fieldA: QueryField<A>,
     override val fieldB: QueryField<B>,
-) : KovenPairField(fieldA, fieldB),
+) : KovenPairField<A, B>(fieldA, fieldB),
     QueryField<KovenPair<A, B>> {
     override val fields: List<String> get() = super.fields
 

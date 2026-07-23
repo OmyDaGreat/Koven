@@ -18,6 +18,8 @@ import xyz.malefic.koven.api.ApiContract
 import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.api.HttpMethod
 import xyz.malefic.koven.client.auth.AuthSession
+import xyz.malefic.koven.core.field.CookieProvider
+import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.core.field.HeaderProvider
 import xyz.malefic.koven.core.field.Headers
 import xyz.malefic.koven.core.field.PathProvider
@@ -46,22 +48,23 @@ suspend fun ApiFetcher.call(
  *
  * Usage example:
  * ```
- * MyContract.call(myRequest, myHeaders, myPath, myQuery) { set("Authorization", "...") }
+ * MyContract.call(myRequest, myHeaders, myPath, myQuery, myCookies) { set("Authorization", "...") }
  * ```
  *
  * @param request The request body.
  * @param headers The request headers.
  * @param pathParams The path parameters.
  * @param queryParams The query parameters.
+ * @param cookies The request cookies.
  * @param headerBlock A block to add custom headers to the request.
  */
-@OptIn(ExperimentalUnsignedTypes::class)
-@Suppress("ktlint:standard:max-line-length")
-suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP>.call(
-    request: Req,
-    headers: ReqH,
-    pathParams: PathP,
-    queryParams: QueryP,
+@Suppress("ktlint:standard:max-line-length", "UNCHECKED_CAST")
+suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.call(
+    request: Req = Unit as Req,
+    headers: ReqH = Empty as ReqH,
+    pathParams: PathP = Empty as PathP,
+    queryParams: QueryP = Empty as QueryP,
+    cookies: CookieP = Empty as CookieP,
     crossinline headerBlock: Headers.Builder.() -> Unit = {},
 ): Either<Issue, ApiResponse<Res, ResH>> =
     either {
@@ -85,6 +88,8 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
                     requestFormat.encode(request)
                 }
             }
+
+        cookies.provide().forEach { Cookies.set(it) }
 
         var finalPath = path
         pathParams.providePath().forEach { (k, v) ->
