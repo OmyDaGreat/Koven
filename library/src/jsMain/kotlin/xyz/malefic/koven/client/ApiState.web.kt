@@ -12,7 +12,7 @@ import xyz.malefic.koven.error.Issue
  * Usage example:
  * ```
  * val apiState by produceApiState(userId) {
- *     UserContract.call(UserRequest(userId), NoHeader)
+ *     UserContract.call(UserRequest(userId), NoParams)
  * }
  * ```
  *

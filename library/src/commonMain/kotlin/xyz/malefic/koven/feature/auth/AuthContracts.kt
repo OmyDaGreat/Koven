@@ -1,13 +1,15 @@
 package xyz.malefic.koven.feature.auth
 
 import arrow.core.raise.Raise
+import arrow.core.raise.context.ensureNotNull
 import xyz.malefic.koven.api.HttpMethod.GET
 import xyz.malefic.koven.api.apiContract
-import xyz.malefic.koven.core.PathField
-import xyz.malefic.koven.core.PathProvider
-import xyz.malefic.koven.core.QueryField
-import xyz.malefic.koven.core.QueryProvider
-import xyz.malefic.koven.core.Redirect
+import xyz.malefic.koven.core.field.PathField
+import xyz.malefic.koven.core.field.PathProvider
+import xyz.malefic.koven.core.field.QueryField
+import xyz.malefic.koven.core.field.QueryParams
+import xyz.malefic.koven.core.field.QueryProvider
+import xyz.malefic.koven.core.field.Redirect
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.model.TokenResponseModel
@@ -47,9 +49,11 @@ data class OAuthLoginPath(
     override fun providePath() = mapOf("provider" to provider)
 
     companion object : PathField<OAuthLoginPath> {
-        context(raise: Raise<Issue>)
+        override val fields: List<String> = listOf("provider")
+
+        context(_: Raise<Issue>)
         override fun decodePath(params: Map<String, String>): OAuthLoginPath {
-            val provider = params["provider"] ?: raise.raise(BadRequestIssue("Missing provider"))
+            val provider = ensureNotNull(params["provider"]) { BadRequestIssue("Missing provider") }
             return OAuthLoginPath(provider)
         }
     }
@@ -92,13 +96,15 @@ data class OAuthFinalizeQuery(
         }
 
     companion object : QueryField<OAuthFinalizeQuery> {
-        context(raise: Raise<Issue>)
-        override fun decodeQuery(params: Map<String, List<String>>) =
+        override val fields: List<String> = listOf("username", "next", "error", "provider")
+
+        context(_: Raise<Issue>)
+        override fun decodeQuery(params: QueryParams) =
             OAuthFinalizeQuery(
-                username = params["username"]?.firstOrNull(),
-                next = params["next"]?.firstOrNull(),
-                error = params["error"]?.firstOrNull(),
-                provider = params["provider"]?.firstOrNull(),
+                username = params.getFirst("username"),
+                next = params.getFirst("next"),
+                error = params.getFirst("error"),
+                provider = params.getFirst("provider"),
             )
     }
 }
@@ -109,6 +115,6 @@ data class OAuthFinalizeQuery(
 val OAuthFinalizeContract =
     apiContract<Unit, Unit>("auth/oauth/finalize")
         .method(GET)
-        .query(OAuthFinalizeQuery, "username", "next", "error", "provider")
+        .query(OAuthFinalizeQuery)
         .responseHeaders(Redirect)
         .build()

@@ -18,10 +18,10 @@ import xyz.malefic.koven.api.ApiContract
 import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.api.HttpMethod
 import xyz.malefic.koven.client.auth.AuthSession
-import xyz.malefic.koven.core.HeaderProvider
-import xyz.malefic.koven.core.Headers
-import xyz.malefic.koven.core.PathProvider
-import xyz.malefic.koven.core.QueryProvider
+import xyz.malefic.koven.core.field.PathProvider
+import xyz.malefic.koven.core.field.QueryProvider
+import xyz.malefic.koven.core.field.HeaderProvider
+import xyz.malefic.koven.core.field.Headers
 import xyz.malefic.koven.error.InternalIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.multipart.Multipart

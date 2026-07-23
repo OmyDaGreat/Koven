@@ -1,9 +1,11 @@
-package xyz.malefic.koven.core
+package xyz.malefic.koven.core.field
 
 import arrow.core.raise.Raise
 import arrow.core.raise.context.ensureNotNull
+import arrow.core.raise.context.raise
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
+import kotlin.jvm.JvmName
 
 /**
  * A wrapper for HTTP headers that maintains insertion order and supports multiple values.
@@ -100,15 +102,20 @@ class Headers private constructor(
 /**
  * Interface for anything that can contribute headers to a [Headers.Builder].
  */
-interface HeaderProvider {
+interface HeaderProvider : KovenProvider {
     fun Headers.Builder.provide()
 }
 
 /**
  * Interface for header fields.
  */
-interface HeaderField<out T> {
+interface HeaderField<out T> : KovenField {
     val field: String
+
+    /**
+     * The fields for this header field.
+     */
+    override val fields: List<String>
 
     context(_: Raise<Issue>)
     fun decode(headers: Headers): T
@@ -116,32 +123,65 @@ interface HeaderField<out T> {
     /**
      * Flattens the [HeaderField] into its constituent fields.
      */
-    fun flatten(): List<HeaderField<*>> = listOf(this)
+    override fun flatten(): List<HeaderField<*>> = listOf(this)
 
     companion object {
         operator fun invoke(name: String): HeaderField<String> =
             object : HeaderField<String> {
                 override val field: String = name
+                override val fields: List<String> = listOf(name)
 
                 context(_: Raise<Issue>)
                 override fun decode(headers: Headers): String =
                     ensureNotNull(headers.getFirst(name)) { BadRequestIssue("Missing required header: $name") }
             }
+
+        fun int(name: String): HeaderField<Int> =
+            object : HeaderField<Int> {
+                override val field: String = name
+                override val fields: List<String> = listOf(name)
+
+                context(_: Raise<Issue>)
+                override fun decode(headers: Headers): Int {
+                    val value = ensureNotNull(headers.getFirst(name)) { BadRequestIssue("Missing required header: $name") }
+                    return value.toIntOrNull() ?: raise(BadRequestIssue("Invalid integer for header: $name"))
+                }
+            }
+
+        fun long(name: String): HeaderField<Long> =
+            object : HeaderField<Long> {
+                override val field: String = name
+                override val fields: List<String> = listOf(name)
+
+                context(_: Raise<Issue>)
+                override fun decode(headers: Headers): Long {
+                    val value = ensureNotNull(headers.getFirst(name)) { BadRequestIssue("Missing required header: $name") }
+                    return value.toLongOrNull() ?: raise(BadRequestIssue("Invalid long for header: $name"))
+                }
+            }
+
+        fun boolean(name: String): HeaderField<Boolean> =
+            object : HeaderField<Boolean> {
+                override val field: String = name
+                override val fields: List<String> = listOf(name)
+
+                context(_: Raise<Issue>)
+                override fun decode(headers: Headers): Boolean {
+                    val value = ensureNotNull(headers.getFirst(name)) { BadRequestIssue("Missing required header: $name") }
+                    return value.toBooleanStrictOrNull() ?: raise(BadRequestIssue("Invalid boolean for header: $name"))
+                }
+            }
+
+        fun list(name: String): HeaderField<List<String>> =
+            object : HeaderField<List<String>> {
+                override val field: String = name
+                override val fields: List<String> = listOf(name)
+
+                context(_: Raise<Issue>)
+                override fun decode(headers: Headers): List<String> =
+                    ensureNotNull(headers[name]) { BadRequestIssue("Missing required header: $name") }
+            }
     }
-}
-
-/**
- * Represents "No Header" for contracts like [xyz.malefic.koven.api.HealthContract] and [xyz.malefic.koven.api.PingContract].
- */
-object NoHeader : HeaderProvider, HeaderField<NoHeader> {
-    override val field: String = ""
-
-    override fun Headers.Builder.provide() {}
-
-    context(_: Raise<Issue>)
-    override fun decode(headers: Headers): NoHeader = this
-
-    override fun flatten(): List<HeaderField<*>> = emptyList()
 }
 
 /**
@@ -149,11 +189,12 @@ object NoHeader : HeaderProvider, HeaderField<NoHeader> {
  */
 object HeadersField : HeaderField<Headers> {
     override val field: String = "*"
+    override val fields: List<String> = emptyList()
 
     context(_: Raise<Issue>)
     override fun decode(headers: Headers): Headers = headers
 
-    override fun flatten(): List<HeaderField<*>> = emptyList()
+    override fun flatten(): List<Nothing> = emptyList()
 }
 
 /**
@@ -167,6 +208,7 @@ class Redirect(
 
     companion object : HeaderField<Redirect> {
         override val field: String = "Location"
+        override val fields: List<String> = listOf(field)
 
         context(_: Raise<Issue>)
         override fun decode(headers: Headers): Redirect =
@@ -187,34 +229,49 @@ interface Header : HeaderProvider {
 }
 
 /**
- * A pair of [HeaderProvider]s. Used as a convenience wrapper to combine multiple headers into a single header for [xyz.malefic.koven.api.ApiContract]. These can also be composed with each other to create more complex headers.
+ * Optimizes header implementations for [Empty] on the left.
  */
-data class HeaderPair<out A : HeaderProvider, out B : HeaderProvider>(
-    val first: A,
-    val second: B,
-) : HeaderProvider {
-    override fun Headers.Builder.provide() {
-        with(first) { provide() }
-        with(second) { provide() }
-    }
-}
+@JvmName("andEmptyHeaderProviderLeft")
+infix fun <B : HeaderProvider> Empty.and(other: B): B = other
 
 /**
- * Creates a pair of header implementations as [HeaderPair].
+ * Optimizes header implementations for [Empty] on the right.
  */
-infix fun <A : HeaderProvider, B : HeaderProvider> A.and(other: B) = HeaderPair(this, other)
+@JvmName("andEmptyHeaderProviderRight")
+infix fun <A : HeaderProvider> A.and(other: Empty): A = this
 
 /**
- * A header field that combines two other header fields. Used to decode [HeaderPair].
+ * A header field that combines two other header fields. Used to decode [KovenPair].
  */
-class PairField<A : HeaderProvider, B : HeaderProvider>(
-    val fieldA: HeaderField<A>,
-    val fieldB: HeaderField<B>,
-) : HeaderField<HeaderPair<A, B>> {
+class HeaderPairField<A, B>(
+    override val fieldA: HeaderField<A>,
+    override val fieldB: HeaderField<B>,
+) : KovenPairField(fieldA, fieldB),
+    HeaderField<KovenPair<A, B>> {
     override val field: String = "${fieldA.field}, ${fieldB.field}"
+    override val fields: List<String> get() = super.fields
+
+    @Suppress("UNCHECKED_CAST")
+    override fun flatten(): List<HeaderField<*>> = super<KovenPairField>.flatten() as List<HeaderField<*>>
 
     context(_: Raise<Issue>)
-    override fun decode(headers: Headers): HeaderPair<A, B> = HeaderPair(fieldA.decode(headers), fieldB.decode(headers))
-
-    override fun flatten(): List<HeaderField<*>> = fieldA.flatten() + fieldB.flatten()
+    override fun decode(headers: Headers): KovenPair<A, B> = KovenPair(fieldA.decode(headers), fieldB.decode(headers))
 }
+
+/**
+ * Creates a pair of header fields as [HeaderPairField].
+ */
+infix fun <A, B> HeaderField<A>.and(other: HeaderField<B>): HeaderPairField<A, B> =
+    HeaderPairField(this, other)
+
+/**
+ * Creates a pair of header fields as [HeaderPairField], optimizing for [Empty] on the left.
+ */
+@JvmName("andEmptyHeaderFieldLeft")
+infix fun <B> Empty.and(other: HeaderField<B>): HeaderField<B> = other
+
+/**
+ * Creates a pair of header fields as [HeaderPairField], optimizing for [Empty] on the right.
+ */
+@JvmName("andEmptyHeaderFieldRight")
+infix fun <A> HeaderField<A>.and(other: Empty): HeaderField<A> = this

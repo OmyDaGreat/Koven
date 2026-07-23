@@ -12,6 +12,8 @@ import org.http4k.core.NoOp
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
+import org.http4k.core.cookie.cookie
+import org.http4k.core.cookie.cookies
 import org.http4k.core.multipartIterator
 import org.http4k.core.then
 import org.http4k.routing.RoutingHttpHandler
@@ -21,11 +23,12 @@ import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiContract
 import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.api.ApiResponse.Companion.with
-import xyz.malefic.koven.core.CookieProvider
-import xyz.malefic.koven.core.HeaderProvider
-import xyz.malefic.koven.core.Headers
-import xyz.malefic.koven.core.PathProvider
-import xyz.malefic.koven.core.QueryProvider
+import xyz.malefic.koven.core.field.CookieProvider
+import xyz.malefic.koven.core.field.HeaderProvider
+import xyz.malefic.koven.core.field.Headers
+import xyz.malefic.koven.core.field.PathProvider
+import xyz.malefic.koven.core.field.QueryParams
+import xyz.malefic.koven.core.field.QueryProvider
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.InternalIssue
 import xyz.malefic.koven.error.Issue
@@ -241,7 +244,11 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
                         }
                     ensure(missing.isEmpty()) { BadRequestIssue("Missing required header(s): ${missing.joinToString { it.field }}") }
 
-                    catch({ logic(this, req, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(queryMap)) })
+                    val reqCookies = req.cookies().associate { it.name to it.value }
+                    val missingCookies = requiredCookies.filter { reqCookies[it.name] == null }
+                    ensure(missingCookies.isEmpty()) { BadRequestIssue("Missing required cookie(s): ${missingCookies.joinToString { it.name }}") }
+
+                    catch({ logic(this, req, decodeRequestHeaders(headers), decodePath(pathParams), decodeQuery(QueryParams(queryMap))) })
                     { raise(InternalIssue from it) }
                 }
 
@@ -273,7 +280,24 @@ internal inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Hea
                     }
 
                     cookies.flatMap { it.provide() }.forEach { cookie ->
-                        response = response.cookie(cookie)
+                        response =
+                            response.cookie(
+                                org.http4k.core.cookie.Cookie(
+                                    cookie.name,
+                                    cookie.value,
+                                    maxAge = cookie.maxAge,
+                                    path = cookie.path,
+                                    domain = cookie.domain,
+                                    secure = cookie.secure,
+                                    httpOnly = cookie.httpOnly,
+                                    sameSite =
+                                        when (cookie.sameSite) {
+                                            xyz.malefic.koven.core.field.SameSite.Strict -> org.http4k.core.cookie.SameSite.Strict
+                                            xyz.malefic.koven.core.field.SameSite.Lax -> org.http4k.core.cookie.SameSite.Lax
+                                            xyz.malefic.koven.core.field.SameSite.None -> org.http4k.core.cookie.SameSite.None
+                                        },
+                                ),
+                            )
                     }
 
                     response

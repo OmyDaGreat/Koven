@@ -2,9 +2,9 @@ package xyz.malefic.koven.client
 
 import arrow.core.raise.Raise
 import kotlinx.browser.document
-import xyz.malefic.koven.core.Cookie
-import xyz.malefic.koven.core.CookieField
-import xyz.malefic.koven.core.SameSite
+import xyz.malefic.koven.core.field.Cookie
+import xyz.malefic.koven.core.field.CookieField
+import xyz.malefic.koven.core.field.SameSite
 import xyz.malefic.koven.error.Issue
 
 /**

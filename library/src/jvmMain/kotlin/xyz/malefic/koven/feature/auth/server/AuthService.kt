@@ -19,11 +19,11 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.api.ApiResponse.Companion.with
-import xyz.malefic.koven.core.Cookie
-import xyz.malefic.koven.core.CookieField
-import xyz.malefic.koven.core.Headers
-import xyz.malefic.koven.core.NoHeader
-import xyz.malefic.koven.core.SameSite
+import xyz.malefic.koven.core.field.Cookie
+import xyz.malefic.koven.core.field.CookieField
+import xyz.malefic.koven.core.field.Empty
+import xyz.malefic.koven.core.field.Headers
+import xyz.malefic.koven.core.field.SameSite
 import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
@@ -233,7 +233,7 @@ object AuthService {
      * Shared logic to refresh a token pair using a refresh token.
      */
     context(_: Raise<Issue>, _: AuthType)
-    fun Request.refresh(): ApiResponse<TokenResponseModel, NoHeader> {
+    fun Request.refresh(): ApiResponse<TokenResponseModel, Empty> {
         val tokens = refreshTokens(this[RefreshTokenCookie])
         return tokens.response with (RefreshTokenCookie create tokens.refreshToken)
     }

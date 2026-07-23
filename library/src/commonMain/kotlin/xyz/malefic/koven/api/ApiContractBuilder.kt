@@ -1,11 +1,12 @@
 package xyz.malefic.koven.api
 
-import xyz.malefic.koven.core.HeaderField
-import xyz.malefic.koven.core.HeaderProvider
-import xyz.malefic.koven.core.PathField
-import xyz.malefic.koven.core.PathProvider
-import xyz.malefic.koven.core.QueryField
-import xyz.malefic.koven.core.QueryProvider
+import xyz.malefic.koven.core.field.CookieField
+import xyz.malefic.koven.core.field.HeaderField
+import xyz.malefic.koven.core.field.HeaderProvider
+import xyz.malefic.koven.core.field.PathField
+import xyz.malefic.koven.core.field.PathProvider
+import xyz.malefic.koven.core.field.QueryField
+import xyz.malefic.koven.core.field.QueryProvider
 
 /**
  * A builder for [ApiContract] types.
@@ -21,6 +22,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
     private val pathDecoder: PathField<PathP>,
     private val queryDecoder: QueryField<QueryP>,
     private val queryParams: List<String> = emptyList(),
+    private val requiredCookies: List<CookieField<*>> = emptyList(),
     private val requestFormat: BodyFormat<Req>,
     private val responseFormat: BodyFormat<Res>,
     private val isProtected: Boolean = false,
@@ -85,11 +87,26 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
 
     /**
      * Sets the query parameter decoder and the list of allowed query parameter keys.
+     *
+     * @param decoder The [QueryField] to decode the query parameters.
+     * @param params The set of allowed query parameter keys. If empty, the [QueryField.fields] are used.
      */
     fun <NewQueryP : QueryProvider> query(
         decoder: QueryField<NewQueryP>,
         vararg params: String,
-    ): ApiContractBuilder<Req, Res, ReqH, ResH, PathP, NewQueryP> = copy(queryDecoder = decoder, queryParams = params.toList())
+    ): ApiContractBuilder<Req, Res, ReqH, ResH, PathP, NewQueryP> =
+        copy(
+            queryDecoder = decoder,
+            queryParams = if (params.isEmpty()) decoder.fields else params.toList(),
+        )
+
+    /**
+     * Sets the set of required cookies for validation.
+     *
+     * @param required The set of required cookies.
+     */
+    fun cookies(vararg required: CookieField<*>): ApiContractBuilder<Req, Res, ReqH, ResH, PathP, QueryP> =
+        copy(requiredCookies = required.toList())
 
     @Suppress("UNCHECKED_CAST")
     private fun <NewReqH : HeaderProvider, NewResH : HeaderProvider, NewPathP : PathProvider, NewQueryP : QueryProvider> copy(
@@ -101,6 +118,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
         pathDecoder: PathField<NewPathP> = this.pathDecoder as PathField<NewPathP>,
         queryDecoder: QueryField<NewQueryP> = this.queryDecoder as QueryField<NewQueryP>,
         queryParams: List<String> = this.queryParams,
+        requiredCookies: List<CookieField<*>> = this.requiredCookies,
         requestFormat: BodyFormat<Req> = this.requestFormat,
         responseFormat: BodyFormat<Res> = this.responseFormat,
         isProtected: Boolean = this.isProtected,
@@ -115,6 +133,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
             pathDecoder,
             queryDecoder,
             queryParams,
+            requiredCookies,
             requestFormat,
             responseFormat,
             isProtected,
@@ -129,6 +148,8 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
             httpMethod,
             requiredRequestHeaders,
             requiredResponseHeaders,
+            requiredCookies,
+            queryParams,
             requestHeaderDecoder,
             responseHeaderDecoder,
             pathDecoder,
@@ -136,7 +157,5 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
             requestFormat,
             responseFormat,
             isProtected,
-        ) {
-            override val queryParams: List<String> = this@ApiContractBuilder.queryParams
-        }
+        ) {}
 }

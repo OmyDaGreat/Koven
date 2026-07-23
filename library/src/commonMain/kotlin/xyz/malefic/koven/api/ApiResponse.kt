@@ -1,10 +1,10 @@
 package xyz.malefic.koven.api
 
 import arrow.core.raise.Raise
-import xyz.malefic.koven.core.CookieField
-import xyz.malefic.koven.core.CookieProvider
-import xyz.malefic.koven.core.HeaderProvider
-import xyz.malefic.koven.core.NoHeader
+import xyz.malefic.koven.core.field.CookieField
+import xyz.malefic.koven.core.field.CookieProvider
+import xyz.malefic.koven.core.field.Empty
+import xyz.malefic.koven.core.field.HeaderProvider
 import xyz.malefic.koven.error.Issue
 
 /**
@@ -48,7 +48,7 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
         /**
          * Creates an [ApiResponse] with the given [status].
          */
-        infix fun <Res> Res.with(status: Int) = ApiResponse(status, this, NoHeader)
+        infix fun <Res> Res.with(status: Int) = ApiResponse(status, this, Empty)
 
         /**
          * Creates an [ApiResponse] with the given [headers].
@@ -58,17 +58,17 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
         /**
          * Creates an [ApiResponse] with the given [cookie].
          */
-        infix fun <Res> Res.with(cookie: CookieProvider) = ApiResponse(this, NoHeader, listOf(cookie))
+        infix fun <Res> Res.with(cookie: CookieProvider) = ApiResponse(this, Empty, listOf(cookie))
 
         /**
          * Creates an [ApiResponse] with the given [newCookies].
          */
-        infix fun <Res> Res.with(newCookies: List<CookieProvider>) = ApiResponse(this, NoHeader, newCookies)
+        infix fun <Res> Res.with(newCookies: List<CookieProvider>) = ApiResponse(this, Empty, newCookies)
 
         /**
          * Creates an [ApiResponse] with the given [newCookies].
          */
-        fun <Res> Res.with(vararg newCookies: CookieProvider) = ApiResponse(this, NoHeader, newCookies.toList())
+        fun <Res> Res.with(vararg newCookies: CookieProvider) = ApiResponse(this, Empty, newCookies.toList())
 
         /**
          * Creates an [ApiResponse] with the given [status].
@@ -93,7 +93,7 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
         /**
          * Creates an [ApiResponse] with the given [body].
          */
-        infix fun <Res> Int.with(body: Res) = ApiResponse(this, body, NoHeader)
+        infix fun <Res> Int.with(body: Res) = ApiResponse(this, body, Empty)
 
         /**
          * Creates an [ApiResponse] with the given [headers].
@@ -103,21 +103,21 @@ data class ApiResponse<Res, ResH : HeaderProvider>(
         /**
          * Creates an [ApiResponse] with the given [cookie].
          */
-        infix fun Int.with(cookie: CookieProvider) = ApiResponse(this, Unit, NoHeader, listOf(cookie))
+        infix fun Int.with(cookie: CookieProvider) = ApiResponse(this, Unit, Empty, listOf(cookie))
 
         /**
          * Creates an [ApiResponse] with the given [newCookies].
          */
-        infix fun Int.with(newCookies: List<CookieProvider>) = ApiResponse(this, Unit, NoHeader, newCookies)
+        infix fun Int.with(newCookies: List<CookieProvider>) = ApiResponse(this, Unit, Empty, newCookies)
 
         /**
          * Creates an [ApiResponse] with the given [newCookies].
          */
-        fun Int.with(vararg newCookies: CookieProvider) = ApiResponse(this, Unit, NoHeader, newCookies.toList())
+        fun Int.with(vararg newCookies: CookieProvider) = ApiResponse(this, Unit, Empty, newCookies.toList())
 
         /**
          * Creates a blank [ApiResponse].
          */
-        val Blank = ApiResponse(Unit, NoHeader)
+        val Blank = ApiResponse(Unit, Empty)
     }
 }

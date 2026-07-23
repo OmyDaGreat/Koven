@@ -5,13 +5,13 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.cookie.cookie
 import org.http4k.core.cookie.cookies
-import xyz.malefic.koven.core.Cookie
-import xyz.malefic.koven.core.CookieField
-import xyz.malefic.koven.core.SameSite
+import xyz.malefic.koven.core.field.Cookie
+import xyz.malefic.koven.core.field.CookieField
+import xyz.malefic.koven.core.field.SameSite
 import xyz.malefic.koven.error.Issue
 
 /**
- * Attaches a Koven [xyz.malefic.koven.core.Cookie] to the [org.http4k.core.Response].
+ * Attaches a Koven [Cookie] to the [org.http4k.core.Response].
  */
 fun Response.cookie(cookie: Cookie): Response =
     cookie(

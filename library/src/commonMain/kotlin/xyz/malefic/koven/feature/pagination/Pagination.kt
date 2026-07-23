@@ -1,6 +1,6 @@
 package xyz.malefic.koven.feature.pagination
 
-import xyz.malefic.koven.core.QueryProvider
+import xyz.malefic.koven.core.field.QueryProvider
 
 /**
  * An interface for a pagination contract, providing information necessary for manual pagination.

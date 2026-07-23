@@ -1,10 +1,11 @@
-package xyz.malefic.koven.core
+package xyz.malefic.koven.core.field
 
 import arrow.core.raise.Raise
 import arrow.core.raise.context.ensureNotNull
 import kotlinx.serialization.Serializable
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
+import kotlin.jvm.JvmName
 
 /**
  * A representation of an HTTP cookie.
@@ -33,8 +34,12 @@ interface CookieProvider {
 /**
  * Interface for cookie fields, allowing type-safe retrieval and definition.
  */
-interface CookieField<out T> {
+interface CookieField<out T> : KovenField {
     val name: String
+
+    override val fields: List<String> get() = listOf(name)
+
+    override fun flatten(): List<CookieField<*>> = listOf(this)
 
     /**
      * The maximum age of the cookie in seconds.
@@ -112,10 +117,57 @@ interface CookieField<out T> {
 }
 
 /**
- * Enum representing the SameSite attribute of a cookie.
+ * The SameSite attribute of the cookie.
  */
 enum class SameSite {
     Strict,
     Lax,
     None,
 }
+
+/**
+ * Optimizes cookie implementations for [Empty] on the left.
+ */
+@JvmName("andEmptyCookieProviderLeft")
+infix fun <B : CookieProvider> Empty.and(other: B): B = other
+
+/**
+ * Optimizes cookie implementations for [Empty] on the right.
+ */
+@JvmName("andEmptyCookieProviderRight")
+infix fun <A : CookieProvider> A.and(other: Empty): A = this
+
+/**
+ * A cookie field that combines two other cookie fields.
+ */
+class CookiePairField<out A, out B>(
+    override val fieldA: CookieField<A>,
+    override val fieldB: CookieField<B>,
+) : KovenPairField(fieldA, fieldB),
+    CookieField<KovenPair<A, B>> {
+    override val name: String = "${fieldA.name}, ${fieldB.name}"
+    override val fields: List<String> get() = super<KovenPairField>.fields
+
+    @Suppress("UNCHECKED_CAST")
+    override fun flatten(): List<CookieField<*>> = super<KovenPairField>.flatten() as List<CookieField<*>>
+
+    context(_: Raise<Issue>)
+    override fun decode(cookies: Map<String, String>): KovenPair<A, B> = KovenPair(fieldA.decode(cookies), fieldB.decode(cookies))
+}
+
+/**
+ * Creates a pair of cookie fields as [CookiePairField].
+ */
+infix fun <A, B> CookieField<A>.and(other: CookieField<B>): CookiePairField<A, B> = CookiePairField(this, other)
+
+/**
+ * Creates a pair of cookie fields as [CookiePairField], optimizing for [Empty] on the left.
+ */
+@JvmName("andEmptyCookieFieldLeft")
+infix fun <B> Empty.and(other: CookieField<B>): CookieField<B> = other
+
+/**
+ * Creates a pair of cookie fields as [CookiePairField], optimizing for [Empty] on the right.
+ */
+@JvmName("andEmptyCookieFieldRight")
+infix fun <A> CookieField<A>.and(other: Empty): CookieField<A> = this

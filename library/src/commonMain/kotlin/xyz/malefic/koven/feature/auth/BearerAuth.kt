@@ -2,9 +2,9 @@ package xyz.malefic.koven.feature.auth
 
 import arrow.core.raise.Raise
 import arrow.core.raise.context.ensureNotNull
-import xyz.malefic.koven.core.Header
-import xyz.malefic.koven.core.HeaderField
-import xyz.malefic.koven.core.Headers
+import xyz.malefic.koven.core.field.Header
+import xyz.malefic.koven.core.field.HeaderField
+import xyz.malefic.koven.core.field.Headers
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
 
@@ -19,6 +19,7 @@ class BearerAuth(
 
     companion object : HeaderField<BearerAuth> {
         override val field: String = "Authorization"
+        override val fields: List<String> = listOf(field)
 
         /**
          * Decodes the Authorization header from [Headers] into a [BearerAuth].

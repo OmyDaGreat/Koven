@@ -30,8 +30,8 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.api.ApiResponse.Companion.with
-import xyz.malefic.koven.core.CookieField
-import xyz.malefic.koven.core.Redirect
+import xyz.malefic.koven.core.field.CookieField
+import xyz.malefic.koven.core.field.Redirect
 import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue

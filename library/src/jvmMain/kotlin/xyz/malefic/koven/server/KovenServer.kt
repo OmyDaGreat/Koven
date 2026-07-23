@@ -18,9 +18,9 @@ import org.http4k.server.ServerConfig
 import org.http4k.server.asServer
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiContract
-import xyz.malefic.koven.core.HeaderProvider
-import xyz.malefic.koven.core.PathProvider
-import xyz.malefic.koven.core.QueryProvider
+import xyz.malefic.koven.core.field.PathProvider
+import xyz.malefic.koven.core.field.QueryProvider
+import xyz.malefic.koven.core.field.HeaderProvider
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.AuthType
 import xyz.malefic.koven.feature.auth.Principal
