@@ -2,7 +2,6 @@ package xyz.malefic.koven.feature.auth.server
 
 import arrow.core.raise.Raise
 import arrow.core.raise.context.ensure
-import arrow.core.raise.context.ensureNotNull
 import at.favre.lib.crypto.bcrypt.BCrypt
 import co.touchlab.kermit.Logger
 import io.konform.validation.messagesAtPath
@@ -70,22 +69,29 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
         hash: String,
     ) = verifier.verify(pw.toCharArray(), hash).verified
 
+    private const val DUMMY_HASH = $$"$2a$12$AZR.0.v.0.v.0.v.0.v.0.v.0.v.0.v.0.v.0.v.0.v.0.v.0.v.0"
+
     context(_: Raise<Issue>, auth: AuthType.Password)
     fun getTokensFromLogin(user: UserRequestModel): TokenModel =
         transaction {
-            val userEntity =
-                ensureNotNull(UserEntity.find { Users.username eq user.username }.firstOrNull()) { AuthIssue.InvalidCredentials() }
+            val userEntity = UserEntity.find { Users.username eq user.username }.firstOrNull()
             val now = System.currentTimeMillis()
 
-            ensure(userEntity.lockUntil < now) { AuthIssue.AccountLocked(userEntity.lockUntil) }
+            val hashToVerify = userEntity?.hashedPassword ?: DUMMY_HASH
 
-            ensure(userEntity.hashedPassword != null && verifyPassword(user.password, userEntity.hashedPassword!!)) {
-                userEntity.failedAttempts += 1
-                if (userEntity.failedAttempts >= auth.maxFailedAttempts) {
-                    userEntity.lockUntil = now + auth.lockOutDuration.inWholeMilliseconds
+            val passwordMatches = verifyPassword(user.password, hashToVerify)
+
+            ensure(userEntity != null && passwordMatches) {
+                userEntity?.let {
+                    it.failedAttempts += 1
+                    if (it.failedAttempts >= auth.maxFailedAttempts) {
+                        it.lockUntil = now + auth.lockOutDuration.inWholeMilliseconds
+                    }
                 }
                 AuthIssue.InvalidCredentials()
             }
+
+            ensure(userEntity.lockUntil < now) { AuthIssue.AccountLocked(userEntity.lockUntil) }
 
             userEntity.failedAttempts = 0
             userEntity.lockUntil = 0
