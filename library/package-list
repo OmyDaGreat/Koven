@@ -791,6 +791,9 @@ $dokka.location:xyz.malefic.koven.server/KovenServerConfig/corsPolicy/#/Pointing
 $dokka.location:xyz.malefic.koven.server/KovenServerConfig/filesHosting/#/PointingToDeclaration/library/xyz.malefic.koven.server/-koven-server-config/files-hosting.html
 $dokka.location:xyz.malefic.koven.server/KovenServerConfig/filesPath/#/PointingToDeclaration/library/xyz.malefic.koven.server/-koven-server-config/files-path.html
 $dokka.location:xyz.malefic.koven.server/KovenServerConfig/port/#/PointingToDeclaration/library/xyz.malefic.koven.server/-koven-server-config/port.html
+$dokka.location:xyz.malefic.koven.util////PointingToDeclaration/library/xyz.malefic.koven.util/index.html
+$dokka.location:xyz.malefic.koven.util//decodeUriComponent/#kotlin.String/PointingToDeclaration/library/xyz.malefic.koven.util/decode-uri-component.html
+$dokka.location:xyz.malefic.koven.util//encodeUriComponent/#kotlin.String/PointingToDeclaration/library/xyz.malefic.koven.util/encode-uri-component.html
 $dokka.location:xyz.malefic.koven////PointingToDeclaration/library/xyz.malefic.koven/index.html
 $dokka.location:xyz.malefic.koven/KovenConfig///PointingToDeclaration/library/xyz.malefic.koven/-koven-config/index.html
 $dokka.location:xyz.malefic.koven/KovenConfig/apiPrefix/#/PointingToDeclaration/library/xyz.malefic.koven/-koven-config/api-prefix.html
@@ -816,3 +819,4 @@ xyz.malefic.koven.feature.pagination
 xyz.malefic.koven.serialization
 xyz.malefic.koven.server
 xyz.malefic.koven.server.persistence
+xyz.malefic.koven.util
