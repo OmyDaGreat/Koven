@@ -5,6 +5,8 @@ import arrow.core.raise.context.ensureNotNull
 import kotlinx.serialization.Serializable
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
+import xyz.malefic.koven.util.decodeUriComponent
+import xyz.malefic.koven.util.encodeUriComponent
 
 /**
  * A representation of an HTTP cookie.
@@ -110,9 +112,9 @@ interface CookieField<T> : KovenField<T> {
 
                 context(_: Raise<Issue>)
                 override fun decode(cookies: Map<String, String>): String =
-                    ensureNotNull(cookies[name]) { BadRequestIssue("Missing required cookie: $name") }
+                    ensureNotNull(cookies[name]) { BadRequestIssue("Missing required cookie: $name") }.let { decodeUriComponent(it) }
 
-                override fun encodeCookies(value: String): List<Cookie> = listOf(create(value))
+                override fun encodeCookies(value: String): List<Cookie> = listOf(create(encodeUriComponent(value)))
             }
     }
 }

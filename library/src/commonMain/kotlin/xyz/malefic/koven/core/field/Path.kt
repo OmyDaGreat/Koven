@@ -5,6 +5,8 @@ import arrow.core.raise.context.ensureNotNull
 import arrow.core.raise.context.raise
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
+import xyz.malefic.koven.util.decodeUriComponent
+import xyz.malefic.koven.util.encodeUriComponent
 import kotlin.jvm.JvmName
 
 /**
@@ -47,7 +49,7 @@ interface PathField<T> : KovenField<T> {
                 override fun decode(params: Map<String, String>): String =
                     ensureNotNull(params[name]) { BadRequestIssue("Missing required path parameter: $name") }
 
-                override fun encodePath(value: String): Map<String, String> = mapOf(name to value)
+                override fun encodePath(value: String): Map<String, String> = mapOf(name to encodeUriComponent(value))
             }
 
         fun int(name: String): PathField<Int> =

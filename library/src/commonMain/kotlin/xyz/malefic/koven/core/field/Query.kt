@@ -5,6 +5,7 @@ import arrow.core.raise.context.ensureNotNull
 import arrow.core.raise.context.raise
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
+import xyz.malefic.koven.util.encodeUriComponent
 import kotlin.jvm.JvmName
 
 /**
@@ -112,7 +113,7 @@ interface QueryField<T> : KovenField<T> {
                 override fun decode(params: QueryParams): String =
                     ensureNotNull(params.getFirst(name)) { BadRequestIssue("Missing required query parameter: $name") }
 
-                override fun encodeQuery(value: String): Map<String, List<String>> = mapOf(name to listOf(value))
+                override fun encodeQuery(value: String): Map<String, List<String>> = mapOf(name to listOf(encodeUriComponent(value)))
             }
 
         fun int(name: String): QueryField<Int> =
@@ -162,7 +163,8 @@ interface QueryField<T> : KovenField<T> {
                 override fun decode(params: QueryParams): List<String> =
                     ensureNotNull(params[name]) { BadRequestIssue("Missing required query parameter: $name") }
 
-                override fun encodeQuery(value: List<String>): Map<String, List<String>> = mapOf(name to value)
+                override fun encodeQuery(value: List<String>): Map<String, List<String>> =
+                    mapOf(name to value.map { encodeUriComponent(it) })
             }
 
         fun intList(name: String): QueryField<List<Int>> =
