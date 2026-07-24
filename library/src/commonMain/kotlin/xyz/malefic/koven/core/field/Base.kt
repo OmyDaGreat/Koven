@@ -2,12 +2,6 @@ package xyz.malefic.koven.core.field
 
 import arrow.core.raise.Raise
 import xyz.malefic.koven.error.Issue
-import kotlin.jvm.JvmName
-
-/**
- * Base interface for all parameter providers.
- */
-interface KovenProvider
 
 /**
  * Base interface for all field decoders.
@@ -25,29 +19,15 @@ interface KovenField<out T> {
 }
 
 /**
- * A generic pair for composing providers.
+ * A generic pair for composing values.
  */
 data class KovenPair<out A, out B>(
     val first: A,
     val second: B,
-) : KovenProvider,
-    HeaderProvider,
-    PathProvider,
-    QueryProvider {
-    override fun Headers.Builder.provide() {
-        (first as? HeaderProvider)?.let { with(it) { provide() } }
-        (second as? HeaderProvider)?.let { with(it) { provide() } }
-    }
-
-    override fun providePath(): Map<String, String> =
-        (first as? PathProvider)?.providePath().orEmpty() + (second as? PathProvider)?.providePath().orEmpty()
-
-    override fun provideQuery(): Map<String, List<String>> =
-        (first as? QueryProvider)?.provideQuery().orEmpty() + (second as? QueryProvider)?.provideQuery().orEmpty()
-}
+)
 
 /**
- * Base calass for composite fields that handles fields aggregation and flattening.
+ * Base class for composite fields, handling field aggregation and flattening.
  */
 abstract class KovenPairField<out A, out B>(
     open val fieldA: KovenField<A>,
@@ -62,17 +42,10 @@ abstract class KovenPairField<out A, out B>(
  * Represents empty fields for Headers, Query Params, Path Params, and Cookies.
  */
 object Empty :
-    KovenProvider,
-    HeaderProvider,
-    PathProvider,
-    QueryProvider,
-    CookieProvider,
     HeaderField<Empty>,
     PathField<Empty>,
     QueryField<Empty>,
     CookieField<Empty> {
-    override fun Headers.Builder.provide() {}
-
     override val field: String = ""
     override val name: String = ""
     override val fields: List<String> = emptyList()
@@ -80,26 +53,35 @@ object Empty :
     context(_: Raise<Issue>)
     override fun decode(headers: Headers): Empty = this
 
+    override fun encodeHeaders(value: Empty): Map<String, List<String>> = emptyMap()
+
     override fun flatten(): List<Nothing> = emptyList()
 
-    override fun providePath(): Map<String, String> = emptyMap()
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    context(_: Raise<Issue>)
+    override fun decode(value: Map<String, String>) = this
 
-    override fun provideQuery(): Map<String, List<String>> = emptyMap()
+    override fun encodePath(value: Empty): Map<String, String> = emptyMap()
 
-    override fun provide(): List<Cookie> = emptyList()
+    override fun encodeCookies(value: Empty): List<Cookie> = emptyList()
 
     context(_: Raise<Issue>)
-    override fun decodePath(params: Map<String, String>) = this
+    override fun decode(params: QueryParams) = this
 
-    context(_: Raise<Issue>)
-    override fun decodeQuery(params: QueryParams) = this
-
-    context(_: Raise<Issue>)
-    override fun decode(cookies: Map<String, String>): Empty = this
+    override fun encodeQuery(value: Empty): Map<String, List<String>> = emptyMap()
 }
 
 /**
- * Creates a pair of providers.
+ * Flattens a [KovenPair] into a list of its constituent elements.
  */
-@JvmName("andProvider")
-infix fun <A : KovenProvider, B : KovenProvider> A.and(other: B): KovenPair<A, B> = KovenPair(this, other)
+fun KovenPair<*, *>?.flattenPair(): List<Any?> =
+    this?.let { listOf(first.flattenPairInternal(), second.flattenPairInternal()) } ?: listOf(this)
+
+/**
+ * Recursively flattens a [KovenPair] or a single value into a list of its constituent elements.
+ */
+private fun Any?.flattenPairInternal(): List<Any?> =
+    when (this) {
+        is KovenPair<*, *> -> first.flattenPairInternal() + second.flattenPairInternal()
+        else -> listOf(this)
+    }

@@ -29,8 +29,10 @@ import org.http4k.security.openid.IdToken
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiResponse
-import xyz.malefic.koven.api.ApiResponse.Companion.with
+import xyz.malefic.koven.api.ApiResponse.Companion.withHeaders
+import xyz.malefic.koven.core.field.Cookie
 import xyz.malefic.koven.core.field.CookieField
+import xyz.malefic.koven.core.field.Headers
 import xyz.malefic.koven.core.field.Redirect
 import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.BadRequestIssue
@@ -81,6 +83,8 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
 
             context(_: Raise<Issue>)
             override fun decode(cookies: Map<String, String>) = cookies[this.name] ?: ""
+
+            override fun encodeCookies(value: String): List<Cookie> = listOf(create(value))
         }
     }
 
@@ -132,9 +136,9 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
                     KovenOAuthPersistence(auth.useSecureCookies, auth.clientCallbackPath, query.provider)
                         .retrieveOriginalUri(this) ?: Uri.of(auth.clientCallbackPath)
 
-                fun errorRedirect(issue: Issue): ApiResponse<Unit, Redirect> =
-                    302 with
-                        Redirect(
+                fun errorRedirect(issue: Issue): ApiResponse<Unit, Headers> =
+                    302 withHeaders
+                        Redirect.createHeaders(
                             baseRedirect
                                 .query("auth_success", "false")
                                 .query("error", issue.javaClass.simpleName)
@@ -179,7 +183,7 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
                 val redirectUri = baseRedirect.query("auth_success", "true")
 
                 302
-                    .with(Redirect(redirectUri.toString()))
+                    .withHeaders(Redirect.createHeaders(redirectUri.toString()))
                     .with(AuthService.RefreshTokenCookie create tokens.refreshToken)
                     .with(cookies.token.clear())
                     .with(cookies.link.clear())

@@ -5,10 +5,8 @@ import arrow.core.raise.context.ensureNotNull
 import xyz.malefic.koven.api.HttpMethod.GET
 import xyz.malefic.koven.api.apiContract
 import xyz.malefic.koven.core.field.PathField
-import xyz.malefic.koven.core.field.PathProvider
 import xyz.malefic.koven.core.field.QueryField
 import xyz.malefic.koven.core.field.QueryParams
-import xyz.malefic.koven.core.field.QueryProvider
 import xyz.malefic.koven.core.field.Redirect
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
@@ -45,17 +43,19 @@ val PasswordStrengthContract = apiContract<String, Pair<Int, String?>>("auth/str
  */
 data class OAuthLoginPath(
     val provider: String,
-) : PathProvider {
-    override fun providePath() = mapOf("provider" to provider)
+) {
+    fun providePath() = mapOf("provider" to provider)
 
     companion object : PathField<OAuthLoginPath> {
         override val fields: List<String> = listOf("provider")
 
         context(_: Raise<Issue>)
-        override fun decodePath(params: Map<String, String>): OAuthLoginPath {
+        override fun decode(params: Map<String, String>): OAuthLoginPath {
             val provider = ensureNotNull(params["provider"]) { BadRequestIssue("Missing provider") }
             return OAuthLoginPath(provider)
         }
+
+        override fun encodePath(value: OAuthLoginPath): Map<String, String> = value.providePath()
     }
 }
 
@@ -86,8 +86,8 @@ data class OAuthFinalizeQuery(
     val next: String? = null, // TODO: Protect against open redirects
     val error: String? = null,
     val provider: String? = null,
-) : QueryProvider {
-    override fun provideQuery() =
+) {
+    fun provideQuery() =
         buildMap {
             username?.let { put("username", listOf(it)) }
             next?.let { put("next", listOf(it)) }
@@ -99,13 +99,15 @@ data class OAuthFinalizeQuery(
         override val fields: List<String> = listOf("username", "next", "error", "provider")
 
         context(_: Raise<Issue>)
-        override fun decodeQuery(params: QueryParams) =
+        override fun decode(params: QueryParams) =
             OAuthFinalizeQuery(
                 username = params.getFirst("username"),
                 next = params.getFirst("next"),
                 error = params.getFirst("error"),
                 provider = params.getFirst("provider"),
             )
+
+        override fun encodeQuery(value: OAuthFinalizeQuery): Map<String, List<String>> = value.provideQuery()
     }
 }
 

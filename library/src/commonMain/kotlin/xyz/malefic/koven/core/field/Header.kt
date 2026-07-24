@@ -5,7 +5,6 @@ import arrow.core.raise.context.ensureNotNull
 import arrow.core.raise.context.raise
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
-import kotlin.jvm.JvmName
 
 /**
  * A wrapper for HTTP headers that maintains insertion order and supports multiple values.
@@ -14,18 +13,23 @@ import kotlin.jvm.JvmName
 class Headers private constructor(
     private val data: Map<String, List<String>>,
     marker: Unit,
-) : Map<String, List<String>> by data,
-    HeaderProvider {
-    constructor(map: Map<String, List<String>> = emptyMap()) :
-        this(data = map.entries.groupBy({ it.key.lowercase() }, { it.value }).mapValues { (_, values) -> values.flatten() }, Unit)
+) : Map<String, List<String>> by data {
+    constructor(map: Map<String, List<String>> = emptyMap()) : this(
+        if (map.isEmpty()) {
+            emptyMap()
+        } else {
+            val result = LinkedHashMap<String, MutableList<String>>(map.size)
+            map.forEach { (k, v) ->
+                result.getOrPut(k.lowercase()) { mutableListOf() }.addAll(v)
+            }
+            result.mapValues { it.value.toList() }
+        },
+        Unit,
+    )
 
     override fun containsKey(key: String): Boolean = data.containsKey(key.lowercase())
 
     override operator fun get(key: String): List<String>? = data[key.lowercase()]
-
-    override fun Builder.provide() {
-        forEach { (k, v) -> v.forEach { append(k, it) } }
-    }
 
     /**
      * Gets all values for a given [HeaderField].
@@ -48,16 +52,16 @@ class Headers private constructor(
 
     /**
      * Combines two [Headers] instances into a single one.
-     *
-     * @param other The [Headers] to combine with.
-     *
-     * @return A new [Headers] with the combined data.
      */
-    operator fun plus(other: HeaderProvider): Headers =
-        build {
-            add(this@Headers)
-            add(other)
+    operator fun plus(other: Headers): Headers {
+        if (this.isEmpty()) return other
+        if (other.isEmpty()) return this
+        val newMap = data.toMutableMap()
+        other.data.forEach { (k, v) ->
+            newMap[k] = (newMap[k] ?: emptyList()) + v
         }
+        return Headers(newMap, Unit)
+    }
 
     companion object {
         fun build(block: Builder.() -> Unit): Headers = Builder().apply(block).build()
@@ -90,9 +94,9 @@ class Headers private constructor(
         }
 
         @IgnorableReturnValue
-        fun add(provider: HeaderProvider) =
+        fun add(headers: Headers) =
             apply {
-                with(provider) { provide() }
+                headers.forEach { (k, v) -> v.forEach { append(k, it) } }
             }
 
         fun build(): Headers = Headers(data = map.mapValues { it.value.toList() }, Unit)
@@ -100,16 +104,9 @@ class Headers private constructor(
 }
 
 /**
- * Interface for anything that can contribute headers to a [Headers.Builder].
- */
-interface HeaderProvider : KovenProvider {
-    fun Headers.Builder.provide()
-}
-
-/**
  * Interface for header fields.
  */
-interface HeaderField<out T> : KovenField<T> {
+interface HeaderField<T> : KovenField<T> {
     val field: String
 
     /**
@@ -119,6 +116,13 @@ interface HeaderField<out T> : KovenField<T> {
 
     context(_: Raise<Issue>)
     fun decode(headers: Headers): T
+
+    fun encodeHeaders(value: T): Map<String, List<String>>
+
+    /**
+     * Creates a [Headers] object from the given [value].
+     */
+    fun createHeaders(value: T): Headers = Headers(encodeHeaders(value))
 
     /**
      * Flattens the [HeaderField] into its constituent fields.
@@ -134,6 +138,8 @@ interface HeaderField<out T> : KovenField<T> {
                 context(_: Raise<Issue>)
                 override fun decode(headers: Headers): String =
                     ensureNotNull(headers.getFirst(name)) { BadRequestIssue("Missing required header: $name") }
+
+                override fun encodeHeaders(value: String): Map<String, List<String>> = mapOf(field to listOf(value))
             }
 
         fun int(name: String): HeaderField<Int> =
@@ -146,6 +152,8 @@ interface HeaderField<out T> : KovenField<T> {
                     val value = ensureNotNull(headers.getFirst(name)) { BadRequestIssue("Missing required header: $name") }
                     return value.toIntOrNull() ?: raise(BadRequestIssue("Invalid integer for header: $name"))
                 }
+
+                override fun encodeHeaders(value: Int): Map<String, List<String>> = mapOf(field to listOf(value.toString()))
             }
 
         fun long(name: String): HeaderField<Long> =
@@ -158,6 +166,8 @@ interface HeaderField<out T> : KovenField<T> {
                     val value = ensureNotNull(headers.getFirst(name)) { BadRequestIssue("Missing required header: $name") }
                     return value.toLongOrNull() ?: raise(BadRequestIssue("Invalid long for header: $name"))
                 }
+
+                override fun encodeHeaders(value: Long): Map<String, List<String>> = mapOf(field to listOf(value.toString()))
             }
 
         fun boolean(name: String): HeaderField<Boolean> =
@@ -170,6 +180,8 @@ interface HeaderField<out T> : KovenField<T> {
                     val value = ensureNotNull(headers.getFirst(name)) { BadRequestIssue("Missing required header: $name") }
                     return value.toBooleanStrictOrNull() ?: raise(BadRequestIssue("Invalid boolean for header: $name"))
                 }
+
+                override fun encodeHeaders(value: Boolean): Map<String, List<String>> = mapOf(field to listOf(value.toString()))
             }
 
         fun list(name: String): HeaderField<List<String>> =
@@ -180,6 +192,8 @@ interface HeaderField<out T> : KovenField<T> {
                 context(_: Raise<Issue>)
                 override fun decode(headers: Headers): List<String> =
                     ensureNotNull(headers[name]) { BadRequestIssue("Missing required header: $name") }
+
+                override fun encodeHeaders(value: List<String>): Map<String, List<String>> = mapOf(field to value)
             }
     }
 }
@@ -194,56 +208,32 @@ object HeadersField : HeaderField<Headers> {
     context(_: Raise<Issue>)
     override fun decode(headers: Headers): Headers = headers
 
+    override fun encodeHeaders(value: Headers): Map<String, List<String>> = value
+
+    override fun createHeaders(value: Headers): Headers = value
+
     override fun flatten(): List<Nothing> = emptyList()
 }
 
 /**
- * A header for HTTP redirection.
+ * A header field for HTTP redirection.
  */
-class Redirect(
-    val location: String,
-) : Header {
-    override val field: String = Companion.field
-    override val values: List<String> = listOf(location)
+object Redirect : HeaderField<String> {
+    override val field: String = "Location"
+    override val fields: List<String> = listOf(field)
 
-    companion object : HeaderField<Redirect> {
-        override val field: String = "Location"
-        override val fields: List<String> = listOf(field)
+    context(_: Raise<Issue>)
+    override fun decode(headers: Headers): String = ensureNotNull(headers.getFirst(field)) { BadRequestIssue("Missing Location header") }
 
-        context(_: Raise<Issue>)
-        override fun decode(headers: Headers): Redirect =
-            Redirect(ensureNotNull(headers.getFirst(field)) { BadRequestIssue("Missing Location header") })
-    }
+    override fun encodeHeaders(value: String): Map<String, List<String>> = mapOf(field to listOf(value))
+
+    override fun createHeaders(value: String): Headers = Headers(encodeHeaders(value))
 }
-
-/**
- * Interface for header implementations. The companion object of this interface is used to create a [HeaderField]. You can check out an example with [xyz.malefic.koven.feature.auth.BearerAuth].
- */
-interface Header : HeaderProvider {
-    val field: String
-    val values: List<String>
-
-    override fun Headers.Builder.provide() {
-        values.forEach { append(field, it) }
-    }
-}
-
-/**
- * Optimizes header implementations for [Empty] on the left.
- */
-@JvmName("andEmptyHeaderProviderLeft")
-infix fun <B : HeaderProvider> Empty.and(other: B): B = other
-
-/**
- * Optimizes header implementations for [Empty] on the right.
- */
-@JvmName("andEmptyHeaderProviderRight")
-infix fun <A : HeaderProvider> A.and(other: Empty): A = this
 
 /**
  * A header field that is optional.
  */
-class OptionalHeaderField<out T>(
+class OptionalHeaderField<T>(
     val inner: HeaderField<T>,
 ) : HeaderField<T?> {
     override val field: String get() = inner.field
@@ -256,6 +246,8 @@ class OptionalHeaderField<out T>(
         if (fields.none { headers.containsKey(it) }) return null
         return inner.decode(headers)
     }
+
+    override fun encodeHeaders(value: T?): Map<String, List<String>> = value?.let { inner.encodeHeaders(it) } ?: emptyMap()
 }
 
 /**
@@ -279,21 +271,12 @@ class HeaderPairField<A, B>(
 
     context(_: Raise<Issue>)
     override fun decode(headers: Headers): KovenPair<A, B> = KovenPair(fieldA.decode(headers), fieldB.decode(headers))
+
+    override fun encodeHeaders(value: KovenPair<A, B>): Map<String, List<String>> =
+        fieldA.encodeHeaders(value.first) + fieldB.encodeHeaders(value.second)
 }
 
 /**
  * Creates a pair of header fields as [HeaderPairField].
  */
 infix fun <A, B> HeaderField<A>.and(other: HeaderField<B>): HeaderPairField<A, B> = HeaderPairField(this, other)
-
-/**
- * Creates a pair of header fields as [HeaderPairField], optimizing for [Empty] on the left.
- */
-@JvmName("andEmptyHeaderFieldLeft")
-infix fun <B> Empty.and(other: HeaderField<B>): HeaderField<B> = other
-
-/**
- * Creates a pair of header fields as [HeaderPairField], optimizing for [Empty] on the right.
- */
-@JvmName("andEmptyHeaderFieldRight")
-infix fun <A> HeaderField<A>.and(other: Empty): HeaderField<A> = this

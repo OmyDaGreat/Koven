@@ -12,8 +12,7 @@ import kotlin.jvm.JvmName
  */
 class QueryParams(
     private val data: Map<String, List<String>> = emptyMap(),
-) : Map<String, List<String>> by data,
-    QueryProvider {
+) : Map<String, List<String>> by data {
     /**
      * Gets all values for a given key.
      */
@@ -24,12 +23,10 @@ class QueryParams(
      */
     fun getFirst(key: String): String? = data[key]?.firstOrNull()
 
-    override fun provideQuery(): Map<String, List<String>> = data
-
     /**
      * Combines two [QueryParams] instances into a single one.
      */
-    operator fun plus(other: QueryProvider): QueryParams =
+    operator fun plus(other: QueryParams): QueryParams =
         build {
             add(this@QueryParams)
             add(other)
@@ -66,9 +63,9 @@ class QueryParams(
         }
 
         @IgnorableReturnValue
-        fun add(provider: QueryProvider) =
+        fun add(params: QueryParams) =
             apply {
-                provider.provideQuery().forEach { (k, v) ->
+                params.forEach { (k, v) ->
                     v.forEach { append(k, it) }
                 }
             }
@@ -78,23 +75,28 @@ class QueryParams(
 }
 
 /**
- * Interface for providing query parameters on the client.
- */
-interface QueryProvider : KovenProvider {
-    fun provideQuery(): Map<String, List<String>>
-}
-
-/**
  * Interface for decoding query parameters on the server.
  */
-interface QueryField<out T> : KovenField<T> {
+interface QueryField<T> : KovenField<T> {
     /**
      * The field names for this query parameter.
      */
     override val fields: List<String>
 
+    /**
+     * Display name for this field, derived from [fields].
+     */
+    val name: String get() = fields.joinToString(", ")
+
     context(_: Raise<Issue>)
-    fun decodeQuery(params: QueryParams): T
+    fun decode(params: QueryParams): T
+
+    fun encodeQuery(value: T): Map<String, List<String>>
+
+    /**
+     * Creates a [QueryParams] object from the given [value].
+     */
+    fun create(value: T): QueryParams = QueryParams(encodeQuery(value))
 
     /**
      * Flattens the [QueryField] into its constituent fields.
@@ -107,8 +109,10 @@ interface QueryField<out T> : KovenField<T> {
                 override val fields: List<String> = listOf(name)
 
                 context(_: Raise<Issue>)
-                override fun decodeQuery(params: QueryParams): String =
+                override fun decode(params: QueryParams): String =
                     ensureNotNull(params.getFirst(name)) { BadRequestIssue("Missing required query parameter: $name") }
+
+                override fun encodeQuery(value: String): Map<String, List<String>> = mapOf(name to listOf(value))
             }
 
         fun int(name: String): QueryField<Int> =
@@ -116,10 +120,12 @@ interface QueryField<out T> : KovenField<T> {
                 override val fields: List<String> = listOf(name)
 
                 context(_: Raise<Issue>)
-                override fun decodeQuery(params: QueryParams): Int {
+                override fun decode(params: QueryParams): Int {
                     val value = ensureNotNull(params.getFirst(name)) { BadRequestIssue("Missing required query parameter: $name") }
                     return value.toIntOrNull() ?: raise(BadRequestIssue("Invalid integer for query parameter: $name"))
                 }
+
+                override fun encodeQuery(value: Int): Map<String, List<String>> = mapOf(name to listOf(value.toString()))
             }
 
         fun long(name: String): QueryField<Long> =
@@ -127,10 +133,12 @@ interface QueryField<out T> : KovenField<T> {
                 override val fields: List<String> = listOf(name)
 
                 context(_: Raise<Issue>)
-                override fun decodeQuery(params: QueryParams): Long {
+                override fun decode(params: QueryParams): Long {
                     val value = ensureNotNull(params.getFirst(name)) { BadRequestIssue("Missing required query parameter: $name") }
                     return value.toLongOrNull() ?: raise(BadRequestIssue("Invalid long for query parameter: $name"))
                 }
+
+                override fun encodeQuery(value: Long): Map<String, List<String>> = mapOf(name to listOf(value.toString()))
             }
 
         fun boolean(name: String): QueryField<Boolean> =
@@ -138,10 +146,12 @@ interface QueryField<out T> : KovenField<T> {
                 override val fields: List<String> = listOf(name)
 
                 context(_: Raise<Issue>)
-                override fun decodeQuery(params: QueryParams): Boolean {
+                override fun decode(params: QueryParams): Boolean {
                     val value = ensureNotNull(params.getFirst(name)) { BadRequestIssue("Missing required query parameter: $name") }
                     return value.toBooleanStrictOrNull() ?: raise(BadRequestIssue("Invalid boolean for query parameter: $name"))
                 }
+
+                override fun encodeQuery(value: Boolean): Map<String, List<String>> = mapOf(name to listOf(value.toString()))
             }
 
         fun list(name: String): QueryField<List<String>> =
@@ -149,8 +159,10 @@ interface QueryField<out T> : KovenField<T> {
                 override val fields: List<String> = listOf(name)
 
                 context(_: Raise<Issue>)
-                override fun decodeQuery(params: QueryParams): List<String> =
+                override fun decode(params: QueryParams): List<String> =
                     ensureNotNull(params[name]) { BadRequestIssue("Missing required query parameter: $name") }
+
+                override fun encodeQuery(value: List<String>): Map<String, List<String>> = mapOf(name to value)
             }
 
         fun intList(name: String): QueryField<List<Int>> =
@@ -158,10 +170,12 @@ interface QueryField<out T> : KovenField<T> {
                 override val fields: List<String> = listOf(name)
 
                 context(_: Raise<Issue>)
-                override fun decodeQuery(params: QueryParams): List<Int> {
+                override fun decode(params: QueryParams): List<Int> {
                     val values = ensureNotNull(params[name]) { BadRequestIssue("Missing required query parameter: $name") }
                     return values.map { it.toIntOrNull() ?: raise(BadRequestIssue("Invalid integer in query parameter list: $name")) }
                 }
+
+                override fun encodeQuery(value: List<Int>): Map<String, List<String>> = mapOf(name to value.map { it.toString() })
             }
 
         fun longList(name: String): QueryField<List<Long>> =
@@ -169,40 +183,20 @@ interface QueryField<out T> : KovenField<T> {
                 override val fields: List<String> = listOf(name)
 
                 context(_: Raise<Issue>)
-                override fun decodeQuery(params: QueryParams): List<Long> {
+                override fun decode(params: QueryParams): List<Long> {
                     val values = ensureNotNull(params[name]) { BadRequestIssue("Missing required query parameter: $name") }
                     return values.map { it.toLongOrNull() ?: raise(BadRequestIssue("Invalid long in query parameter list: $name")) }
                 }
+
+                override fun encodeQuery(value: List<Long>): Map<String, List<String>> = mapOf(name to value.map { it.toString() })
             }
     }
 }
 
 /**
- * Interface for a single query parameter.
- */
-interface QueryParam : QueryProvider {
-    val field: String
-    val values: List<String>
-
-    override fun provideQuery(): Map<String, List<String>> = mapOf(field to values)
-}
-
-/**
- * Optimizes query implementations for [Empty] on the left.
- */
-@JvmName("andEmptyQueryProviderLeft")
-infix fun <B : QueryProvider> Empty.and(other: B): B = other
-
-/**
- * Optimizes query implementations for [Empty] on the right.
- */
-@JvmName("andEmptyQueryProviderRight")
-infix fun <A : QueryProvider> A.and(other: Empty): A = this
-
-/**
  * A query field that is optional.
  */
-class OptionalQueryField<out T>(
+class OptionalQueryField<T>(
     val inner: QueryField<T>,
 ) : QueryField<T?> {
     override val fields: List<String> get() = inner.fields
@@ -210,10 +204,12 @@ class OptionalQueryField<out T>(
     override fun flatten(): List<QueryField<*>> = inner.flatten()
 
     context(_: Raise<Issue>)
-    override fun decodeQuery(params: QueryParams): T? {
+    override fun decode(params: QueryParams): T? {
         if (fields.none { params.containsKey(it) }) return null
-        return inner.decodeQuery(params)
+        return inner.decode(params)
     }
+
+    override fun encodeQuery(value: T?): Map<String, List<String>> = value?.let { inner.encodeQuery(it) } ?: emptyMap()
 }
 
 /**
@@ -224,7 +220,7 @@ fun <T> QueryField<T>.optional(): QueryField<T?> = OptionalQueryField(this)
 /**
  * A query field that combines two other query fields.
  */
-class QueryPairField<out A, out B>(
+class QueryPairField<A, B>(
     override val fieldA: QueryField<A>,
     override val fieldB: QueryField<B>,
 ) : KovenPairField<A, B>(fieldA, fieldB),
@@ -235,7 +231,10 @@ class QueryPairField<out A, out B>(
     override fun flatten(): List<QueryField<*>> = super<KovenPairField>.flatten() as List<QueryField<*>>
 
     context(_: Raise<Issue>)
-    override fun decodeQuery(params: QueryParams): KovenPair<A, B> = KovenPair(fieldA.decodeQuery(params), fieldB.decodeQuery(params))
+    override fun decode(params: QueryParams): KovenPair<A, B> = KovenPair(fieldA.decode(params), fieldB.decode(params))
+
+    override fun encodeQuery(value: KovenPair<A, B>): Map<String, List<String>> =
+        fieldA.encodeQuery(value.first) + fieldB.encodeQuery(value.second)
 }
 
 /**

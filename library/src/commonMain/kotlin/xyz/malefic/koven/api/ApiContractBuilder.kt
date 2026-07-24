@@ -1,19 +1,14 @@
 package xyz.malefic.koven.api
 
 import xyz.malefic.koven.core.field.CookieField
-import xyz.malefic.koven.core.field.CookieProvider
 import xyz.malefic.koven.core.field.HeaderField
-import xyz.malefic.koven.core.field.HeaderProvider
 import xyz.malefic.koven.core.field.PathField
-import xyz.malefic.koven.core.field.PathProvider
 import xyz.malefic.koven.core.field.QueryField
-import xyz.malefic.koven.core.field.QueryProvider
 
 /**
  * A builder for [ApiContract] types.
  */
-@Suppress("ktlint:standard:max-line-length")
-class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider>(
+class ApiContractBuilder<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>(
     private val path: String,
     private val httpMethod: HttpMethod = HttpMethod.POST,
     private val requestHeaderDecoder: HeaderField<ReqH>,
@@ -41,6 +36,16 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
     fun method(httpMethod: HttpMethod) = copy<ReqH, ResH, PathP, QueryP, CookieP>(httpMethod = httpMethod)
 
     /**
+     * Sets the HTTP method to GET.
+     */
+    fun get() = method(HttpMethod.GET)
+
+    /**
+     * Sets the HTTP method to POST.
+     */
+    fun post() = method(HttpMethod.POST)
+
+    /**
      * Marks the endpoint as requiring authentication.
      */
     fun protected() = copy<ReqH, ResH, PathP, QueryP, CookieP>(isProtected = true)
@@ -50,9 +55,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
      *
      * @param decoder The [HeaderField] to decode the request headers.
      */
-    fun <NewReqH : HeaderProvider> requestHeaders(
-        decoder: HeaderField<NewReqH>,
-    ): ApiContractBuilder<Req, Res, NewReqH, ResH, PathP, QueryP, CookieP> =
+    fun <NewReqH> requestHeaders(decoder: HeaderField<NewReqH>): ApiContractBuilder<Req, Res, NewReqH, ResH, PathP, QueryP, CookieP> =
         copy(
             requestHeaderDecoder = decoder,
         )
@@ -62,9 +65,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
      *
      * @param decoder The [HeaderField] to decode the response headers.
      */
-    fun <NewResH : HeaderProvider> responseHeaders(
-        decoder: HeaderField<NewResH>,
-    ): ApiContractBuilder<Req, Res, ReqH, NewResH, PathP, QueryP, CookieP> =
+    fun <NewResH> responseHeaders(decoder: HeaderField<NewResH>): ApiContractBuilder<Req, Res, ReqH, NewResH, PathP, QueryP, CookieP> =
         copy(
             responseHeaderDecoder = decoder,
         )
@@ -72,9 +73,9 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
     /**
      * Sets the path parameter decoder.
      *
-     * Rather than through a function like [query], path params are defined through the path string itself, e.g. "/users/{userId}/posts/{postId}". The decoder is used to decode the path parameters into a [PathProvider] type.
+     * Rather than through a function like [query], path params are defined through the path string itself, e.g. "/users/{userId}/posts/{postId}". The decoder is used to decode the path parameters into a type.
      */
-    fun <NewPathP : PathProvider> path(decoder: PathField<NewPathP>): ApiContractBuilder<Req, Res, ReqH, ResH, NewPathP, QueryP, CookieP> =
+    fun <NewPathP> path(decoder: PathField<NewPathP>): ApiContractBuilder<Req, Res, ReqH, ResH, NewPathP, QueryP, CookieP> =
         copy(pathDecoder = decoder)
 
     /**
@@ -82,9 +83,7 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
      *
      * @param decoder The [QueryField] to decode the query parameters.
      */
-    fun <NewQueryP : QueryProvider> query(
-        decoder: QueryField<NewQueryP>,
-    ): ApiContractBuilder<Req, Res, ReqH, ResH, PathP, NewQueryP, CookieP> =
+    fun <NewQueryP> query(decoder: QueryField<NewQueryP>): ApiContractBuilder<Req, Res, ReqH, ResH, PathP, NewQueryP, CookieP> =
         copy(
             queryDecoder = decoder,
         )
@@ -94,15 +93,13 @@ class ApiContractBuilder<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider,
      *
      * @param decoder The [CookieField] to decode the request cookies.
      */
-    fun <NewCookieP : CookieProvider> cookies(
-        decoder: CookieField<NewCookieP>,
-    ): ApiContractBuilder<Req, Res, ReqH, ResH, PathP, QueryP, NewCookieP> =
+    fun <NewCookieP> cookies(decoder: CookieField<NewCookieP>): ApiContractBuilder<Req, Res, ReqH, ResH, PathP, QueryP, NewCookieP> =
         copy(
             cookieDecoder = decoder,
         )
 
     @Suppress("UNCHECKED_CAST")
-    private fun <NewReqH : HeaderProvider, NewResH : HeaderProvider, NewPathP : PathProvider, NewQueryP : QueryProvider, NewCookieP : CookieProvider> copy(
+    private fun <NewReqH, NewResH, NewPathP, NewQueryP, NewCookieP> copy(
         httpMethod: HttpMethod = this.httpMethod,
         requestHeaderDecoder: HeaderField<NewReqH> = this.requestHeaderDecoder as HeaderField<NewReqH>,
         responseHeaderDecoder: HeaderField<NewResH> = this.responseHeaderDecoder as HeaderField<NewResH>,

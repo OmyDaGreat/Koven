@@ -18,11 +18,7 @@ import org.http4k.server.ServerConfig
 import org.http4k.server.asServer
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiContract
-import xyz.malefic.koven.core.field.CookieProvider
 import xyz.malefic.koven.core.field.Empty
-import xyz.malefic.koven.core.field.HeaderProvider
-import xyz.malefic.koven.core.field.PathProvider
-import xyz.malefic.koven.core.field.QueryProvider
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.AuthType
 import xyz.malefic.koven.feature.auth.Principal
@@ -51,7 +47,7 @@ class KovenServerBuilder(
      * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.handle(
+    inline fun <reified Req, reified Res, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.handle(
         filter: Filter = Filter.NoOp,
         crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req, PathP, QueryP) -> Any?,
     ) = add(register(filter, handler))
@@ -60,7 +56,7 @@ class KovenServerBuilder(
      * Simplifies handling for [ApiContract] types with no path or query parameters.
      */
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, CookieP : CookieProvider> ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.handle(
+    inline fun <reified Req, reified Res, ReqH, ResH, CookieP> ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.handle(
         filter: Filter = Filter.NoOp,
         crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req) -> Any?,
     ) = add(register(filter, handler))
@@ -71,7 +67,7 @@ class KovenServerBuilder(
      * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.handleMultipart(
+    inline fun <reified Res, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.handleMultipart(
         filter: Filter = Filter.NoOp,
         crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Multipart, PathP, QueryP) -> Any?,
     ) = add(registerMultipart(filter, handler))
@@ -82,7 +78,7 @@ class KovenServerBuilder(
      * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified T, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP, CookieP>.handlePaginated(
+    inline fun <reified Req, reified T, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP, CookieP>.handlePaginated(
         filter: Filter = Filter.NoOp,
         crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req, PathP, QueryP, Pagination) -> Any?,
     ) = add(registerPaginated(filter, handler))

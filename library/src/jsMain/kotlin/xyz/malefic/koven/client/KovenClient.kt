@@ -18,12 +18,8 @@ import xyz.malefic.koven.api.ApiContract
 import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.api.HttpMethod
 import xyz.malefic.koven.client.auth.AuthSession
-import xyz.malefic.koven.core.field.CookieProvider
 import xyz.malefic.koven.core.field.Empty
-import xyz.malefic.koven.core.field.HeaderProvider
 import xyz.malefic.koven.core.field.Headers
-import xyz.malefic.koven.core.field.PathProvider
-import xyz.malefic.koven.core.field.QueryProvider
 import xyz.malefic.koven.error.InternalIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.multipart.Multipart
@@ -59,7 +55,7 @@ suspend fun ApiFetcher.call(
  * @param headerBlock A block to add custom headers to the request.
  */
 @Suppress("ktlint:standard:max-line-length", "UNCHECKED_CAST")
-suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.call(
+suspend inline fun <reified Req, reified Res, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.call(
     request: Req = Unit as Req,
     headers: ReqH = Empty as ReqH,
     pathParams: PathP = Empty as PathP,
@@ -89,14 +85,14 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
                 }
             }
 
-        cookies.provide().forEach { Cookies.set(it) }
+        cookieDecoder.encodeCookies(cookies).forEach { Cookies.set(it) }
 
         var finalPath = path
-        pathParams.providePath().forEach { (k, v) ->
+        pathDecoder.encodePath(pathParams).forEach { (k, v) ->
             finalPath = finalPath.replace("{$k}", v)
         }
 
-        val queryMap = queryParams.provideQuery()
+        val queryMap = queryDecoder.encodeQuery(queryParams)
         if (queryMap.isNotEmpty()) {
             val queryStr = queryMap.flatMap { (k, vs) -> vs.map { "$k=$it" } }.joinToString("&")
             finalPath = "$finalPath?$queryStr"
@@ -116,7 +112,9 @@ suspend inline fun <reified Req, reified Res, ReqH : HeaderProvider, ResH : Head
                         finalPath,
                         body,
                         Headers.build {
-                            add(headers)
+                            requestHeaderDecoder.encodeHeaders(headers).forEach { (k, vs) ->
+                                vs.forEach { append(k, it) }
+                            }
                             if (isProtected && AuthSession.isAuthenticated) {
                                 set("Authorization", "Bearer ${AuthSession.accessToken}")
                             }

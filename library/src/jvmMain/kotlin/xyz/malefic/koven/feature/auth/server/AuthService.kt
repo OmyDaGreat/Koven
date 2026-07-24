@@ -29,7 +29,7 @@ import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.error.UserIssue
 import xyz.malefic.koven.feature.auth.AuthType
-import xyz.malefic.koven.feature.auth.BearerAuth.Companion.decode
+import xyz.malefic.koven.feature.auth.BearerAuth
 import xyz.malefic.koven.feature.auth.Principal
 import xyz.malefic.koven.feature.auth.model.TokenModel
 import xyz.malefic.koven.feature.auth.model.TokenResponseModel
@@ -79,6 +79,8 @@ object AuthService {
         context(_: Raise<Issue>)
         override fun decode(cookies: Map<String, String>): String =
             ensureNotNull(cookies[name]) { AuthIssue.InvalidToken("Refresh token cookie missing") }
+
+        override fun encodeCookies(value: String): List<Cookie> = listOf(create(value))
     }
 
     private val jwtAlgorithm by lazy {
@@ -161,7 +163,7 @@ object AuthService {
     context(_: Raise<Issue>)
     fun authenticate(request: Request): Principal {
         val headers = Headers.fromPairs(request.headers)
-        val token = either { decode(headers).token }.getOrNull()
+        val token = either { BearerAuth.decode(headers) }.getOrNull()
 
         if (token != null) {
             val userId = verifyToken(token)
@@ -229,9 +231,6 @@ object AuthService {
         return RefreshTokenCookie.clear(Unit)
     }
 
-    /**
-     * Shared logic to refresh a token pair using a refresh token.
-     */
     context(_: Raise<Issue>, _: AuthType)
     fun Request.refresh(): ApiResponse<TokenResponseModel, Empty> {
         val tokens = refreshTokens(this[RefreshTokenCookie])

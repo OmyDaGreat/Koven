@@ -2,7 +2,6 @@ package xyz.malefic.koven.feature.auth
 
 import arrow.core.raise.Raise
 import arrow.core.raise.context.ensureNotNull
-import xyz.malefic.koven.core.field.Header
 import xyz.malefic.koven.core.field.HeaderField
 import xyz.malefic.koven.core.field.Headers
 import xyz.malefic.koven.error.BadRequestIssue
@@ -11,31 +10,25 @@ import xyz.malefic.koven.error.Issue
 /**
  * An example header for bearer authentication.
  */
-class BearerAuth(
-    val token: String,
-) : Header {
-    override val field: String = Companion.field
-    override val values: List<String> = listOf("Bearer $token")
+object BearerAuth : HeaderField<String> {
+    override val field: String = "Authorization"
+    override val fields: List<String> = listOf(field)
 
-    companion object : HeaderField<BearerAuth> {
-        override val field: String = "Authorization"
-        override val fields: List<String> = listOf(field)
+    /**
+     * Decodes the Authorization header from [Headers] into a token string.
+     *
+     * @param headers The [Headers] to decode.
+     *
+     * @return The decoded token string.
+     */
+    context(_: Raise<Issue>)
+    override fun decode(headers: Headers): String =
+        ensureNotNull(
+            headers
+                .getFirst(field)
+                ?.takeIf { it.startsWith("Bearer ", ignoreCase = true) }
+                ?.removePrefix("Bearer "),
+        ) { BadRequestIssue("Invalid Authorization header") }
 
-        /**
-         * Decodes the Authorization header from [Headers] into a [BearerAuth].
-         *
-         * @param headers The [Headers] to decode.
-         *
-         * @return The decoded [BearerAuth] or null if the header is missing or invalid.
-         */
-        context(_: Raise<Issue>)
-        override fun decode(headers: Headers): BearerAuth =
-            ensureNotNull(
-                headers
-                    .getFirst(field)
-                    ?.takeIf { it.startsWith("Bearer ", ignoreCase = true) }
-                    ?.removePrefix("Bearer ")
-                    ?.let { BearerAuth(it) },
-            ) { BadRequestIssue("Invalid Authorization header") }
-    }
+    override fun encodeHeaders(value: String): Map<String, List<String>> = mapOf(field to listOf("Bearer $value"))
 }

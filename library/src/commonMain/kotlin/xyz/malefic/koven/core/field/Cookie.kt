@@ -5,7 +5,6 @@ import arrow.core.raise.context.ensureNotNull
 import kotlinx.serialization.Serializable
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
-import kotlin.jvm.JvmName
 
 /**
  * A representation of an HTTP cookie.
@@ -20,21 +19,14 @@ data class Cookie(
     val secure: Boolean = false,
     val httpOnly: Boolean = false,
     val sameSite: SameSite = SameSite.Lax,
-) : CookieProvider {
-    override fun provide(): List<Cookie> = listOf(this)
-}
-
-/**
- * Interface for anything that can contribute cookies to a response.
- */
-interface CookieProvider {
-    fun provide(): List<Cookie>
+) {
+    fun provide(): List<Cookie> = listOf(this)
 }
 
 /**
  * Interface for cookie fields, allowing type-safe retrieval and definition.
  */
-interface CookieField<out T> : KovenField<T> {
+interface CookieField<T> : KovenField<T> {
     val name: String
 
     override val fields: List<String> get() = listOf(name)
@@ -74,6 +66,13 @@ interface CookieField<out T> : KovenField<T> {
     context(_: Raise<Issue>)
     infix fun decode(cookies: Map<String, String>): T
 
+    fun encodeCookies(value: T): List<Cookie>
+
+    /**
+     * Creates a [Cookies] object from the given [value].
+     */
+    fun createCookies(value: T): Cookies = Cookies(encodeCookies(value))
+
     /**
      * Creates a [Cookie] using the properties defined in this field.
      */
@@ -112,6 +111,8 @@ interface CookieField<out T> : KovenField<T> {
                 context(_: Raise<Issue>)
                 override fun decode(cookies: Map<String, String>): String =
                     ensureNotNull(cookies[name]) { BadRequestIssue("Missing required cookie: $name") }
+
+                override fun encodeCookies(value: String): List<Cookie> = listOf(create(value))
             }
     }
 }
@@ -126,21 +127,18 @@ enum class SameSite {
 }
 
 /**
- * Optimizes cookie implementations for [Empty] on the left.
+ * A wrapper for cookies.
  */
-@JvmName("andEmptyCookieProviderLeft")
-infix fun <B : CookieProvider> Empty.and(other: B): B = other
-
-/**
- * Optimizes cookie implementations for [Empty] on the right.
- */
-@JvmName("andEmptyCookieProviderRight")
-infix fun <A : CookieProvider> A.and(other: Empty): A = this
+data class Cookies(
+    val list: List<Cookie> = emptyList(),
+) : List<Cookie> by list {
+    operator fun plus(other: Cookies): Cookies = Cookies(list + other.list)
+}
 
 /**
  * A cookie field that is optional.
  */
-class OptionalCookieField<out T>(
+class OptionalCookieField<T>(
     val inner: CookieField<T>,
 ) : CookieField<T?> {
     override val name: String get() = inner.name
@@ -164,6 +162,8 @@ class OptionalCookieField<out T>(
         if (!cookies.containsKey(name)) return null
         return inner.decode(cookies)
     }
+
+    override fun encodeCookies(value: T?): List<Cookie> = value?.let { inner.encodeCookies(it) } ?: emptyList()
 }
 
 /**
@@ -174,7 +174,7 @@ fun <T> CookieField<T>.optional(): CookieField<T?> = OptionalCookieField(this)
 /**
  * A cookie field that combines two other cookie fields.
  */
-class CookiePairField<out A, out B>(
+class CookiePairField<A, B>(
     override val fieldA: CookieField<A>,
     override val fieldB: CookieField<B>,
 ) : KovenPairField<A, B>(fieldA, fieldB),
@@ -187,21 +187,12 @@ class CookiePairField<out A, out B>(
 
     context(_: Raise<Issue>)
     override fun decode(cookies: Map<String, String>): KovenPair<A, B> = KovenPair(fieldA.decode(cookies), fieldB.decode(cookies))
+
+    override fun encodeCookies(value: KovenPair<A, B>): List<Cookie> =
+        fieldA.encodeCookies(value.first) + fieldB.encodeCookies(value.second)
 }
 
 /**
  * Creates a pair of cookie fields as [CookiePairField].
  */
 infix fun <A, B> CookieField<A>.and(other: CookieField<B>): CookiePairField<A, B> = CookiePairField(this, other)
-
-/**
- * Creates a pair of cookie fields as [CookiePairField], optimizing for [Empty] on the left.
- */
-@JvmName("andEmptyCookieFieldLeft")
-infix fun <B> Empty.and(other: CookieField<B>): CookieField<B> = other
-
-/**
- * Creates a pair of cookie fields as [CookiePairField], optimizing for [Empty] on the right.
- */
-@JvmName("andEmptyCookieFieldRight")
-infix fun <A> CookieField<A>.and(other: Empty): CookieField<A> = this

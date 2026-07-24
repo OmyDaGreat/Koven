@@ -5,16 +5,12 @@ import kotlinx.serialization.serializer
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.HttpMethod.GET
 import xyz.malefic.koven.core.field.CookieField
-import xyz.malefic.koven.core.field.CookieProvider
 import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.core.field.HeaderField
-import xyz.malefic.koven.core.field.HeaderProvider
 import xyz.malefic.koven.core.field.Headers
 import xyz.malefic.koven.core.field.PathField
-import xyz.malefic.koven.core.field.PathProvider
 import xyz.malefic.koven.core.field.QueryField
 import xyz.malefic.koven.core.field.QueryParams
-import xyz.malefic.koven.core.field.QueryProvider
 import xyz.malefic.koven.error.Issue
 
 /**
@@ -33,14 +29,14 @@ import xyz.malefic.koven.error.Issue
  *
  * @param Req The type of the request body. If the request body is empty, this should be `Unit`.
  * @param Res The type of the response body. If the response body is empty, this should be `Unit`.
- * @param ReqH The [HeaderProvider] type of the request headers. Use [Empty] for no headers.
- * @param ResH The [HeaderProvider] type of the response headers. Use [Empty] for no headers.
- * @param PathP The [PathProvider] type of the path parameters. Use [Empty] for no path parameters.
- * @param QueryP The [QueryProvider] type of the query parameters. Use [Empty] for no query parameters.
- * @param CookieP The [CookieProvider] type of the request cookies. Use [Empty] for no cookies.
+ * @param ReqH The type of the request headers. Use [Empty] for no headers.
+ * @param ResH The type of the response headers. Use [Empty] for no headers.
+ * @param PathP The type of the path parameters. Use [Empty] for no path parameters.
+ * @param QueryP The type of the query parameters. Use [Empty] for no query parameters.
+ * @param CookieP The type of the request cookies. Use [Empty] for no cookies.
  */
 @Suppress("ktlint:standard:max-line-length")
-abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvider, PathP : PathProvider, QueryP : QueryProvider, CookieP : CookieProvider>(
+abstract class ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>(
     val path: String,
     val httpMethod: HttpMethod = HttpMethod.POST,
     @Suppress("UNCHECKED_CAST")
@@ -76,14 +72,14 @@ abstract class ApiContract<Req, Res, ReqH : HeaderProvider, ResH : HeaderProvide
      */
     @Suppress("UNCHECKED_CAST")
     context(_: Raise<Issue>)
-    open fun decodePath(params: Map<String, String>): PathP = pathDecoder.decodePath(params)
+    open fun decodePath(params: Map<String, String>): PathP = pathDecoder.decode(params)
 
     /**
      * Decodes the query parameters into the type [QueryP].
      */
     @Suppress("UNCHECKED_CAST")
     context(_: Raise<Issue>)
-    open fun decodeQuery(params: QueryParams): QueryP = queryDecoder.decodeQuery(params)
+    open fun decodeQuery(params: QueryParams): QueryP = queryDecoder.decode(params)
 
     /**
      * Decodes the request cookies into the type [CookieP].
