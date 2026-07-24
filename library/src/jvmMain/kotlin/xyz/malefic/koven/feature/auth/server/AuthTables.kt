@@ -74,7 +74,7 @@ class OAuthAccountEntity(
  */
 object AuthTokens : UuidTable("koven_auth_tokens") {
     val user = reference("user_id", Users, onDelete = ReferenceOption.CASCADE)
-    val secretHash = varchar("secret_hash", 64)
+    val secretHash = binary("secret_hash", 64)
     val expiresAt = long("expires_at")
     val revokedAt = long("revoked_at").nullable()
     val createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp)

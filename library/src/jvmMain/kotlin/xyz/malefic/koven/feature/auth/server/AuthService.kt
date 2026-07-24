@@ -102,7 +102,7 @@ object AuthService {
     /**
      * Hashes the given [text] using SHA-256.
      */
-    fun hash(text: String) = MessageDigest.getInstance("SHA-256").digest(text.toByteArray()).joinToString("") { "%02x".format(it) }
+    fun hash(text: String) = MessageDigest.getInstance("SHA-256").digest(text.toByteArray())
 
     /**
      * Generates a secure random secret of the given [bytes] length, encoded as Base64.
@@ -197,7 +197,7 @@ object AuthService {
             val token = ensureNotNull(AuthTokenEntity.findById(id)) { AuthIssue.InvalidToken("Refresh token not found") }
             val now = System.currentTimeMillis()
 
-            if ((token.expiresAt < now) || (token.secretHash != hash(secret)) || (token.revokedAt != null)) {
+            if ((token.expiresAt < now) || MessageDigest.isEqual(token.secretHash, hash(secret)) || (token.revokedAt != null)) {
                 if (token.revokedAt == null) token.revokedAt = now
                 raise(AuthIssue.InvalidToken("Refresh token expired, invalid, or already revoked"))
             }
@@ -314,8 +314,6 @@ object AuthService {
             val id = ensureNotNull(Uuid.parseOrNull(idPart)) { BadRequestIssue("Invalid refresh token ID") }
             val token = ensureNotNull(AuthTokenEntity.findById(id)) { AuthIssue.InvalidToken("Refresh token not found") }
 
-            if (token.secretHash == hash(secret)) {
-                token.revokedAt = System.currentTimeMillis()
-            }
+            if (MessageDigest.isEqual(token.secretHash, hash(secret))) token.revokedAt = System.currentTimeMillis()
         }
 }
