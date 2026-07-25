@@ -803,7 +803,13 @@ $dokka.location:xyz.malefic.koven.server/KovenServerConfig/port/#/PointingToDecl
 $dokka.location:xyz.malefic.koven.util////PointingToDeclaration/library/xyz.malefic.koven.util/index.html
 $dokka.location:xyz.malefic.koven.util//decodeUriComponent/#kotlin.String/PointingToDeclaration/library/xyz.malefic.koven.util/decode-uri-component.html
 $dokka.location:xyz.malefic.koven.util//encodeUriComponent/#kotlin.String/PointingToDeclaration/library/xyz.malefic.koven.util/encode-uri-component.html
+$dokka.location:xyz.malefic.koven.util//lock/#TypeParam(bounds=[kotlin.Any?])#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/library/xyz.malefic.koven.util/lock.html
 $dokka.location:xyz.malefic.koven.util//sanitizeFilename/kotlin.String#/PointingToDeclaration/library/xyz.malefic.koven.util/sanitize-filename.html
+$dokka.location:xyz.malefic.koven.util/Lockable.Companion///PointingToDeclaration/library/xyz.malefic.koven.util/-lockable/-companion/index.html
+$dokka.location:xyz.malefic.koven.util/Lockable///PointingToDeclaration/library/xyz.malefic.koven.util/-lockable/index.html
+$dokka.location:xyz.malefic.koven.util/Lockable/Lockable/#TypeParam(bounds=[kotlin.Any?])#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/library/xyz.malefic.koven.util/-lockable/-lockable.html
+$dokka.location:xyz.malefic.koven.util/Lockable/getValue/#kotlin.Any?#kotlin.reflect.KProperty[*]/PointingToDeclaration/library/xyz.malefic.koven.util/-lockable/get-value.html
+$dokka.location:xyz.malefic.koven.util/Lockable/setValue/#kotlin.Any?#kotlin.reflect.KProperty[*]#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/library/xyz.malefic.koven.util/-lockable/set-value.html
 $dokka.location:xyz.malefic.koven////PointingToDeclaration/library/xyz.malefic.koven/index.html
 $dokka.location:xyz.malefic.koven/KovenConfig///PointingToDeclaration/library/xyz.malefic.koven/-koven-config/index.html
 $dokka.location:xyz.malefic.koven/KovenConfig/apiPrefix/#/PointingToDeclaration/library/xyz.malefic.koven/-koven-config/api-prefix.html
