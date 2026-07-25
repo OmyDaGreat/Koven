@@ -31,6 +31,11 @@ object KovenConfig {
     var filesPrefix: String by lock("files")
 
     /**
+     * The global prefix for namespaced entities like API keys and cookies. Defaults to `"koven"`.
+     */
+    var globalPrefix: String by lock("koven")
+
+    /**
      * The configuration for authentication. Defaults to [AuthType.NoAuth].
      */
     var auth: AuthType by lock(AuthType.NoAuth)

@@ -67,7 +67,7 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
             RefreshContract.register {
                 AuthService.refresh()
             },
-            LogoutContract.register<Unit, Unit, Empty, Empty, Empty>(Filter.NoOp) {
+            LogoutContract.register(Filter.NoOp) {
                 ApiResponse(Unit, Empty, listOf(AuthService.logout()))
             },
         )

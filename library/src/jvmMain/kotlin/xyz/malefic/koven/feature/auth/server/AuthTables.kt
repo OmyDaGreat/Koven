@@ -94,3 +94,35 @@ class AuthTokenEntity(
     var revokedAt by AuthTokens.revokedAt
     var createdAt by AuthTokens.createdAt
 }
+
+/**
+ * Default Exposed table for API keys.
+ */
+object ApiKeys : UuidTable("koven_api_keys") {
+    val user = reference("user_id", Users, onDelete = ReferenceOption.CASCADE)
+    val name = varchar("name", 64)
+    val prefix = varchar("prefix", 16).uniqueIndex()
+    val keyHash = binary("key_hash", 32)
+    val expiresAt = long("expires_at").nullable()
+    val lastUsedAt = long("last_used_at").nullable()
+    val revokedAt = long("revoked_at").nullable()
+    val createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp)
+}
+
+/**
+ * Default Exposed entity for API keys.
+ */
+class ApiKeyEntity(
+    id: EntityID<Uuid>,
+) : UuidEntity(id) {
+    companion object : UuidEntityClass<ApiKeyEntity>(ApiKeys)
+
+    var user by UserEntity referencedOn ApiKeys.user
+    var name by ApiKeys.name
+    var prefix by ApiKeys.prefix
+    var keyHash by ApiKeys.keyHash
+    var expiresAt by ApiKeys.expiresAt
+    var lastUsedAt by ApiKeys.lastUsedAt
+    var revokedAt by ApiKeys.revokedAt
+    var createdAt by ApiKeys.createdAt
+}

@@ -22,6 +22,7 @@ import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.core.field.Headers
 import xyz.malefic.koven.error.InternalIssue
 import xyz.malefic.koven.error.Issue
+import xyz.malefic.koven.feature.auth.ApiKeyAuth
 import xyz.malefic.koven.feature.multipart.Multipart
 
 suspend fun ApiFetcher.call(
@@ -116,7 +117,8 @@ suspend inline fun <reified Req, reified Res, ReqH, ResH, PathP, QueryP, CookieP
                                 vs.forEach { append(k, it) }
                             }
                             if (isProtected && AuthSession.isAuthenticated) {
-                                set("Authorization", "Bearer ${AuthSession.accessToken}")
+                                AuthSession.accessToken?.let { set("Authorization", "Bearer $it") }
+                                AuthSession.apiKey?.let { set(ApiKeyAuth.field, it) }
                             }
                             headerBlock()
                         },

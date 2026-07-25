@@ -23,6 +23,7 @@ import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.AuthType
 import xyz.malefic.koven.feature.auth.Principal
+import xyz.malefic.koven.feature.auth.server.ApiKeyAuthHandler
 import xyz.malefic.koven.feature.auth.server.OAuthHandler
 import xyz.malefic.koven.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.koven.feature.multipart.Multipart
@@ -40,6 +41,9 @@ class KovenServerBuilder(
 ) {
     private val routes = mutableListOf<RoutingHttpHandler>()
 
+    /**
+     * Adds a [RoutingHttpHandler] to the server.
+     */
     fun add(route: RoutingHttpHandler) {
         routes += route
     }
@@ -47,8 +51,11 @@ class KovenServerBuilder(
     /**
      * Adds an [ApiContract] to the server by registering a route with the given [handler].
      *
+     * Context parameters in the [handler] can be accessed via [contextOf].
+     *
      * @param handler The function to handle the request.
      */
+    @OverloadResolutionByLambdaReturnType
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH, reified ResH, PathP, QueryP, CookieP> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.handle(
         filter: Filter = Filter.NoOp,
@@ -60,25 +67,27 @@ class KovenServerBuilder(
     /**
      * Adds an [ApiContract], with no response body or headers, to the server by registering a route with the given [handler].
      *
+     * Context parameters in the [handler] can be accessed via [contextOf].
+     *
      * @param handler The function to handle the request.
      */
+    @OverloadResolutionByLambdaReturnType
     @JvmName("handleUnit")
     inline fun <reified Req, ReqH, PathP, QueryP, CookieP> ApiContract<Req, Unit, ReqH, Empty, PathP, QueryP, CookieP>.handle(
         filter: Filter = Filter.NoOp,
         crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
         ApiContract<Req, Unit, ReqH, Empty, PathP, QueryP, CookieP>.(Req, PathP, QueryP)
         -> Unit,
-    ) = add(
-        register<Req, ReqH, PathP, QueryP, CookieP>(filter) { body, path, query ->
-            handler(body, path, query)
-        },
-    )
+    ) = add(register(filter) { body, path, query -> handler(body, path, query) })
 
     /**
      * Adds an [ApiContract], with no query or path parameters, to the server by registering a route with the given [handler].
      *
+     * Context parameters in the [handler] can be accessed via [contextOf].
+     *
      * @param handler The function to handle the request.
      */
+    @OverloadResolutionByLambdaReturnType
     @Suppress("ktlint:standard:max-line-length")
     inline fun <reified Req, reified Res, ReqH, reified ResH, CookieP> ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.handle(
         filter: Filter = Filter.NoOp,
@@ -90,22 +99,23 @@ class KovenServerBuilder(
     /**
      * Adds an [ApiContract], with no response body, response headers, query parameters or path parameters, to the server by registering a route with the given [handler].
      *
+     * Context parameters in the [handler] can be accessed via [contextOf].
+     *
      * @param handler The function to handle the request.
      */
+    @OverloadResolutionByLambdaReturnType
     @JvmName("handleSimpleUnit")
     inline fun <reified Req, ReqH, CookieP> ApiContract<Req, Unit, ReqH, Empty, Empty, Empty, CookieP>.handle(
         filter: Filter = Filter.NoOp,
         crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
         ApiContract<Req, Unit, ReqH, Empty, Empty, Empty, CookieP>.(Req)
         -> Unit,
-    ) = add(
-        register<Req, ReqH, CookieP>(filter) { body ->
-            handler(body)
-        },
-    )
+    ) = add(register(filter) { body -> handler(body) })
 
     /**
      * Adds an [ApiContract] with a multipart request body to the server.
+     *
+     * Context parameters in the [handler] can be accessed via [contextOf].
      *
      * @param handler The function to handle the request.
      */
@@ -119,6 +129,8 @@ class KovenServerBuilder(
 
     /**
      * Adds a paginated [ApiContract] to the server.
+     *
+     * Context parameters in the [handler] can be accessed via [contextOf].
      *
      * @param handler The function to handle the request.
      */
@@ -136,6 +148,7 @@ class KovenServerBuilder(
                 is AuthType.NoAuth -> null
                 is AuthType.Password -> with(PasswordAuthHandler) { with(auth) { authRoutes() } }
                 is AuthType.OAuth -> with(OAuthHandler) { with(auth) { authRoutes() } }
+                is AuthType.ApiKey -> with(ApiKeyAuthHandler) { with(auth) { authRoutes() } }
             }
 
         return ServerFilters

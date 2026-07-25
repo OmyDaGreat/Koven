@@ -25,6 +25,7 @@ version = v
 
 kotlin {
     compilerOptions.freeCompilerArgs.addAll(listOf("-Xcontext-parameters", "-Xreturn-value-checker=full"))
+    compilerOptions.optIn.add("kotlin.experimental.ExperimentalTypeInference")
 
     jvm()
     configAsKobwebLibrary()

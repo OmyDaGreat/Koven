@@ -29,6 +29,7 @@ import xyz.malefic.koven.error.InternalIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.AuthType
 import xyz.malefic.koven.feature.auth.Principal
+import xyz.malefic.koven.feature.auth.server.ApiKeyAuthHandler
 import xyz.malefic.koven.feature.auth.server.OAuthHandler
 import xyz.malefic.koven.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.koven.feature.multipart.Multipart
@@ -45,6 +46,7 @@ import kotlin.uuid.Uuid
  * @param filter The filter to apply to the route.
  * @param handler The handler function for the route.
  */
+@OverloadResolutionByLambdaReturnType
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Req, reified Res, ReqH, reified ResH, PathP, QueryP, CookieP> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.register(
     filter: Filter = Filter.NoOp,
@@ -64,6 +66,7 @@ inline fun <reified Req, reified Res, ReqH, reified ResH, PathP, QueryP, CookieP
 /**
  * Overload for [register] that allows returning [Unit] when the response body is [Unit] and headers are [Empty].
  */
+@OverloadResolutionByLambdaReturnType
 @JvmName("registerUnit")
 inline fun <reified Req, ReqH, PathP, QueryP, CookieP> ApiContract<Req, Unit, ReqH, Empty, PathP, QueryP, CookieP>.register(
     filter: Filter = Filter.NoOp,
@@ -72,15 +75,14 @@ inline fun <reified Req, ReqH, PathP, QueryP, CookieP> ApiContract<Req, Unit, Re
     -> Unit,
 ): RoutingHttpHandler =
     register<Req, Unit, ReqH, Empty, PathP, QueryP, CookieP>(filter) { req, path, query ->
-        context(contextOf<Request>(), contextOf<Raise<Issue>>(), contextOf<ReqH>(), contextOf<CookieP>(), contextOf<Principal>()) {
-            handler(req, path, query)
-        }
+        handler(req, path, query)
         ApiResponse(Unit, Empty)
     }
 
 /**
  * Simplifies registration for [ApiContract] types with no path or query parameters.
  */
+@OverloadResolutionByLambdaReturnType
 @JvmName("registerSimple")
 inline fun <reified Req, reified Res, ReqH, reified ResH, CookieP> ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.register(
     filter: Filter = Filter.NoOp,
@@ -170,6 +172,7 @@ inline fun <reified Req, reified T, ReqH, reified ResH, PathP, QueryP, CookieP> 
  * @param filter The filter to apply to the route.
  * @param handler The handler function for the route.
  */
+@OverloadResolutionByLambdaReturnType
 @Suppress("ktlint:standard:max-line-length")
 inline fun <reified Res, ReqH, reified ResH, PathP, QueryP, CookieP> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.registerMultipart(
     filter: Filter = Filter.NoOp,
@@ -188,6 +191,7 @@ internal fun ApiContract<*, *, *, *, *, *, *>.authenticate(req: Request): Princi
     return when (auth) {
         is AuthType.Password -> context(auth) { PasswordAuthHandler.authenticate(req) }
         is AuthType.OAuth -> context(auth) { OAuthHandler.authenticate(req) }
+        is AuthType.ApiKey -> context(auth) { ApiKeyAuthHandler.authenticate(req) }
     }
 }
 

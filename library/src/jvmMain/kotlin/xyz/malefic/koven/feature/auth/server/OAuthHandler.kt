@@ -37,7 +37,6 @@ import xyz.malefic.koven.api.ApiResponse.Companion.withHeaders
 import xyz.malefic.koven.api.response
 import xyz.malefic.koven.core.field.Cookie
 import xyz.malefic.koven.core.field.CookieField
-import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.core.field.Redirect
 import xyz.malefic.koven.core.field.bind
 import xyz.malefic.koven.error.AuthIssue
@@ -49,7 +48,6 @@ import xyz.malefic.koven.feature.auth.OAuthFinalizeContract
 import xyz.malefic.koven.feature.auth.OAuthLinkContract
 import xyz.malefic.koven.feature.auth.OAuthLoginContract
 import xyz.malefic.koven.feature.auth.RefreshContract
-import xyz.malefic.koven.feature.auth.model.TokenResponseModel
 import xyz.malefic.koven.feature.auth.server.AuthService.issueTokenPair
 import xyz.malefic.koven.feature.auth.server.AuthService.linkOrCreateUser
 import xyz.malefic.koven.server.cookie
@@ -78,7 +76,7 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
             provider: String,
             name: String,
         ) = object : CookieField<String> {
-            override val name = "koven_oauth_${provider}_$name"
+            override val name get() = "${KovenConfig.globalPrefix}_oauth_${provider}_$name"
 
             override fun secure() = KovenConfig.auth.useSecureCookies
 
@@ -138,10 +136,10 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
                 }
             },
             routes(oauthFilters.values.map { it.callbackEndpoint }),
-            RefreshContract.register<Unit, TokenResponseModel, Empty, Empty, Empty>(Filter.NoOp) {
+            RefreshContract.register(Filter.NoOp) {
                 AuthService.refresh()
             },
-            LogoutContract.register<Unit, Unit, Empty, Empty, Empty>(Filter.NoOp) {
+            LogoutContract.register(Filter.NoOp) {
                 response {
                     cookies = listOf(AuthService.logout())
                 }

@@ -36,6 +36,7 @@ import kotlin.uuid.Uuid
  */
 object AuthSession {
     private const val ACCESS_TOKEN_KEY = "koven_access_token"
+    private const val API_KEY_STORAGE_KEY = "koven_api_key"
     private const val USER_ID_KEY = "koven_user_id"
     private const val USERNAME_KEY = "koven_username"
 
@@ -43,6 +44,12 @@ object AuthSession {
      * The current access token, or null if not authenticated.
      */
     var accessToken: String? by mutableStateOf(localStorage.getItem(ACCESS_TOKEN_KEY))
+        private set
+
+    /**
+     * The current API key, or null if not configured.
+     */
+    var apiKey: String? by mutableStateOf(localStorage.getItem(API_KEY_STORAGE_KEY))
         private set
 
     /**
@@ -70,9 +77,9 @@ object AuthSession {
     }
 
     /**
-     * Whether the user is currently authenticated.
+     * Whether the user is currently authenticated via token or API key.
      */
-    val isAuthenticated: Boolean get() = accessToken != null
+    val isAuthenticated: Boolean get() = accessToken != null || apiKey != null
 
     /**
      * Performs a login request.
@@ -165,6 +172,18 @@ object AuthSession {
     suspend fun strength(password: String): Either<Issue, Pair<Int, String?>> = PasswordStrengthContract.call(password).map { it.body }
 
     /**
+     * Sets or clears the API key used for authentication.
+     */
+    fun setApiKey(key: String?) {
+        apiKey = key
+        if (key != null) {
+            localStorage.setItem(API_KEY_STORAGE_KEY, key)
+        } else {
+            localStorage.removeItem(API_KEY_STORAGE_KEY)
+        }
+    }
+
+    /**
      * Updates the session with new authentication data.
      */
     private fun updateSession(
@@ -183,8 +202,10 @@ object AuthSession {
      */
     private fun clearSession() {
         accessToken = null
+        apiKey = null
         principal = null
         localStorage.removeItem(ACCESS_TOKEN_KEY)
+        localStorage.removeItem(API_KEY_STORAGE_KEY)
         localStorage.removeItem(USER_ID_KEY)
         localStorage.removeItem(USERNAME_KEY)
     }

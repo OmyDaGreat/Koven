@@ -53,7 +53,7 @@ object AuthService {
      * HttpOnly cookie for the refresh token.
      */
     object RefreshTokenCookie : CookieField<String> {
-        override val name: String = "refresh_token"
+        override val name: String get() = "${KovenConfig.globalPrefix}_refresh_token"
 
         override fun maxAge(): Long = KovenConfig.auth.refreshTokenTtl.inWholeSeconds
 
@@ -102,6 +102,8 @@ object AuthService {
 
     /**
      * Hashes the given [text] using SHA-256.
+     *
+     * TODO: Use a more robust hashing utility that supports salting(?)
      */
     fun hash(text: String): ByteArray = MessageDigest.getInstance("SHA-256").digest(text.toByteArray())
 
@@ -198,7 +200,7 @@ object AuthService {
             val token = ensureNotNull(AuthTokenEntity.findById(id)) { AuthIssue.InvalidToken("Refresh token not found") }
             val now = System.currentTimeMillis()
 
-            if ((token.expiresAt < now) || MessageDigest.isEqual(token.secretHash, hash(secret)) || (token.revokedAt != null)) {
+            if ((token.expiresAt < now) || !MessageDigest.isEqual(token.secretHash, hash(secret)) || (token.revokedAt != null)) {
                 if (token.revokedAt == null) token.revokedAt = now
                 raise(AuthIssue.InvalidToken("Refresh token expired, invalid, or already revoked"))
             }
