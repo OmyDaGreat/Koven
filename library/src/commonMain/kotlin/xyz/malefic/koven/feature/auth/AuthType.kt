@@ -10,19 +10,6 @@ import kotlin.time.Duration.Companion.minutes
  * The configuration for authentication.
  */
 sealed interface AuthType {
-    val accessTokenTtl: Duration
-        get() = 15.minutes
-    val refreshTokenTtl: Duration
-        get() = 30.days
-    val maxFailedAttempts: Int
-        get() = 5
-    val lockOutDuration: Duration
-        get() = 15.minutes
-    val cookieDomain: String?
-        get() = null
-    val useSecureCookies: Boolean
-        get() = true
-
     /**
      * Completely opens all auth-handled endpoints.
      */
@@ -33,26 +20,38 @@ sealed interface AuthType {
      */
     data class Password(
         val validation: Validation<UserRequestModel> = defaultPasswordValidation,
+        val accessTokenTtl: Duration = 15.minutes,
+        val refreshTokenTtl: Duration = 30.days,
+        val maxFailedAttempts: Int = 5,
+        val lockOutDuration: Duration = 15.minutes,
+        val cookieDomain: String? = null,
+        val useSecureCookies: Boolean = true,
     ) : AuthType
-
-    /**
-     * Configuration for an OAuth provider.
-     */
-    data class OAuthConfig(
-        val provider: OAuthProvider,
-        val clientId: String,
-        val clientSecret: String,
-        val redirectUri: String,
-        val scopes: List<String> = provider.defaultScopes,
-    )
 
     /**
      * Delegated to [OAuthProvider] with standard OAuth interceptors. Supports multiple providers.
      */
     data class OAuth(
-        val providers: Map<String, OAuthConfig>,
+        val providers: Map<String, ProviderConfig>,
         val clientCallbackPath: String,
-    ) : AuthType
+        val accessTokenTtl: Duration = 15.minutes,
+        val refreshTokenTtl: Duration = 30.days,
+        val maxFailedAttempts: Int = 5,
+        val lockOutDuration: Duration = 15.minutes,
+        val cookieDomain: String? = null,
+        val useSecureCookies: Boolean = true,
+    ) : AuthType {
+        /**
+         * Configuration for an OAuth provider.
+         */
+        data class ProviderConfig(
+            val provider: OAuthProvider,
+            val clientId: String,
+            val clientSecret: String,
+            val redirectUri: String,
+            val scopes: List<String> = provider.defaultScopes,
+        )
+    }
 
     // TODO: Support combining multiple auth types (user can choose) since AuthService already commonizes much of the code
 

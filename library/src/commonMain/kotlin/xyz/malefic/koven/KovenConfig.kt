@@ -36,11 +36,6 @@ object KovenConfig {
     var auth: AuthType by lock(AuthType.NoAuth)
 
     /**
-     * Whether to use the `secure` flag for authentication cookies. Defaults to `true`.
-     */
-    var useSecureCookies: Boolean by lock(true)
-
-    /**
      * Registers a new [Issue] type with the serialization engine globally.
      */
     inline fun <reified T : Issue> registerIssue() = SerializationEngine.registerIssue<T>()
