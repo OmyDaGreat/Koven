@@ -27,6 +27,7 @@ import xyz.malefic.koven.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.koven.feature.multipart.Multipart
 import xyz.malefic.koven.feature.pagination.PaginatedResponse
 import xyz.malefic.koven.feature.pagination.Pagination
+import xyz.malefic.koven.util.Lockable
 import xyz.malefic.koven.util.sanitizeFilename
 import java.io.File
 
@@ -149,6 +150,7 @@ object KovenServer {
             if (underlying == null) {
                 val builder = KovenServerBuilder(config).apply(serverConfig)
                 val handler = builder.buildHandler().httpConfig()
+                Lockable.locked = true
                 underlying = handler.asServer(server(config.port)).start()
             } else {
                 error("Server is already running")
