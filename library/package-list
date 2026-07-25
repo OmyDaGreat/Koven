@@ -594,27 +594,33 @@ $dokka.location:xyz.malefic.koven.feature.auth//PasswordStrengthContract/#/Point
 $dokka.location:xyz.malefic.koven.feature.auth//RefreshContract/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-refresh-contract.html
 $dokka.location:xyz.malefic.koven.feature.auth//defaultPasswordValidation/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/default-password-validation.html
 $dokka.location:xyz.malefic.koven.feature.auth/AuthType.NoAuth///PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-no-auth/index.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth.ProviderConfig///PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/-provider-config/index.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth.ProviderConfig/ProviderConfig/#xyz.malefic.koven.feature.auth.OAuthProvider#kotlin.String#kotlin.String#kotlin.String#kotlin.collections.List[kotlin.String]/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/-provider-config/-provider-config.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth.ProviderConfig/clientId/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/-provider-config/client-id.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth.ProviderConfig/clientSecret/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/-provider-config/client-secret.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth.ProviderConfig/provider/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/-provider-config/provider.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth.ProviderConfig/redirectUri/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/-provider-config/redirect-uri.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth.ProviderConfig/scopes/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/-provider-config/scopes.html
 $dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth///PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/index.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/OAuth/#kotlin.collections.Map[kotlin.String,xyz.malefic.koven.feature.auth.AuthType.OAuthConfig]#kotlin.String/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/-o-auth.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/OAuth/#kotlin.collections.Map[kotlin.String,xyz.malefic.koven.feature.auth.AuthType.OAuth.ProviderConfig]#kotlin.String#kotlin.time.Duration#kotlin.time.Duration#kotlin.Int#kotlin.time.Duration#kotlin.String?#kotlin.Boolean/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/-o-auth.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/accessTokenTtl/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/access-token-ttl.html
 $dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/clientCallbackPath/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/client-callback-path.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/cookieDomain/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/cookie-domain.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/lockOutDuration/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/lock-out-duration.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/maxFailedAttempts/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/max-failed-attempts.html
 $dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/providers/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/providers.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuthConfig///PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth-config/index.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuthConfig/OAuthConfig/#xyz.malefic.koven.feature.auth.OAuthProvider#kotlin.String#kotlin.String#kotlin.String#kotlin.collections.List[kotlin.String]/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth-config/-o-auth-config.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuthConfig/clientId/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth-config/client-id.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuthConfig/clientSecret/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth-config/client-secret.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuthConfig/provider/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth-config/provider.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuthConfig/redirectUri/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth-config/redirect-uri.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuthConfig/scopes/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth-config/scopes.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/refreshTokenTtl/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/refresh-token-ttl.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.OAuth/useSecureCookies/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-o-auth/use-secure-cookies.html
 $dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password///PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/index.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password/Password/#io.konform.validation.Validation[xyz.malefic.koven.feature.auth.model.UserRequestModel]/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/-password.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password/Password/#io.konform.validation.Validation[xyz.malefic.koven.feature.auth.model.UserRequestModel]#kotlin.time.Duration#kotlin.time.Duration#kotlin.Int#kotlin.time.Duration#kotlin.String?#kotlin.Boolean/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/-password.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password/accessTokenTtl/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/access-token-ttl.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password/cookieDomain/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/cookie-domain.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password/lockOutDuration/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/lock-out-duration.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password/maxFailedAttempts/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/max-failed-attempts.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password/refreshTokenTtl/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/refresh-token-ttl.html
+$dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password/useSecureCookies/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/use-secure-cookies.html
 $dokka.location:xyz.malefic.koven.feature.auth/AuthType.Password/validation/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/-password/validation.html
 $dokka.location:xyz.malefic.koven.feature.auth/AuthType///PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/index.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType/accessTokenTtl/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/access-token-ttl.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType/cookieDomain/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/cookie-domain.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType/lockOutDuration/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/lock-out-duration.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType/maxFailedAttempts/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/max-failed-attempts.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType/refreshTokenTtl/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/refresh-token-ttl.html
-$dokka.location:xyz.malefic.koven.feature.auth/AuthType/useSecureCookies/#/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-auth-type/use-secure-cookies.html
 $dokka.location:xyz.malefic.koven.feature.auth/BearerAuth///PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-bearer-auth/index.html
 $dokka.location:xyz.malefic.koven.feature.auth/BearerAuth/decode/arrow.core.raise.Raise[xyz.malefic.koven.error.Issue]##xyz.malefic.koven.core.field.Headers/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-bearer-auth/decode.html
 $dokka.location:xyz.malefic.koven.feature.auth/BearerAuth/encodeHeaders/#kotlin.String/PointingToDeclaration/library/xyz.malefic.koven.feature.auth/-bearer-auth/encode-headers.html
@@ -824,7 +830,6 @@ $dokka.location:xyz.malefic.koven/KovenConfig/auth/#/PointingToDeclaration/libr
 $dokka.location:xyz.malefic.koven/KovenConfig/filesPrefix/#/PointingToDeclaration/library/xyz.malefic.koven/-koven-config/files-prefix.html
 $dokka.location:xyz.malefic.koven/KovenConfig/registerIssue/#/PointingToDeclaration/library/xyz.malefic.koven/-koven-config/register-issue.html
 $dokka.location:xyz.malefic.koven/KovenConfig/serialization/#/PointingToDeclaration/library/xyz.malefic.koven/-koven-config/serialization.html
-$dokka.location:xyz.malefic.koven/KovenConfig/useSecureCookies/#/PointingToDeclaration/library/xyz.malefic.koven/-koven-config/use-secure-cookies.html
 xyz.malefic.koven
 xyz.malefic.koven.api
 xyz.malefic.koven.client
