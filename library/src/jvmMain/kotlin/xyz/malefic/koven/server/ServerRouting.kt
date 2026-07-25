@@ -40,6 +40,7 @@ import xyz.malefic.koven.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.koven.feature.multipart.Multipart
 import xyz.malefic.koven.feature.pagination.PaginatedResponse
 import xyz.malefic.koven.feature.pagination.Pagination
+import xyz.malefic.koven.util.sanitizeFilename
 import kotlin.uuid.Uuid
 
 /**
@@ -257,7 +258,7 @@ internal inline fun <reified Req, reified Res, ReqH, ResH, PathP, QueryP, Cookie
                         is MultipartEntity.File -> {
                             files[part.name] =
                                 Multipart.File(
-                                    part.file.filename,
+                                    part.file.filename.sanitizeFilename(),
                                     part.file.contentType.value,
                                     part.file.content.readAllBytes(),
                                 )

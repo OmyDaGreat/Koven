@@ -27,6 +27,7 @@ import xyz.malefic.koven.feature.auth.server.PasswordAuthHandler
 import xyz.malefic.koven.feature.multipart.Multipart
 import xyz.malefic.koven.feature.pagination.PaginatedResponse
 import xyz.malefic.koven.feature.pagination.Pagination
+import xyz.malefic.koven.util.sanitizeFilename
 import java.io.File
 
 /**
@@ -180,7 +181,7 @@ object KovenServer {
     ) {
         val dir = File(config.assetsPath)
         if (!dir.exists()) dir.mkdirs()
-        File(dir, name).writeBytes(bytes)
+        File(dir, name.sanitizeFilename()).writeBytes(bytes)
     }
 
     /**
@@ -192,6 +193,6 @@ object KovenServer {
     ) {
         val dir = File(config.filesPath)
         if (!dir.exists()) dir.mkdirs()
-        File(dir, name).writeBytes(bytes)
+        File(dir, name.sanitizeFilename()).writeBytes(bytes)
     }
 }
