@@ -452,9 +452,17 @@ $dokka.location:xyz.malefic.koven.error/RateLimitedIssue/message/#/PointingToDec
 $dokka.location:xyz.malefic.koven.error/RateLimitedIssue/retryAfterMs/#/PointingToDeclaration/library/xyz.malefic.koven.error/-rate-limited-issue/retry-after-ms.html
 $dokka.location:xyz.malefic.koven.error/RateLimitedIssue/status/#/PointingToDeclaration/library/xyz.malefic.koven.error/-rate-limited-issue/status.html
 $dokka.location:xyz.malefic.koven.error/UserIssue.AlreadyExists///PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-already-exists/index.html
-$dokka.location:xyz.malefic.koven.error/UserIssue.AlreadyExists/AlreadyExists/#kotlin.String#kotlin.Int/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-already-exists/-already-exists.html
+$dokka.location:xyz.malefic.koven.error/UserIssue.AlreadyExists/AlreadyExists/#xyz.malefic.koven.error.UserIssue.ConflictType#kotlin.Int/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-already-exists/-already-exists.html
+$dokka.location:xyz.malefic.koven.error/UserIssue.AlreadyExists/conflict/#/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-already-exists/conflict.html
 $dokka.location:xyz.malefic.koven.error/UserIssue.AlreadyExists/message/#/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-already-exists/message.html
 $dokka.location:xyz.malefic.koven.error/UserIssue.AlreadyExists/status/#/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-already-exists/status.html
+$dokka.location:xyz.malefic.koven.error/UserIssue.ConflictType.EMAIL///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.koven.error/-user-issue/-conflict-type/-e-m-a-i-l/index.html
+$dokka.location:xyz.malefic.koven.error/UserIssue.ConflictType.UNKNOWN///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.koven.error/-user-issue/-conflict-type/-u-n-k-n-o-w-n/index.html
+$dokka.location:xyz.malefic.koven.error/UserIssue.ConflictType.USERNAME///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.koven.error/-user-issue/-conflict-type/-u-s-e-r-n-a-m-e/index.html
+$dokka.location:xyz.malefic.koven.error/UserIssue.ConflictType///PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-conflict-type/index.html
+$dokka.location:xyz.malefic.koven.error/UserIssue.ConflictType/entries/#/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-conflict-type/entries.html
+$dokka.location:xyz.malefic.koven.error/UserIssue.ConflictType/valueOf/#kotlin.String/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-conflict-type/value-of.html
+$dokka.location:xyz.malefic.koven.error/UserIssue.ConflictType/values/#/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-conflict-type/values.html
 $dokka.location:xyz.malefic.koven.error/UserIssue.InvalidUser///PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-invalid-user/index.html
 $dokka.location:xyz.malefic.koven.error/UserIssue.InvalidUser/InvalidUser/#kotlin.collections.List[kotlin.String]#kotlin.collections.List[kotlin.String]#kotlin.Int/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-invalid-user/-invalid-user.html
 $dokka.location:xyz.malefic.koven.error/UserIssue.InvalidUser/message/#/PointingToDeclaration/library/xyz.malefic.koven.error/-user-issue/-invalid-user/message.html
@@ -747,6 +755,7 @@ $dokka.location:xyz.malefic.koven.serialization/SerializationEngine/decodeIssue/
 $dokka.location:xyz.malefic.koven.serialization/SerializationEngine/default/#/PointingToDeclaration/library/xyz.malefic.koven.serialization/-serialization-engine/default.html
 $dokka.location:xyz.malefic.koven.serialization/SerializationEngine/encodeIssue/#xyz.malefic.koven.error.Issue/PointingToDeclaration/library/xyz.malefic.koven.serialization/-serialization-engine/encode-issue.html
 $dokka.location:xyz.malefic.koven.server.persistence////PointingToDeclaration/library/xyz.malefic.koven.server.persistence/index.html
+$dokka.location:xyz.malefic.koven.server.persistence//ensureUnique/arrow.core.raise.Raise[xyz.malefic.koven.error.Issue]##kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.koven.server.persistence/ensure-unique.html
 $dokka.location:xyz.malefic.koven.server.persistence//jsonFile/#kotlin.String#TypeParam(bounds=[kotlin.Any?])#kotlinx.serialization.KSerializer[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.koven.server.persistence/json-file.html
 $dokka.location:xyz.malefic.koven.server.persistence//protoBufFile/#kotlin.String#TypeParam(bounds=[kotlin.Any?])#kotlinx.serialization.KSerializer[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/library/xyz.malefic.koven.server.persistence/proto-buf-file.html
 $dokka.location:xyz.malefic.koven.server.persistence/JsonFile///PointingToDeclaration/library/xyz.malefic.koven.server.persistence/-json-file/index.html
