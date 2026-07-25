@@ -20,22 +20,27 @@ data class ApiResponse<Res, ResH>(
     /**
      * Adds a status code to the response.
      */
-    infix fun with(status: Int) = copy(status = status)
+    fun withStatus(status: Int) = copy(status = status)
+
+    /**
+     * Adds headers to the response.
+     */
+    fun <NewResH> withHeaders(headers: NewResH) = ApiResponse(status, body, headers, cookies)
 
     /**
      * Adds a cookie to the response.
      */
-    infix fun with(cookie: Cookie) = copy(cookies = cookies + cookie)
+    fun withCookie(cookie: Cookie) = copy(cookies = cookies + cookie)
 
     /**
      * Adds multiple cookies to the response.
      */
-    infix fun with(newCookies: List<Cookie>) = copy(cookies = cookies + newCookies)
+    fun withCookies(newCookies: List<Cookie>) = copy(cookies = cookies + newCookies)
 
     /**
      * Adds multiple cookies to the response.
      */
-    fun with(vararg newCookies: Cookie) = copy(cookies = cookies + newCookies)
+    fun withCookies(vararg newCookies: Cookie) = copy(cookies = cookies + newCookies)
 
     /**
      * Gets a cookie from the response by its field.
@@ -47,52 +52,32 @@ data class ApiResponse<Res, ResH>(
         /**
          * Creates an [ApiResponse] with the given [status].
          */
-        infix fun <Res> Res.with(status: Int): ApiResponse<Res, Empty> = ApiResponse(status, this, Empty)
+        infix fun <Res> Res.withStatus(status: Int): ApiResponse<Res, Empty> = ApiResponse(status, this, Empty)
 
         /**
          * Creates an [ApiResponse] with the given [headers].
          */
-        infix fun <Res, ResH> Res.with(headers: ResH): ApiResponse<Res, ResH> = ApiResponse(this, headers)
+        infix fun <Res, ResH> Res.withHeaders(headers: ResH): ApiResponse<Res, ResH> = ApiResponse(this, headers)
+
+        /**
+         * Creates an [ApiResponse] with the given [cookies].
+         */
+        fun <Res> Res.withCookies(vararg cookies: Cookie): ApiResponse<Res, Empty> = ApiResponse(this, Empty, cookies.toList())
+
+        /**
+         * Creates an [ApiResponse] with the given [cookies].
+         */
+        infix fun <Res> Res.withCookies(cookies: List<Cookie>): ApiResponse<Res, Empty> = ApiResponse(this, Empty, cookies)
 
         /**
          * Creates an [ApiResponse] with the given [cookie].
          */
-        infix fun <Res> Res.with(cookie: Cookie): ApiResponse<Res, Empty> = ApiResponse(this, Empty, listOf(cookie))
-
-        /**
-         * Creates an [ApiResponse] with the given [newCookies].
-         */
-        infix fun <Res> Res.with(newCookies: List<Cookie>): ApiResponse<Res, Empty> = ApiResponse(this, Empty, newCookies)
-
-        /**
-         * Creates an [ApiResponse] with the given [newCookies].
-         */
-        fun <Res> Res.with(vararg newCookies: Cookie): ApiResponse<Res, Empty> = ApiResponse(this, Empty, newCookies.toList())
-
-        /**
-         * Creates an [ApiResponse] with the given [status].
-         */
-        infix fun <ResH> ResH.withHeaderStatus(status: Int): ApiResponse<Unit, ResH> = ApiResponse(status, Unit, this)
-
-        /**
-         * Creates an [ApiResponse] with the given [cookie].
-         */
-        infix fun <ResH> ResH.withHeaderCookie(cookie: Cookie): ApiResponse<Unit, ResH> = ApiResponse(Unit, this, listOf(cookie))
-
-        /**
-         * Creates an [ApiResponse] with the given [newCookies].
-         */
-        infix fun <ResH> ResH.withHeaderCookies(newCookies: List<Cookie>): ApiResponse<Unit, ResH> = ApiResponse(Unit, this, newCookies)
-
-        /**
-         * Creates an [ApiResponse] with the given [newCookies].
-         */
-        fun <ResH> ResH.withHeaderCookies(vararg newCookies: Cookie): ApiResponse<Unit, ResH> = ApiResponse(Unit, this, newCookies.toList())
+        infix fun <Res> Res.withCookie(cookie: Cookie): ApiResponse<Res, Empty> = ApiResponse(this, Empty, listOf(cookie))
 
         /**
          * Creates an [ApiResponse] with the given [body].
          */
-        infix fun <Res> Int.with(body: Res): ApiResponse<Res, Empty> = ApiResponse(this, body, Empty)
+        infix fun <Res> Int.withBody(body: Res): ApiResponse<Res, Empty> = ApiResponse(this, body, Empty)
 
         /**
          * Creates an [ApiResponse] with the given [headers].
@@ -100,23 +85,28 @@ data class ApiResponse<Res, ResH>(
         infix fun <ResH> Int.withHeaders(headers: ResH): ApiResponse<Unit, ResH> = ApiResponse(this, Unit, headers)
 
         /**
+         * Creates an [ApiResponse] with the given [cookies].
+         */
+        fun Int.withCookies(vararg cookies: Cookie): ApiResponse<Unit, Empty> = ApiResponse(this, Unit, Empty, cookies.toList())
+
+        /**
+         * Creates an [ApiResponse] with the given [cookies].
+         */
+        infix fun Int.withCookies(cookies: List<Cookie>): ApiResponse<Unit, Empty> = ApiResponse(this, Unit, Empty, cookies)
+
+        /**
          * Creates an [ApiResponse] with the given [cookie].
          */
-        infix fun Int.with(cookie: Cookie): ApiResponse<Unit, Empty> = ApiResponse(this, Unit, Empty, listOf(cookie))
+        infix fun Int.withCookie(cookie: Cookie): ApiResponse<Unit, Empty> = ApiResponse(this, Unit, Empty, listOf(cookie))
 
-        /**
-         * Creates an [ApiResponse] with the given [newCookies].
-         */
-        infix fun Int.with(newCookies: List<Cookie>): ApiResponse<Unit, Empty> = ApiResponse(this, Unit, Empty, newCookies)
-
-        /**
-         * Creates an [ApiResponse] with the given [newCookies].
-         */
-        fun Int.with(vararg newCookies: Cookie): ApiResponse<Unit, Empty> = ApiResponse(this, Unit, Empty, newCookies.toList())
-
-        /**
-         * Creates a blank [ApiResponse].
-         */
-        val Blank = ApiResponse(Unit, Empty)
+        @Suppress("UNCHECKED_CAST")
+        class Builder<Res, ResH>(
+            var status: Int = 200,
+            var body: Res = Unit as Res,
+            var headers: ResH = Empty as ResH,
+            var cookies: List<Cookie> = emptyList(),
+        ) {
+            fun build() = ApiResponse(status, body, headers, cookies)
+        }
     }
 }

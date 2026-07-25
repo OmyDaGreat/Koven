@@ -66,6 +66,7 @@ val OAuthLoginContract =
     apiContract<Unit, Unit>("auth/login/{provider}")
         .method(GET)
         .path(OAuthLoginPath)
+        .responseHeaders(Redirect)
         .build()
 
 /**
@@ -76,6 +77,7 @@ val OAuthLinkContract =
         .method(GET)
         .path(OAuthLoginPath)
         .protected()
+        .responseHeaders(Redirect)
         .build()
 
 /**

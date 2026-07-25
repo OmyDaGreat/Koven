@@ -10,10 +10,14 @@ import arrow.core.raise.ensureNotNull
 import arrow.core.right
 import org.http4k.client.JettyClient
 import org.http4k.core.Credentials
+import org.http4k.core.Filter
+import org.http4k.core.Method
+import org.http4k.core.NoOp
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Uri
+import org.http4k.core.cookie.cookies
 import org.http4k.core.query
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.routes
@@ -30,10 +34,12 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.api.ApiResponse.Companion.withHeaders
+import xyz.malefic.koven.api.response
 import xyz.malefic.koven.core.field.Cookie
 import xyz.malefic.koven.core.field.CookieField
-import xyz.malefic.koven.core.field.Headers
+import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.core.field.Redirect
+import xyz.malefic.koven.core.field.bind
 import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.Issue
@@ -43,10 +49,9 @@ import xyz.malefic.koven.feature.auth.OAuthFinalizeContract
 import xyz.malefic.koven.feature.auth.OAuthLinkContract
 import xyz.malefic.koven.feature.auth.OAuthLoginContract
 import xyz.malefic.koven.feature.auth.RefreshContract
+import xyz.malefic.koven.feature.auth.model.TokenResponseModel
 import xyz.malefic.koven.feature.auth.server.AuthService.issueTokenPair
 import xyz.malefic.koven.feature.auth.server.AuthService.linkOrCreateUser
-import xyz.malefic.koven.feature.auth.server.AuthService.logout
-import xyz.malefic.koven.feature.auth.server.AuthService.refresh
 import xyz.malefic.koven.server.cookie
 import xyz.malefic.koven.server.get
 import xyz.malefic.koven.server.register
@@ -117,53 +122,66 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
             OAuthLoginContract.register { _, path, _ ->
                 val providerName = path.provider
                 val oauth = oauthFilters[providerName] ?: raise(BadRequestIssue("Unknown provider: $providerName"))
-                oauth.authFilter { Response(Status.OK) }(this)
+                val response = oauth.authFilter { Response(Status.OK) }(contextOf<Request>())
+                response(response.status.code) {
+                    headers = response.header("Location") ?: ""
+                    cookies = response.cookies().map { Cookie(it.name, it.value) }
+                }
             },
             OAuthLinkContract.register { _, path, _ ->
                 val providerName = path.provider
                 val oauth = oauthFilters[providerName] ?: raise(BadRequestIssue("Unknown provider: $providerName"))
-                oauth.authFilter { Response(Status.OK) }(this).cookie(ScopedCookies(providerName).link create "true")
+                val response = oauth.authFilter { Response(Status.OK) }(contextOf<Request>())
+                response(response.status.code) {
+                    headers = response.header("Location") ?: ""
+                    cookies = response.cookies().map { Cookie(it.name, it.value) } + listOf(ScopedCookies(providerName).link create "true")
+                }
             },
             routes(oauthFilters.values.map { it.callbackEndpoint }),
-            RefreshContract.register {
-                refresh()
+            RefreshContract.register<Unit, TokenResponseModel, Empty, Empty, Empty>(Filter.NoOp) {
+                AuthService.refresh()
             },
-            LogoutContract.register {
-                logout()
+            LogoutContract.register<Unit, Unit, Empty, Empty, Empty>(Filter.NoOp) {
+                response {
+                    cookies = listOf(AuthService.logout())
+                }
             },
             OAuthFinalizeContract.register { _, _, query ->
+                val request = contextOf<Request>()
+
                 val baseRedirect =
                     KovenOAuthPersistence(auth.useSecureCookies, auth.clientCallbackPath, query.provider)
-                        .retrieveOriginalUri(this) ?: Uri.of(auth.clientCallbackPath)
+                        .retrieveOriginalUri(request) ?: Uri.of(auth.clientCallbackPath)
 
-                fun errorRedirect(issue: Issue): ApiResponse<Unit, Headers> =
+                fun errorRedirect(issue: Issue): ApiResponse<Unit, String> =
                     302 withHeaders
-                        Redirect.createHeaders(
-                            baseRedirect
-                                .query("auth_success", "false")
-                                .query("error", issue.javaClass.simpleName)
-                                .query("message", issue.message)
-                                .toString(),
+                        (
+                            Redirect bind
+                                baseRedirect
+                                    .query("auth_success", "false")
+                                    .query("error", issue.javaClass.simpleName)
+                                    .query("message", issue.message)
+                                    .toString()
                         )
 
                 val result =
                     either {
                         val providerName = ensureNotNull(query.provider) { BadRequestIssue("Provider query param missing") }
                         val cookies = ScopedCookies(providerName)
-                        val isLinking = this@register[cookies.link] == "true"
+                        val isLinking = request[cookies.link] == "true"
                         val oauthProvider =
                             ensureNotNull(auth.providers[providerName]?.provider) { BadRequestIssue("Unknown provider: $providerName") }
 
                         val token =
                             ensureNotNull(
                                 KovenOAuthPersistence(auth.useSecureCookies, auth.clientCallbackPath, providerName)
-                                    .retrieveToken(this@register),
+                                    .retrieveToken(request),
                             ) { raise(AuthIssue.OAuthIssue.TokenExchangeFailed()) }
                         val userInfoJson = fetchUserInfoJson(oauthProvider.userInfoEndpoint, token).bind()
                         val (providerUserId, providerUsername, email) = oauthProvider.parseUserInfo(userInfoJson)
 
                         val preferredUsername = query.username ?: providerUsername
-                        val currentPrincipal = if (isLinking) either { authenticate(this@register) }.getOrNull() else null
+                        val currentPrincipal = if (isLinking) either { authenticate(request) }.getOrNull() else null
 
                         val tokens =
                             transaction {
@@ -182,11 +200,15 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
                 val (tokens, cookies) = result.getOrElse { return@register errorRedirect(it) }
                 val redirectUri = baseRedirect.query("auth_success", "true")
 
-                302
-                    .withHeaders(Redirect.createHeaders(redirectUri.toString()))
-                    .with(AuthService.RefreshTokenCookie create tokens.refreshToken)
-                    .with(cookies.token.clear())
-                    .with(cookies.link.clear())
+                response(302) {
+                    headers = Redirect bind redirectUri.toString()
+                    this.cookies =
+                        listOf(
+                            AuthService.RefreshTokenCookie create tokens.refreshToken,
+                            cookies.token.clear(),
+                            cookies.link.clear(),
+                        )
+                }
             },
         )
     }
@@ -196,7 +218,7 @@ object OAuthHandler : AuthHandler<AuthType.OAuth> {
         token: AccessToken,
     ): Either<Issue, String> {
         if (endpoint == null) return AuthIssue.OAuthIssue.UserInfoFetchFailed("No UserInfo endpoint configured").left()
-        val response = serverClient(Request(org.http4k.core.Method.GET, endpoint).header("Authorization", "Bearer ${token.value}"))
+        val response = serverClient(Request(Method.GET, endpoint).header("Authorization", "Bearer ${token.value}"))
         return if (response.status == Status.OK) {
             response.bodyString().right()
         } else {

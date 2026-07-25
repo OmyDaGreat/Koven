@@ -32,8 +32,6 @@ sealed interface AuthType {
      * Managed by the framework, with automatic handling of token issuing, rotation, and cookies.
      */
     data class Password(
-        override val cookieDomain: String? = null,
-        override val useSecureCookies: Boolean = true,
         val validation: Validation<UserRequestModel> = defaultPasswordValidation,
     ) : AuthType
 
@@ -54,8 +52,6 @@ sealed interface AuthType {
     data class OAuth(
         val providers: Map<String, OAuthConfig>,
         val clientCallbackPath: String,
-        override val cookieDomain: String? = null,
-        override val useSecureCookies: Boolean = true,
     ) : AuthType
 
     // TODO: Support combining multiple auth types (user can choose) since AuthService already commonizes much of the code

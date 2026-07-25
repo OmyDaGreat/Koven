@@ -280,3 +280,9 @@ class HeaderPairField<A, B>(
  * Creates a pair of header fields as [HeaderPairField].
  */
 infix fun <A, B> HeaderField<A>.and(other: HeaderField<B>): HeaderPairField<A, B> = HeaderPairField(this, other)
+
+/**
+ * Binds a value to a [HeaderField] for readable typed header construction.
+ * This is a pass-through that ensures the value matches the field type.
+ */
+infix fun <T> HeaderField<T>.bind(value: T): T = value

@@ -7,11 +7,15 @@ import co.touchlab.kermit.Logger
 import io.konform.validation.messagesAtPath
 import me.gosimple.nbvcxz.Nbvcxz
 import me.gosimple.nbvcxz.resources.ConfigurationBuilder
+import org.http4k.core.Filter
+import org.http4k.core.NoOp
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.routes
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import xyz.malefic.koven.api.ApiResponse.Companion.with
+import xyz.malefic.koven.api.ApiResponse
+import xyz.malefic.koven.api.response
+import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.error.UserIssue
@@ -43,22 +47,28 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
     context(auth: AuthType.Password)
     override fun authRoutes(): RoutingHttpHandler =
         routes(
-            PasswordStrengthContract.register { string, _, _ ->
-                string.strength()
+            PasswordStrengthContract.register { string ->
+                ApiResponse(string.strength(), Empty)
             },
-            PasswordLoginContract.register { body, _, _ ->
+            PasswordLoginContract.register { body ->
                 val tokens = getTokensFromLogin(body)
-                tokens.response with (AuthService.RefreshTokenCookie create tokens.refreshToken)
+                response {
+                    this.body = tokens.response
+                    this.cookies = listOf(AuthService.RefreshTokenCookie create tokens.refreshToken)
+                }
             },
-            PasswordRegisterContract.register { body, _, _ ->
+            PasswordRegisterContract.register { body ->
                 val tokens = body.register()
-                tokens.response with (AuthService.RefreshTokenCookie create tokens.refreshToken)
+                response {
+                    this.body = tokens.response
+                    this.cookies = listOf(AuthService.RefreshTokenCookie create tokens.refreshToken)
+                }
             },
-            RefreshContract.register { _, _, _ ->
-                with(AuthService) { refresh() }
+            RefreshContract.register {
+                AuthService.refresh()
             },
-            LogoutContract.register { _, _, _ ->
-                with(AuthService) { logout() }
+            LogoutContract.register<Unit, Unit, Empty, Empty, Empty>(Filter.NoOp) {
+                ApiResponse(Unit, Empty, listOf(AuthService.logout()))
             },
         )
 

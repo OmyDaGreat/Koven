@@ -18,7 +18,7 @@ import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiResponse
-import xyz.malefic.koven.api.ApiResponse.Companion.with
+import xyz.malefic.koven.api.ApiResponse.Companion.withCookies
 import xyz.malefic.koven.core.field.Cookie
 import xyz.malefic.koven.core.field.CookieField
 import xyz.malefic.koven.core.field.Empty
@@ -224,18 +224,17 @@ object AuthService {
     /**
      * Shared logic to logout by revoking the refresh token and clearing the cookie.
      */
-    context(_: Raise<Issue>)
-    fun Request.logout(): Cookie {
-        val req = this
+    context(_: Raise<Issue>, req: Request)
+    fun logout(): Cookie {
         val refreshToken = either { req[RefreshTokenCookie] }.getOrNull()
         val _ = either { refreshToken?.let { logout(it) } }
         return RefreshTokenCookie.clear(Unit)
     }
 
-    context(_: Raise<Issue>, _: AuthType)
-    fun Request.refresh(): ApiResponse<TokenResponseModel, Empty> {
-        val tokens = refreshTokens(this[RefreshTokenCookie])
-        return tokens.response with (RefreshTokenCookie create tokens.refreshToken)
+    context(_: Raise<Issue>, _: AuthType, req: Request)
+    fun refresh(): ApiResponse<TokenResponseModel, Empty> {
+        val tokens = refreshTokens(req[RefreshTokenCookie])
+        return tokens.response.withCookies(RefreshTokenCookie create tokens.refreshToken)
     }
 
     /**

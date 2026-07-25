@@ -17,7 +17,7 @@ data class Multipart(
      * @property contentType The content type of the file.
      * @property bytes The content of the file.
      */
-    data class File(
+    data class File( // TODO: Use a stream to store content rather than bytes
         val name: String,
         val contentType: String?,
         val bytes: ByteArray,

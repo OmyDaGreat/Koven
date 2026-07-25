@@ -112,7 +112,7 @@ interface CookieField<T> : KovenField<T> {
 
                 context(_: Raise<Issue>)
                 override fun decode(cookies: Map<String, String>): String =
-                    ensureNotNull(cookies[name]) { BadRequestIssue("Missing required cookie: $name") }.let { decodeUriComponent(it) }
+                    decodeUriComponent(ensureNotNull(cookies[name]) { BadRequestIssue("Missing required cookie: $name") })
 
                 override fun encodeCookies(value: String): List<Cookie> = listOf(create(encodeUriComponent(value)))
             }

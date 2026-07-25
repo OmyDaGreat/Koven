@@ -18,6 +18,7 @@ import org.http4k.server.ServerConfig
 import org.http4k.server.asServer
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiContract
+import xyz.malefic.koven.api.ApiResponse
 import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.error.Issue
 import xyz.malefic.koven.feature.auth.AuthType
@@ -49,19 +50,59 @@ class KovenServerBuilder(
      * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified Res, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.handle(
+    inline fun <reified Req, reified Res, ReqH, reified ResH, PathP, QueryP, CookieP> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.handle(
         filter: Filter = Filter.NoOp,
-        crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req, PathP, QueryP) -> Any?,
-    ) = add(register(filter, handler))
+        crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+        ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.(Req, PathP, QueryP)
+        -> ApiResponse<Res, ResH>,
+    ) = add(register(filter) { body, path, query -> handler(body, path, query) })
 
     /**
-     * Simplifies handling for [ApiContract] types with no path or query parameters.
+     * Adds an [ApiContract], with no response body or headers, to the server by registering a route with the given [handler].
+     *
+     * @param handler The function to handle the request.
+     */
+    @JvmName("handleUnit")
+    inline fun <reified Req, ReqH, PathP, QueryP, CookieP> ApiContract<Req, Unit, ReqH, Empty, PathP, QueryP, CookieP>.handle(
+        filter: Filter = Filter.NoOp,
+        crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+        ApiContract<Req, Unit, ReqH, Empty, PathP, QueryP, CookieP>.(Req, PathP, QueryP)
+        -> Unit,
+    ) = add(
+        register<Req, ReqH, PathP, QueryP, CookieP>(filter) { body, path, query ->
+            handler(body, path, query)
+        },
+    )
+
+    /**
+     * Adds an [ApiContract], with no query or path parameters, to the server by registering a route with the given [handler].
+     *
+     * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified Res, ReqH, ResH, CookieP> ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.handle(
+    inline fun <reified Req, reified Res, ReqH, reified ResH, CookieP> ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.handle(
         filter: Filter = Filter.NoOp,
-        crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req) -> Any?,
-    ) = add(register(filter, handler))
+        crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+        ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.(Req)
+        -> ApiResponse<Res, ResH>,
+    ) = add(register(filter) { body -> handler(body) })
+
+    /**
+     * Adds an [ApiContract], with no response body, response headers, query parameters or path parameters, to the server by registering a route with the given [handler].
+     *
+     * @param handler The function to handle the request.
+     */
+    @JvmName("handleSimpleUnit")
+    inline fun <reified Req, ReqH, CookieP> ApiContract<Req, Unit, ReqH, Empty, Empty, Empty, CookieP>.handle(
+        filter: Filter = Filter.NoOp,
+        crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+        ApiContract<Req, Unit, ReqH, Empty, Empty, Empty, CookieP>.(Req)
+        -> Unit,
+    ) = add(
+        register<Req, ReqH, CookieP>(filter) { body ->
+            handler(body)
+        },
+    )
 
     /**
      * Adds an [ApiContract] with a multipart request body to the server.
@@ -69,10 +110,12 @@ class KovenServerBuilder(
      * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Res, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.handleMultipart(
+    inline fun <reified Res, ReqH, reified ResH, PathP, QueryP, CookieP> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.handleMultipart(
         filter: Filter = Filter.NoOp,
-        crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Multipart, PathP, QueryP) -> Any?,
-    ) = add(registerMultipart(filter, handler))
+        crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+        ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.(Multipart, PathP, QueryP)
+        -> ApiResponse<Res, ResH>,
+    ) = add(registerMultipart(filter) { body, path, query -> handler(body, path, query) })
 
     /**
      * Adds a paginated [ApiContract] to the server.
@@ -80,10 +123,12 @@ class KovenServerBuilder(
      * @param handler The function to handle the request.
      */
     @Suppress("ktlint:standard:max-line-length")
-    inline fun <reified Req, reified T, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP, CookieP>.handlePaginated(
+    inline fun <reified Req, reified T, ReqH, reified ResH, PathP, QueryP, CookieP> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP, CookieP>.handlePaginated(
         filter: Filter = Filter.NoOp,
-        crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req, PathP, QueryP, Pagination) -> Any?,
-    ) = add(registerPaginated(filter, handler))
+        crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+        ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP, CookieP>.(Req, PathP, QueryP, Pagination)
+        -> ApiResponse<List<T>, ResH>,
+    ) = add(registerPaginated(filter) { body, path, query, pagination -> handler(body, path, query, pagination) })
 
     internal fun buildHandler(): RoutingHttpHandler {
         val authHandlerRoutes =

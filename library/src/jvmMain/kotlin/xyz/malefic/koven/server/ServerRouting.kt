@@ -20,16 +20,10 @@ import org.http4k.routing.path
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.api.ApiContract
 import xyz.malefic.koven.api.ApiResponse
-import xyz.malefic.koven.api.ApiResponse.Companion.with
-import xyz.malefic.koven.core.field.Cookie
-import xyz.malefic.koven.core.field.Cookies
 import xyz.malefic.koven.core.field.Empty
 import xyz.malefic.koven.core.field.Headers
-import xyz.malefic.koven.core.field.KovenPair
 import xyz.malefic.koven.core.field.PathField.Companion.PATH_PARAM_REGEX
-import xyz.malefic.koven.core.field.PathParams
 import xyz.malefic.koven.core.field.QueryParams
-import xyz.malefic.koven.core.field.flattenPair
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.InternalIssue
 import xyz.malefic.koven.error.Issue
@@ -46,124 +40,94 @@ import kotlin.uuid.Uuid
 /**
  * Creates a route for the given [ApiContract].
  *
- * The handler function can return:
- * - [ApiResponse] for a full response with body, headers, and cookies.
- * - [Res] for a simple response body.
- * - [Headers] for a response with only headers.
- * - [Cookies] or [Cookie] for a response with only cookies.
- * - [Unit] for an empty response.
- *
  * Context parameters in the [handler] can be accessed via [contextOf].
  *
  * @param filter The filter to apply to the route.
  * @param handler The handler function for the route.
  */
-@Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
-inline fun <reified Req, reified Res, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.register(
+@Suppress("ktlint:standard:max-line-length")
+inline fun <reified Req, reified Res, ReqH, reified ResH, PathP, QueryP, CookieP> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.register(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req, PathP, QueryP) -> Any?,
+    crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+    ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.(Req, PathP, QueryP)
+    -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler =
     baseRegister(filter) { req, reqH, pathP, queryP, cookieP ->
         val principal = authenticate(req)
         val body = decodeBody(req)
 
-        val result =
-            context(principal, reqH, cookieP) {
-                req.handler(body, pathP, queryP)
-            }
-
-        val flattened = if (result is KovenPair<*, *>) result.flattenPair() else listOf(result)
-
-        var responseStatus = 200
-        var responseBody: Res? = null
-        var responseHeaders = Headers()
-        var responseCookies = Cookies()
-        var responseQueryParams = QueryParams()
-        var responsePathParams = PathParams()
-
-        var bodySet = false
-
-        flattened.forEach { item ->
-            when (item) {
-                is ApiResponse<*, *> -> {
-                    responseStatus = item.status
-                    responseBody = item.body as? Res
-                    responseHeaders += item.headers as? Headers ?: Headers()
-                    responseCookies += Cookies(item.cookies)
-                    bodySet = true
-                }
-
-                is Headers -> {
-                    responseHeaders += item
-                }
-
-                is Cookies -> {
-                    responseCookies += item
-                }
-
-                is Cookie -> {
-                    responseCookies += Cookies(listOf(item))
-                }
-
-                is QueryParams -> {
-                    responseQueryParams += item
-                }
-
-                is PathParams -> {
-                    responsePathParams += item
-                }
-
-                is List<*> -> {
-                    if (item.firstOrNull() is Cookie) {
-                        responseCookies += Cookies(item as List<Cookie>)
-                    } else if (!bodySet) {
-                        responseBody = item as? Res
-                        bodySet = true
-                    }
-                }
-
-                else -> {
-                    if (!bodySet && item != null && item != Unit) {
-                        responseBody = item as? Res
-                        bodySet = true
-                    }
-                }
-            }
+        context(req, principal, reqH, cookieP) {
+            this@register.handler(body, pathP, queryP)
         }
+    }
 
-        if (responseBody == null && Res::class == Unit::class) {
-            responseBody = Unit as Res
+/**
+ * Overload for [register] that allows returning [Unit] when the response body is [Unit] and headers are [Empty].
+ */
+@JvmName("registerUnit")
+inline fun <reified Req, ReqH, PathP, QueryP, CookieP> ApiContract<Req, Unit, ReqH, Empty, PathP, QueryP, CookieP>.register(
+    filter: Filter = Filter.NoOp,
+    crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+    ApiContract<Req, Unit, ReqH, Empty, PathP, QueryP, CookieP>.(Req, PathP, QueryP)
+    -> Unit,
+): RoutingHttpHandler =
+    register<Req, Unit, ReqH, Empty, PathP, QueryP, CookieP>(filter) { req, path, query ->
+        context(contextOf<Request>(), contextOf<Raise<Issue>>(), contextOf<ReqH>(), contextOf<CookieP>(), contextOf<Principal>()) {
+            handler(req, path, query)
         }
-
-        ApiResponse(responseStatus, responseBody!!, responseHeaders as ResH, responseCookies.list)
+        ApiResponse(Unit, Empty)
     }
 
 /**
  * Simplifies registration for [ApiContract] types with no path or query parameters.
  */
 @JvmName("registerSimple")
-@Suppress("ktlint:standard:max-line-length")
-inline fun <reified Req, reified Res, ReqH, ResH, CookieP> ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.register(
+inline fun <reified Req, reified Res, ReqH, reified ResH, CookieP> ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.register(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req) -> Any?,
-): RoutingHttpHandler = register(filter) { req, _, _ -> handler(this, req) }
+    crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+    ApiContract<Req, Res, ReqH, ResH, Empty, Empty, CookieP>.(Req)
+    -> ApiResponse<Res, ResH>,
+): RoutingHttpHandler =
+    baseRegister(filter) { req, reqH, _, _, cookieP ->
+        val principal = authenticate(req)
+        val body = decodeBody(req)
+
+        context(req, principal, reqH, cookieP) {
+            this@register.handler(body)
+        }
+    }
+
+/**
+ * Overload for [register] (simple) that allows returning [Unit] when the response body is [Unit] and headers are [Empty].
+ */
+@JvmName("registerSimpleUnit")
+inline fun <reified Req, ReqH, CookieP> ApiContract<Req, Unit, ReqH, Empty, Empty, Empty, CookieP>.register(
+    filter: Filter = Filter.NoOp,
+    crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+    ApiContract<Req, Unit, ReqH, Empty, Empty, Empty, CookieP>.(Req)
+    -> Unit,
+): RoutingHttpHandler =
+    register<Req, Unit, ReqH, Empty, CookieP>(filter) { req ->
+        context(contextOf<Request>(), contextOf<Raise<Issue>>(), contextOf<ReqH>(), contextOf<CookieP>(), contextOf<Principal>()) {
+            handler(req)
+        }
+        ApiResponse(Unit, Empty)
+    }
 
 /**
  * Creates a route for the given [ApiContract] that returns a paginated response with a [Pagination] context.
  *
  * The route will automatically handle `page` and `limit` query parameters to slice the list. If the [Pagination.totalItems] value provided in context is set, the framework knows the list is already filtered and won't attempt to slice it in memory.
  *
- * The handler function can return:
- * - [ApiResponse] containing a `List<T>`.
- * - `List<T>` directly.
- *
  * @param filter The filter to apply to the route.
  * @param handler The handler function for the route.
  */
-@Suppress("UNCHECKED_CAST", "ktlint:standard:max-line-length")
-inline fun <reified Req, reified T, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP, CookieP>.registerPaginated(
+@Suppress("ktlint:standard:max-line-length")
+inline fun <reified Req, reified T, ReqH, reified ResH, PathP, QueryP, CookieP> ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP, CookieP>.registerPaginated(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Req, PathP, QueryP, Pagination) -> Any?,
+    crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+    ApiContract<Req, PaginatedResponse<T>, ReqH, ResH, PathP, QueryP, CookieP>.(Req, PathP, QueryP, Pagination)
+    -> ApiResponse<List<T>, ResH>,
 ): RoutingHttpHandler =
     baseRegister(filter) { req, reqH, pathP, queryP, cookieP ->
         val principal = authenticate(req)
@@ -180,17 +144,14 @@ inline fun <reified Req, reified T, ReqH, ResH, PathP, QueryP, CookieP> ApiContr
 
         val body = decodeBody(req)
         val result =
-            context(principal, reqH, cookieP) {
-                req.handler(body, pathP, queryP, pagination)
+            context(req, principal, reqH, cookieP) {
+                this@registerPaginated.handler(body, pathP, queryP, pagination)
             }
 
-        val (items, resH) =
-            when (result) {
-                is ApiResponse<*, *> -> (result.body as List<T>) to (result.headers as ResH)
-                else -> (result as List<T>) to decodeResponseHeaders(Headers())
-            }
+        val items = result.body
+        val resH = result.headers
 
-        val response =
+        val responseBody =
             if (pagination.totalItems != null) {
                 PaginatedResponse.create(items, page, limit, pagination.totalItems!!)
             } else {
@@ -199,7 +160,8 @@ inline fun <reified Req, reified T, ReqH, ResH, PathP, QueryP, CookieP> ApiContr
                 val end = (start + limit).coerceAtMost(items.size)
                 PaginatedResponse.create(items.subList(start, end), page, limit, total)
             }
-        response with resH
+
+        ApiResponse(result.status, responseBody, resH, result.cookies)
     }
 
 /**
@@ -209,18 +171,21 @@ inline fun <reified Req, reified T, ReqH, ResH, PathP, QueryP, CookieP> ApiContr
  * @param handler The handler function for the route.
  */
 @Suppress("ktlint:standard:max-line-length")
-inline fun <reified Res, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.registerMultipart(
+inline fun <reified Res, ReqH, reified ResH, PathP, QueryP, CookieP> ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.registerMultipart(
     filter: Filter = Filter.NoOp,
-    crossinline handler: context(Raise<Issue>, ReqH, CookieP, Principal) Request.(Multipart, PathP, QueryP) -> Any?,
+    crossinline handler: context(Request, Raise<Issue>, ReqH, CookieP, Principal)
+    ApiContract<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>.(Multipart, PathP, QueryP)
+    -> ApiResponse<Res, ResH>,
 ): RoutingHttpHandler = register<Multipart, Res, ReqH, ResH, PathP, QueryP, CookieP>(filter, handler)
 
 @PublishedApi
 context(_: Raise<Issue>)
 internal fun ApiContract<*, *, *, *, *, *, *>.authenticate(req: Request): Principal {
-    if (!isProtected || KovenConfig.auth == AuthType.NoAuth) return anonymousPrincipal
+    val auth = KovenConfig.auth
 
-    return when (val auth = KovenConfig.auth) {
-        is AuthType.NoAuth -> anonymousPrincipal
+    if (!isProtected || auth == AuthType.NoAuth) return anonymousPrincipal
+
+    return when (auth) {
         is AuthType.Password -> context(auth) { PasswordAuthHandler.authenticate(req) }
         is AuthType.OAuth -> context(auth) { OAuthHandler.authenticate(req) }
     }

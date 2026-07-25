@@ -133,3 +133,18 @@ val PingContract = apiContract<Unit, String>("ping").method(GET).build()
  * A contract for an example "auth/ping" endpoint.
  */
 val SecurePingContract = apiContract<Unit, String>("auth/ping").method(GET).protected().build()
+
+/**
+ * Creates an [ApiResponse] for this contract with a DSL-type Builder.
+ */
+@Suppress("UnusedReceiverParameter")
+fun <Req, Res, ReqH, ResH, PathP, QueryP, CookieP> ApiContract<Req, Res, ReqH, ResH, PathP, QueryP, CookieP>.response(
+    status: Int = 200,
+    block: ApiResponse.Companion.Builder<Res, ResH>.() -> Unit,
+): ApiResponse<Res, ResH> =
+    ApiResponse.Companion
+        .Builder<Res, ResH>()
+        .apply {
+            this.status = status
+            this.block()
+        }.build()

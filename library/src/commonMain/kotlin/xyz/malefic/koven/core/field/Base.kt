@@ -27,6 +27,11 @@ data class KovenPair<out A, out B>(
 )
 
 /**
+ * Creates a [KovenPair] from two values.
+ */
+infix fun <A, B> A.and(other: B): KovenPair<A, B> = KovenPair(this, other)
+
+/**
  * Base class for composite fields, handling field aggregation and flattening.
  */
 abstract class KovenPairField<out A, out B>(
