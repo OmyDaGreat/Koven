@@ -10,7 +10,6 @@ import me.gosimple.nbvcxz.resources.ConfigurationBuilder
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.routes
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.or
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import xyz.malefic.koven.api.ApiResponse.Companion.with
 import xyz.malefic.koven.error.AuthIssue
@@ -25,6 +24,7 @@ import xyz.malefic.koven.feature.auth.RefreshContract
 import xyz.malefic.koven.feature.auth.model.TokenModel
 import xyz.malefic.koven.feature.auth.model.UserRequestModel
 import xyz.malefic.koven.feature.auth.server.AuthService.issueTokenPair
+import xyz.malefic.koven.server.persistence.ensureUnique
 import xyz.malefic.koven.server.register
 import java.security.SecureRandom
 
@@ -98,7 +98,7 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
             userEntity.issueTokenPair()
         }
 
-    context(_: Raise<Issue>, auth: AuthType.Password)
+    context(r: Raise<Issue>, auth: AuthType.Password)
     fun UserRequestModel.register(): TokenModel =
         transaction {
             val userValidation = auth.validation(this@register)
@@ -108,12 +108,24 @@ object PasswordAuthHandler : AuthHandler<AuthType.Password> {
                     userValidation.errors.messagesAtPath(UserRequestModel::password),
                 )
             }
-            ensure(UserEntity.find { (Users.username eq username) or (Users.email eq email) }.empty()) { UserIssue.AlreadyExists() }
-            UserEntity
-                .new {
-                    username = this@register.username
-                    this.email = this@register.email
-                    hashedPassword = hashPassword(password)
-                }.issueTokenPair()
+
+            if (!UserEntity.find { Users.email eq email }.empty()) {
+                r.raise(UserIssue.AlreadyExists(UserIssue.ConflictType.EMAIL))
+            }
+            if (!UserEntity.find { Users.username eq username }.empty()) {
+                r.raise(UserIssue.AlreadyExists(UserIssue.ConflictType.USERNAME))
+            }
+
+            val entity =
+                ensureUnique {
+                    UserEntity
+                        .new {
+                            username = this@register.username
+                            email = this@register.email
+                            hashedPassword = hashPassword(password)
+                        }.also { it.flush() }
+                }
+
+            entity.issueTokenPair()
         }
 }

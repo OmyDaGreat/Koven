@@ -34,6 +34,7 @@ import xyz.malefic.koven.feature.auth.Principal
 import xyz.malefic.koven.feature.auth.model.TokenModel
 import xyz.malefic.koven.feature.auth.model.TokenResponseModel
 import xyz.malefic.koven.server.get
+import xyz.malefic.koven.server.persistence.ensureUnique
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Date
@@ -102,7 +103,7 @@ object AuthService {
     /**
      * Hashes the given [text] using SHA-256.
      */
-    fun hash(text: String) = MessageDigest.getInstance("SHA-256").digest(text.toByteArray())
+    fun hash(text: String): ByteArray = MessageDigest.getInstance("SHA-256").digest(text.toByteArray())
 
     /**
      * Generates a secure random secret of the given [bytes] length, encoded as Base64.
@@ -283,11 +284,14 @@ object AuthService {
                 val existingUsernameUser = UserEntity.find { Users.username eq preferredUsername }.firstOrNull()
 
                 if (existingUsernameUser != null) {
-                    raise(UserIssue.AlreadyExists())
+                    raise(UserIssue.AlreadyExists(UserIssue.ConflictType.USERNAME))
                 }
-                UserEntity.new {
-                    this.username = preferredUsername
-                    this.email = email
+                ensureUnique {
+                    UserEntity
+                        .new {
+                            this.username = preferredUsername
+                            this.email = email
+                        }.also { it.flush() }
                 }
             }
 

@@ -117,11 +117,28 @@ sealed class AuthIssue : Issue() {
  */
 @Serializable
 sealed class UserIssue : Issue() {
+    /**
+     * Types of conflicts that can occur during user creation or update.
+     */
+    @Serializable
+    enum class ConflictType {
+        USERNAME,
+        EMAIL,
+        UNKNOWN,
+    }
+
     @Serializable
     data class AlreadyExists(
-        override val message: String = "User already exists",
+        val conflict: ConflictType = ConflictType.UNKNOWN,
         override val status: Int = 400,
-    ) : UserIssue()
+    ) : UserIssue() {
+        override val message: String =
+            when (conflict) {
+                ConflictType.USERNAME -> "Username is already taken"
+                ConflictType.EMAIL -> "Email is already registered"
+                ConflictType.UNKNOWN -> "User already exists"
+            }
+    }
 
     @Serializable
     data class NotFound(
