@@ -4,8 +4,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.protobuf.ProtoBuf
 import kotlinx.serialization.protobuf.ProtoBufBuilder
-import xyz.malefic.koven.api.BodyFormat
-import xyz.malefic.koven.api.ProtoBufFormat
+import xyz.malefic.koven.contract.BodyFormat
+import xyz.malefic.koven.contract.ProtoBufFormat
 import xyz.malefic.koven.error.Issue
 
 /**

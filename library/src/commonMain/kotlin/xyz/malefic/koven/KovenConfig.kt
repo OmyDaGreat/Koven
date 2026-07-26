@@ -1,7 +1,7 @@
 package xyz.malefic.koven
 
+import xyz.malefic.koven.auth.AuthType
 import xyz.malefic.koven.error.Issue
-import xyz.malefic.koven.feature.auth.AuthType
 import xyz.malefic.koven.serialization.JsonSerializer
 import xyz.malefic.koven.serialization.SerializationEngine
 import xyz.malefic.koven.util.lock

@@ -6,7 +6,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.overwriteWith
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.serializer
-import xyz.malefic.koven.api.BodyFormat
+import xyz.malefic.koven.contract.BodyFormat
 import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.BadRequestIssue
 import xyz.malefic.koven.error.InternalIssue

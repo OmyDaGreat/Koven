@@ -14,16 +14,16 @@ import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
 import org.w3c.xhr.FormData
 import xyz.malefic.koven.KovenConfig
-import xyz.malefic.koven.api.ApiContract
-import xyz.malefic.koven.api.ApiResponse
-import xyz.malefic.koven.api.HttpMethod
-import xyz.malefic.koven.client.auth.AuthSession
-import xyz.malefic.koven.core.field.Empty
-import xyz.malefic.koven.core.field.Headers
+import xyz.malefic.koven.auth.ApiKeyAuth
+import xyz.malefic.koven.auth.client.AuthSession
+import xyz.malefic.koven.contract.ApiContract
+import xyz.malefic.koven.contract.ApiResponse
+import xyz.malefic.koven.contract.HttpMethod
+import xyz.malefic.koven.contract.field.Empty
+import xyz.malefic.koven.contract.field.Headers
 import xyz.malefic.koven.error.InternalIssue
 import xyz.malefic.koven.error.Issue
-import xyz.malefic.koven.feature.auth.ApiKeyAuth
-import xyz.malefic.koven.feature.multipart.Multipart
+import xyz.malefic.koven.multipart.Multipart
 
 suspend fun ApiFetcher.call(
     httpMethod: HttpMethod,

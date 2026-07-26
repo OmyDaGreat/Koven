@@ -1,7 +1,7 @@
 package xyz.malefic.koven.server
 
 import org.http4k.core.Method
-import xyz.malefic.koven.api.HttpMethod
+import xyz.malefic.koven.contract.HttpMethod
 
 val HttpMethod.toHttp4k
     get() =

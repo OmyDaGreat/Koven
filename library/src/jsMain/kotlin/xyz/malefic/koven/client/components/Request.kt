@@ -2,14 +2,14 @@ package xyz.malefic.koven.client.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import xyz.malefic.koven.core.ApiState
 import xyz.malefic.koven.error.AuthIssue
 import xyz.malefic.koven.error.Issue
+import xyz.malefic.koven.state.ApiState
 
 /**
  * A basic composable for rendering API states, serving to wrap your own UI logic within [successContent]. The recommendation for its usage would be to wrap it with reasonable defaults according to your own application, as detailed in each parameter.
  *
- * @param state The API state to render. This value can be obtained from a [xyz.malefic.koven.client.produceApiState] call.
+ * @param state The API state to render. This value can be obtained from a [xyz.malefic.koven.state.produceApiState] call.
  * @param onUnauthorized A callback to be invoked when an unauthorized error is encountered. This is typically used to redirect the user to a login page.
  * @param loadingContent A composable to render while the API request is loading. This is typically something simple like a Spinner.
  * @param errorContent A composable to render when an error is encountered.

@@ -5,9 +5,9 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.cookie.cookie
 import org.http4k.core.cookie.cookies
-import xyz.malefic.koven.core.field.Cookie
-import xyz.malefic.koven.core.field.CookieField
-import xyz.malefic.koven.core.field.SameSite
+import xyz.malefic.koven.contract.field.Cookie
+import xyz.malefic.koven.contract.field.CookieField
+import xyz.malefic.koven.contract.field.SameSite
 import xyz.malefic.koven.error.Issue
 
 /**

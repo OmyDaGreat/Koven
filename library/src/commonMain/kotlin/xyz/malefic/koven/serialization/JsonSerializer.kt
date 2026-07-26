@@ -3,8 +3,8 @@ package xyz.malefic.koven.serialization
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
-import xyz.malefic.koven.api.BodyFormat
-import xyz.malefic.koven.api.JsonFormat
+import xyz.malefic.koven.contract.BodyFormat
+import xyz.malefic.koven.contract.JsonFormat
 import xyz.malefic.koven.error.Issue
 
 /**
