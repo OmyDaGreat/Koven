@@ -646,6 +646,7 @@ $dokka.location:xyz.malefic.koven.contract/HttpMethod.OPTIONS///PointingToDeclar
 $dokka.location:xyz.malefic.koven.contract/HttpMethod.PATCH///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.koven.contract/-http-method/-p-a-t-c-h/index.html
 $dokka.location:xyz.malefic.koven.contract/HttpMethod.POST///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.koven.contract/-http-method/-p-o-s-t/index.html
 $dokka.location:xyz.malefic.koven.contract/HttpMethod.PUT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.koven.contract/-http-method/-p-u-t/index.html
+$dokka.location:xyz.malefic.koven.contract/HttpMethod.QUERY///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/xyz.malefic.koven.contract/-http-method/-q-u-e-r-y/index.html
 $dokka.location:xyz.malefic.koven.contract/HttpMethod///PointingToDeclaration/library/xyz.malefic.koven.contract/-http-method/index.html
 $dokka.location:xyz.malefic.koven.contract/HttpMethod/entries/#/PointingToDeclaration/library/xyz.malefic.koven.contract/-http-method/entries.html
 $dokka.location:xyz.malefic.koven.contract/HttpMethod/valueOf/#kotlin.String/PointingToDeclaration/library/xyz.malefic.koven.contract/-http-method/value-of.html
