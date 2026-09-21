@@ -24,7 +24,7 @@ group = g
 version = v
 
 kotlin {
-    compilerOptions.freeCompilerArgs.addAll(listOf("-Xcontext-parameters", "-Xreturn-value-checker=full"))
+    compilerOptions.freeCompilerArgs.addAll(listOf("-Xreturn-value-checker=full"))
     compilerOptions.optIn.add("kotlin.experimental.ExperimentalTypeInference")
 
     jvm()

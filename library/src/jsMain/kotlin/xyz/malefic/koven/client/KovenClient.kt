@@ -35,9 +35,10 @@ suspend fun ApiFetcher.call(
     HttpMethod.POST -> post(path, body, headers)
     HttpMethod.PUT -> put(path, body, headers)
     HttpMethod.DELETE -> delete(path, headers)
-    HttpMethod.OPTIONS -> options(path, headers)
     HttpMethod.PATCH -> patch(path, body, headers)
     HttpMethod.HEAD -> head(path, headers)
+    HttpMethod.OPTIONS -> options(path, headers)
+    HttpMethod.QUERY -> query(path, body, headers)
 }
 
 /**

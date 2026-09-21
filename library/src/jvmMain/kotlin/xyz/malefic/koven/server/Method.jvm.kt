@@ -13,4 +13,5 @@ val HttpMethod.toHttp4k
             HttpMethod.PATCH -> Method.PATCH
             HttpMethod.HEAD -> Method.HEAD
             HttpMethod.OPTIONS -> Method.OPTIONS
+            HttpMethod.QUERY -> Method.QUERY
         }
