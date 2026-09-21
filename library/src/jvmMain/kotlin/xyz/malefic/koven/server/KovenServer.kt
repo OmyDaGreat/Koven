@@ -9,12 +9,15 @@ import org.http4k.filter.ServerFilters
 import org.http4k.filter.debug
 import org.http4k.routing.ResourceLoader
 import org.http4k.routing.RoutingHttpHandler
+import org.http4k.routing.RoutingWsHandler
 import org.http4k.routing.bind
+import org.http4k.routing.poly
 import org.http4k.routing.routes
 import org.http4k.routing.static
+import org.http4k.routing.websockets
 import org.http4k.server.Http4kServer
 import org.http4k.server.JettyLoom
-import org.http4k.server.ServerConfig
+import org.http4k.server.PolyServerConfig
 import org.http4k.server.asServer
 import xyz.malefic.koven.KovenConfig
 import xyz.malefic.koven.auth.AuthType
@@ -40,12 +43,20 @@ class KovenServerBuilder(
     val config: KovenServerConfig,
 ) {
     private val routes = mutableListOf<RoutingHttpHandler>()
+    private val sockets = mutableSetOf<RoutingWsHandler>()
 
     /**
      * Adds a [RoutingHttpHandler] to the server.
      */
     fun add(route: RoutingHttpHandler) {
         routes += route
+    }
+
+    /**
+     * Adds a [RoutingWsHandler] to the server.
+     */
+    fun add(socket: RoutingWsHandler) {
+        sockets += socket
     }
 
     /**
@@ -142,7 +153,7 @@ class KovenServerBuilder(
         -> ApiResponse<List<T>, ResH>,
     ) = add(registerPaginated(filter) { body, path, query, pagination -> handler(body, path, query, pagination) })
 
-    internal fun buildHandler(): RoutingHttpHandler {
+    internal fun buildHttpHandler(): RoutingHttpHandler {
         val authHandlerRoutes =
             when (val auth = KovenConfig.auth) {
                 is AuthType.NoAuth -> null
@@ -155,9 +166,7 @@ class KovenServerBuilder(
             .Cors(config.corsPolicy)
             .then(
                 routes(
-                    listOfNotNull(
-                        authHandlerRoutes,
-                    ) +
+                    listOfNotNull(authHandlerRoutes) +
                         routes +
                         if (config.assetsHosting) {
                             listOf("/${KovenConfig.assetsPrefix}" bind static(ResourceLoader.Directory(config.assetsPath)))
@@ -172,6 +181,8 @@ class KovenServerBuilder(
                 ),
             )
     }
+
+    internal fun buildWebSocketHandler(): RoutingWsHandler? = sockets.takeIf { it.isNotEmpty() }?.let { websockets(*it.toTypedArray()) }
 }
 
 /**
@@ -200,19 +211,28 @@ object KovenServer {
      * @throws IllegalStateException If the server is already running.
      */
     fun start(
-        server: (Int) -> ServerConfig = { JettyLoom(it) },
+        server: (Int) -> PolyServerConfig = { JettyLoom(it) },
         httpConfig: RoutingHttpHandler.() -> RoutingHttpHandler = { debug() },
         serverConfig: KovenServerBuilder.() -> Unit = {},
     ): KovenServer =
         apply {
-            if (underlying == null) {
-                val builder = KovenServerBuilder(config).apply(serverConfig)
-                val handler = builder.buildHandler().httpConfig()
-                Lockable.locked = true
-                underlying = handler.asServer(server(config.port)).start()
-            } else {
-                error("Server is already running")
+            check(underlying == null) {
+                "Server is already running"
             }
+
+            val builder = KovenServerBuilder(config).apply(serverConfig)
+            val http = builder.buildHttpHandler().httpConfig()
+            val ws = builder.buildWebSocketHandler()
+
+            val application =
+                if (ws != null) {
+                    poly(http, ws)
+                } else {
+                    poly(http)
+                }
+
+            Lockable.locked = true
+            underlying = application.asServer(server(config.port)).start()
         }
 
     /**
