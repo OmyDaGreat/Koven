@@ -1,21 +1,21 @@
 [versions]
-kotlin = "2.4.10"
-kotlinter = "5.6.0"
-kermit = "2.1.0"
+kotlin = "2.4.20"
+kotlinter = "5.7.0"
+kermit = "2.2.0"
 dokka = "2.2.0"
 vanniktech = "0.37.0"
 kobweb = "0.25.1"
-http4k = "6.56.0.0"
+http4k = "6.59.0.0"
 coroutines = "1.11.0"
 serialization = "1.11.0"
 datetime = "0.8.0"
 arrow = "2.2.3"
-compose = "1.11.1"
+compose = "1.12.0"
 bcrypt = "0.10.2"
-jwt = "4.6.0"
+jwt = "4.6.1"
 konform = "0.11.1"
 nbvcxz = "1.5.1"
-exposed = "1.3.1"
+exposed = "1.5.0"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
