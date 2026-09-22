@@ -1,4 +1,4 @@
-package xyz.malefic.koven.server
+package xyz.malefic.koven.websocket
 
 import org.http4k.websocket.Websocket
 import org.http4k.websocket.WsMessage
