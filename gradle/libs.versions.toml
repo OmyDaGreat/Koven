@@ -2,7 +2,7 @@
 kotlin = "2.4.21"
 kotlinter = "5.7.0"
 kermit = "2.2.0"
-dokka = "2.2.0"
+dokka = "2.3.0"
 vanniktech = "0.37.0"
 kobweb = "0.25.1"
 http4k = "6.61.0.0"
